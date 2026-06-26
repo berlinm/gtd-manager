@@ -1,3 +1,5 @@
+from datetime import date as _date
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -159,13 +161,13 @@ class NextAction(models.Model):
 
     @property
     def is_available(self):
-        if self.defer_until and self.defer_until > timezone.now().date():
+        if self.defer_until and self.defer_until > _date.today():
             return False
         return True
 
     @property
     def is_deferred(self):
-        return bool(self.defer_until and self.defer_until > timezone.now().date())
+        return bool(self.defer_until and self.defer_until > _date.today())
 
 
 class SomedayMaybe(models.Model):
