@@ -72,7 +72,7 @@
         <tr>
           <td>{{ note.title }}</td>
           <td style="width:8rem;text-align:right">
-            <a href="{% url 'meetings:note_clarify' note.pk %}">Process →</a>
+            <a href="{% url 'meetings:note_clarify' note.pk %}" class="chip">Process →</a>
           </td>
         </tr>
         {% endfor %}

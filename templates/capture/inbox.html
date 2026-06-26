@@ -5,7 +5,7 @@
 {% block content %}
 <div style="display:flex;align-items:baseline;gap:1rem">
   <h1 style="margin:0">Inbox</h1>
-  <a href="{% url 'capture:history' %}" class="secondary" style="font-size:0.85rem">History</a>
+  <a href="{% url 'capture:history' %}" class="chip">History</a>
 </div>
 
 {% if inbox_items %}

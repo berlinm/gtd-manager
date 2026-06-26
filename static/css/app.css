@@ -26,3 +26,29 @@ main table td,
 main table th {
   padding: 0.4rem 0.75rem;
 }
+
+/* Remove old-browser underlines from content links; underline appears on hover */
+main a:not([role="button"]) {
+  text-decoration: none;
+}
+main a:not([role="button"]):hover {
+  text-decoration: underline;
+}
+
+/* Small inline action chip — bordered pill for short action words in tables */
+a.chip {
+  display: inline-block;
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--pico-color);
+}
+a.chip:hover {
+  border-color: var(--pico-primary);
+  color: var(--pico-primary);
+  text-decoration: none;
+}

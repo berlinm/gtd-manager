@@ -25,15 +25,15 @@
         {% if item.content_type and item.object_id %}
           {% with ct=item.content_type.model %}
             {% if ct == 'nextaction' %}
-              <a href="{% url 'gtd:action_edit' item.object_id %}"><small>Action</small></a>
+              <a href="{% url 'gtd:action_edit' item.object_id %}" class="chip">Action</a>
             {% elif ct == 'project' %}
-              <a href="{% url 'gtd:project_detail' item.object_id %}"><small>Project</small></a>
+              <a href="{% url 'gtd:project_detail' item.object_id %}" class="chip">Project</a>
             {% elif ct == 'waitingfor' %}
-              <a href="{% url 'gtd:waiting_for_edit' item.object_id %}"><small>Waiting For</small></a>
+              <a href="{% url 'gtd:waiting_for_edit' item.object_id %}" class="chip">Waiting For</a>
             {% elif ct == 'somedaymaybe' %}
-              <a href="{% url 'gtd:someday_edit' item.object_id %}"><small>Someday</small></a>
+              <a href="{% url 'gtd:someday_edit' item.object_id %}" class="chip">Someday</a>
             {% elif ct == 'reference' %}
-              <a href="{% url 'gtd:reference_detail' item.object_id %}"><small>Reference</small></a>
+              <a href="{% url 'gtd:reference_detail' item.object_id %}" class="chip">Reference</a>
             {% endif %}
           {% endwith %}
         {% endif %}

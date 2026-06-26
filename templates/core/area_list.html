@@ -19,7 +19,7 @@
       <td><a href="{% url 'gtd:area_detail' area.pk %}">{{ area.title }}</a></td>
       <td><small>{{ area.description|truncatechars:60 }}</small></td>
       <td><small>{% if area.active %}Yes{% else %}No{% endif %}</small></td>
-      <td><a href="{% url 'core:area_edit' area.pk %}">Edit</a></td>
+      <td><a href="{% url 'core:area_edit' area.pk %}" class="chip">Edit</a></td>
     </tr>
     {% endfor %}
   </tbody>

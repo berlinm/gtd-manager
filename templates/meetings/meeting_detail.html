@@ -5,7 +5,7 @@
 {% block content %}
 <div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:0.25rem">
   <h1 style="margin:0">{{ meeting.title }}</h1>
-  <a href="{% url 'meetings:meeting_update' meeting.pk %}" class="secondary" style="font-size:0.85rem">Edit</a>
+  <a href="{% url 'meetings:meeting_update' meeting.pk %}" class="chip">Edit</a>
 </div>
 {% if meeting.notes %}<p style="color:var(--pico-muted-color)">{{ meeting.notes }}</p>{% endif %}
 
