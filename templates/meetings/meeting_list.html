@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Meetings — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem">
+  <h1 style="margin:0">Meetings</h1>
+  <a href="{% url 'meetings:meeting_create' %}" role="button" class="outline" style="padding:0.25rem 0.75rem">+ New meeting</a>
+</div>
+
+{% if pending_count %}
+<p style="color:var(--pico-ins-color)">
+  <strong>{{ pending_count }} note{{ pending_count|pluralize }} pending processing</strong>
+  from closed sessions.
+</p>
+{% endif %}
+
+{% if meetings %}
+<table>
+  <thead>
+    <tr>
+      <th>Meeting</th>
+      <th>Status</th>
+      <th>Sessions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for meeting in meetings %}
+    <tr>
+      <td><a href="{% url 'meetings:meeting_detail' meeting.pk %}">{{ meeting.title }}</a></td>
+      <td>{% if meeting.active %}Active{% else %}<span style="color:var(--pico-muted-color)">Inactive</span>{% endif %}</td>
+      <td>{{ meeting.sessions.count }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No meetings yet. <a href="{% url 'meetings:meeting_create' %}">Add one</a>.</p>
+{% endif %}
+{% endblock %}

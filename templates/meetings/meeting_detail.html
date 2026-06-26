@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{{ meeting.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:0.25rem">
+  <h1 style="margin:0">{{ meeting.title }}</h1>
+  <a href="{% url 'meetings:meeting_update' meeting.pk %}" class="secondary" style="font-size:0.85rem">Edit</a>
+</div>
+{% if meeting.notes %}<p style="color:var(--pico-muted-color)">{{ meeting.notes }}</p>{% endif %}
+
+<div style="display:flex;align-items:baseline;gap:1rem;margin-top:1.5rem;margin-bottom:0.5rem">
+  <h2 style="margin:0">Sessions</h2>
+  <a href="{% url 'meetings:session_create' meeting.pk %}" role="button" class="outline" style="padding:0.25rem 0.75rem">+ New session</a>
+</div>
+
+{% if sessions %}
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Notes</th>
+      <th>Pending</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for session in sessions %}
+    <tr>
+      <td><a href="{% url 'meetings:session_detail' session.pk %}">{{ session.occurred_on|date:"N j, Y" }}</a></td>
+      <td>{% if session.is_open %}<span style="color:var(--pico-ins-color)">Open</span>{% else %}Closed{% endif %}</td>
+      <td>{{ session.note_count }}</td>
+      <td>
+        {% if not session.is_open and session.unprocessed_count %}
+        <a href="{% url 'meetings:session_detail' session.pk %}" style="color:var(--pico-ins-color)">{{ session.unprocessed_count }}</a>
+        {% elif not session.is_open %}
+        <span style="color:var(--pico-muted-color)">—</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No sessions yet.</p>
+{% endif %}
+
+{% if agenda_items %}
+<h2>Open agenda items</h2>
+<ul>
+  {% for item in agenda_items %}
+  <li>{{ item.title }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<p style="margin-top:1.5rem"><a href="{% url 'meetings:meeting_list' %}">← All meetings</a></p>
+{% endblock %}

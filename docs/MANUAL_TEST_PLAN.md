@@ -299,3 +299,71 @@ For each sub-test: capture a fresh item first, then click **Process**.
    **→ Redirected to login page (not a 500 or 403).**
 3. Log back in.
    **→ Redirected to Dashboard.**
+
+---
+
+## 19. Meeting capture
+
+### 19a. Create a meeting record
+
+1. Click **Meetings** in the nav.
+   **→ Meeting list page loads. "No meetings yet" if empty.**
+2. Click **+ New meeting**, enter "Weekly standup", leave Notes blank, ensure Active is checked. Save.
+   **→ Redirected to the meeting detail page for "Weekly standup".**
+3. Click **Edit**, change the name, click Save.
+   **→ Meeting name updates on the detail page.**
+
+### 19b. Start and capture during a session
+
+1. On the meeting detail page, click **+ New session**.
+   **→ Session form shows today's date pre-filled.**
+2. Click **Start session**.
+   **→ Redirected to session detail page. "Open" indicator shown. Capture bar present.**
+3. Type a note title in the session capture bar and press Enter.
+   **→ Note appears in the list below without a page reload.**
+4. Add two more notes.
+   **→ All three notes appear in the running list.**
+5. Check the meeting detail page (back button or nav).
+   **→ Session row shows the correct note count.**
+
+### 19c. Agenda items visible during session
+
+1. Navigate to **Agenda** and add an agenda item assigned to the "Weekly standup" meeting.
+2. Return to the open session detail page.
+   **→ Agenda item appears under the Agenda section alongside the capture bar.**
+
+### 19d. Close the session
+
+1. On the open session detail page, click **Close session**.
+   **→ Session status changes from "Open" to "Closed". Notes-to-process queue appears.**
+2. Verify the Meetings nav link shows a count equal to the number of unprocessed notes.
+   **→ "Meetings (3)" (or however many notes you added).**
+
+### 19e. Process notes from a closed session
+
+1. On the closed session detail page, click **Process →** next to the first note.
+   **→ Note clarify page opens, showing the note title and session/date in the footer.**
+2. Choose **Trash it**.
+   **→ Redirected back to the session detail. That note disappears from "Notes to process" and appears in "Processed notes" as "Trashed".**
+3. Process the second note as a **Single next action**.
+   **→ Redirected back to session. Note appears as "Action created".**
+4. Process the third note as a **Project — more than one action**, entering a project title and first action.
+   **→ Redirected to the new project's detail page.**
+5. Return to the session page.
+   **→ "All notes processed" message. No notes remain in the queue.**
+6. The Meetings nav badge is gone (or decremented).
+   **→ Meetings link shows no count.**
+
+### 19f. Delegate a meeting note
+
+1. Create a new session with one note.
+2. Close the session, then click **Process →** on the note.
+3. In the **Delegate it** fieldset, enter a person's name and click **Create Waiting-For**.
+   **→ Waiting-for item created. Redirected to session detail. Note shows "Delegated".**
+
+### 19g. Meeting detail shows session history
+
+1. Navigate to a meeting with several sessions.
+   **→ Sessions table shows date, Open/Closed status, note count, and pending count for closed sessions.**
+2. Pending count for a closed session with unprocessed notes is a link.
+   **→ Clicking it opens the session detail.**

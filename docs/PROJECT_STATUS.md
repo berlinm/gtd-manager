@@ -10,7 +10,7 @@
 | Phase 2 — Clarification and Next Actions | Complete |
 | Phase 3 — Delegation, Agenda, Incubation | Complete |
 | Phase 4 — Reference, Areas, Inbox History | Complete |
-| Phase 5 — Meeting Capture | Not started |
+| Phase 5 — Meeting Capture | Complete |
 | Phase 6 — Reviews | Not started |
 | Phase 7 — Hardening | Not started |
 
@@ -66,21 +66,33 @@
 **Dashboard**
 - Inbox count, waiting-for follow-ups due, stuck project count
 
+**Meetings**
+- Meeting records (recurring targets): create, edit, list, detail
+- MeetingSession: start session for a meeting; date, optional start/end times
+- Live session capture: htmx rapid-note entry (title only, no friction)
+- Agenda items for the meeting shown alongside the capture bar during a session
+- Close session: sets `closed_at`; unprocessed notes enter processing queue
+- Post-session note clarify: all same dispositions as inbox clarify
+- Processed notes retained on session page with disposition shown
+- Meetings nav link with pending-notes badge (unprocessed from closed sessions)
+- Redirects to project detail when note processed as new project; to session otherwise
+
 **Cross-cutting**
 - Dark / light mode (localStorage)
 - Login / logout; all views require authentication
-- 99 automated tests (model validation + view/workflow integration)
+- 137 automated tests (model validation + view/workflow integration)
 - Manual test plan in `docs/MANUAL_TEST_PLAN.md` (19 sections)
 
 ## Next intended work
 
-**Phase 5 — Meeting Capture**
+**Phase 6 — Reviews**
 
-- `meetings` app: `MeetingSession`, `MeetingNote` models
-- Meeting session capture UI; rapid-note entry during a session
-- Post-meeting note processing queue (same clarification flow as inbox)
-- Meeting detail page with session history
-- Agenda items for a meeting visible during an active session
+- `reviews` app: `DailyReview`, `WeeklyReview` models
+- Guided daily review workflow: urgent inbox, scheduled today, deadlines,
+  waiting-for follow-ups, focus selection, stuck projects
+- Transient focus list mechanism (storage strategy TBD)
+- Guided weekly review checklist (all steps from USER_WORKFLOWS.md)
+- Stuck-project detection; review history page
 
 See `docs/ROADMAP.md` for full phase definitions.
 
@@ -99,3 +111,4 @@ See `docs/DECISIONS_NEEDED.md`. No decisions have been silently resolved.
 | Phases 1–3 | 2026-06-27 | Foundation, clarification, delegation, agenda, incubation |
 | Phase 4 | 2026-06-27 | Reference, area detail, inbox history |
 | Clarify + WaitingFor | 2026-06-27 | Bug fixes, project integration, delegation history |
+| Phase 5 | 2026-06-26 | Meeting capture, session notes, note clarify, pending badge |

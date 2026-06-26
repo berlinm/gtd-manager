@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}{{ session.meeting.title }} — {{ session.occurred_on|date:"N j, Y" }} — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:0.25rem">
+  <h1 style="margin:0">{{ session.meeting.title }}</h1>
+  <span style="color:var(--pico-muted-color)">{{ session.occurred_on|date:"N j, Y" }}</span>
+  {% if session.is_open %}
+  <span style="color:var(--pico-ins-color);font-size:0.85rem">● Open</span>
+  {% else %}
+  <span style="color:var(--pico-muted-color);font-size:0.85rem">Closed {{ session.closed_at|date:"N j, Y" }}</span>
+  {% endif %}
+</div>
+
+{% if session.is_open %}
+
+  {% if agenda_items %}
+  <section style="margin-bottom:1.5rem">
+    <h2>Agenda</h2>
+    <ul>
+      {% for item in agenda_items %}
+      <li>{{ item.title }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section style="margin-bottom:1.5rem">
+    <h2>Capture notes</h2>
+    <form id="note-capture-form"
+          hx-post="{% url 'meetings:quick_note' session.pk %}"
+          hx-target="#session-notes-list"
+          hx-swap="beforeend"
+          style="max-width:40rem;margin-bottom:1rem">
+      {% csrf_token %}
+      <div role="group">
+        <input type="text"
+               name="title"
+               placeholder="Note…"
+               autocomplete="off"
+               aria-label="Capture note">
+        <button type="submit">Add</button>
+      </div>
+    </form>
+
+    {% if notes %}
+    <ul id="session-notes-list">
+      {% for note in notes %}
+      <li id="note-{{ note.pk }}">{{ note.title }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <ul id="session-notes-list"></ul>
+    <p id="no-notes-msg" style="color:var(--pico-muted-color)">No notes yet.</p>
+    {% endif %}
+  </section>
+
+  <form method="post" action="{% url 'meetings:session_close' session.pk %}" style="margin-top:2rem">
+    {% csrf_token %}
+    <button type="submit" class="outline secondary">Close session</button>
+  </form>
+
+{% else %}
+
+  {% if unprocessed_notes %}
+  <section style="margin-bottom:1.5rem">
+    <h2>Notes to process ({{ unprocessed_notes|length }})</h2>
+    <table>
+      <tbody>
+        {% for note in unprocessed_notes %}
+        <tr>
+          <td>{{ note.title }}</td>
+          <td style="width:8rem;text-align:right">
+            <a href="{% url 'meetings:note_clarify' note.pk %}">Process →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% else %}
+  <p style="color:var(--pico-ins-color)">All notes processed.</p>
+  {% endif %}
+
+  {% if processed_notes %}
+  <section>
+    <h2>Processed notes</h2>
+    <table>
+      <tbody>
+        {% for note in processed_notes %}
+        <tr>
+          <td>{{ note.title }}</td>
+          <td style="color:var(--pico-muted-color);font-size:0.85rem">{{ note.get_disposition_display }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+
+{% endif %}
+
+<p style="margin-top:2rem">
+  <a href="{% url 'meetings:meeting_detail' session.meeting_id %}">← {{ session.meeting.title }}</a>
+</p>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('htmx:afterRequest', function (e) {
+    if (e.target.id === 'note-capture-form') {
+      var msg = document.getElementById('no-notes-msg');
+      if (msg) msg.remove();
+      e.target.reset();
+      e.target.querySelector('input[name=title]').focus();
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}New session — {{ meeting.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>New session — {{ meeting.title }}</h1>
+
+<form method="post" style="max-width:35rem">
+  {% csrf_token %}
+
+  <label for="{{ form.occurred_on.id_for_label }}">Date</label>
+  {{ form.occurred_on }}
+
+  <div class="grid">
+    <div>
+      <label for="{{ form.start_time.id_for_label }}">Start time <small>(optional)</small></label>
+      {{ form.start_time }}
+    </div>
+    <div>
+      <label for="{{ form.end_time.id_for_label }}">End time <small>(optional)</small></label>
+      {{ form.end_time }}
+    </div>
+  </div>
+
+  <label for="{{ form.notes.id_for_label }}">Session notes <small>(optional)</small></label>
+  {{ form.notes }}
+
+  {% if form.non_field_errors %}
+  <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+  {% endif %}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Start session</button>
+    <a href="{% url 'meetings:meeting_detail' meeting.pk %}" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}
