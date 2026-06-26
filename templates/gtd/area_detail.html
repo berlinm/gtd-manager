@@ -3,10 +3,9 @@
 {% block title %}{{ object.title }} — GTD Manager{% endblock %}
 
 {% block content %}
-<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:0.5rem">
-  <h1 style="margin:0">{{ object.title }}</h1>
-  <a href="{% url 'core:area_edit' object.pk %}" class="outline secondary" role="button"
-     style="font-size:0.85rem;padding:0.25rem 0.75rem">Edit</a>
+<div class="page-header">
+  <h1>{{ object.title }}</h1>
+  <a href="{% url 'core:area_edit' object.pk %}" class="outline secondary btn-sm" role="button">Edit</a>
 </div>
 {% if object.description %}<p>{{ object.description }}</p>{% endif %}
 
@@ -37,7 +36,7 @@
   {% for action in active_actions %}
   <li>
     <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-    {% if action.project %}<small> · {{ action.project.title }}</small>{% endif %}
+    {% if action.project %}<small class="muted"> · {{ action.project.title }}</small>{% endif %}
   </li>
   {% endfor %}
 </ul>
@@ -49,7 +48,7 @@
   {% for ref in references %}
   <li>
     <a href="{% url 'gtd:reference_detail' ref.pk %}">{{ ref.title }}</a>
-    {% for tag in ref.tags.all %}<small> · {{ tag.label }}</small>{% endfor %}
+    {% for tag in ref.tags.all %}<small class="muted"> · {{ tag.label }}</small>{% endfor %}
   </li>
   {% endfor %}
 </ul>

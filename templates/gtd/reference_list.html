@@ -3,9 +3,9 @@
 {% block title %}Reference — GTD Manager{% endblock %}
 
 {% block content %}
-<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
-  <h1 style="margin:0">Reference</h1>
-  <a href="{% url 'gtd:reference_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add</a>
+<div class="page-header">
+  <h1>Reference</h1>
+  <a href="{% url 'gtd:reference_add' %}" role="button" class="outline btn-sm">+ Add</a>
 </div>
 
 <form method="get" style="margin:1rem 0;max-width:30rem">
@@ -26,11 +26,11 @@
     {% for ref in references %}
     <tr>
       <td><a href="{% url 'gtd:reference_detail' ref.pk %}">{{ ref.title }}</a></td>
-      <td><small>{{ ref.area|default:"" }}</small></td>
+      <td><small class="muted">{{ ref.area|default:"" }}</small></td>
       <td>
-        <small>{% for tag in ref.tags.all %}{{ tag.label }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+        <small class="muted">{% for tag in ref.tags.all %}{{ tag.label }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
       </td>
-      <td><small>{{ ref.updated_at|date:"N j, Y" }}</small></td>
+      <td><small class="muted">{{ ref.updated_at|date:"N j, Y" }}</small></td>
     </tr>
     {% endfor %}
   </tbody>

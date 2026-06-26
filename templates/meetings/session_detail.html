@@ -3,13 +3,13 @@
 {% block title %}{{ session.meeting.title }} — {{ session.occurred_on|date:"N j, Y" }} — GTD Manager{% endblock %}
 
 {% block content %}
-<div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:0.25rem">
-  <h1 style="margin:0">{{ session.meeting.title }}</h1>
-  <span style="color:var(--pico-muted-color)">{{ session.occurred_on|date:"N j, Y" }}</span>
+<div class="page-header" style="margin-bottom:0.25rem">
+  <h1>{{ session.meeting.title }}</h1>
+  <span class="muted">{{ session.occurred_on|date:"N j, Y" }}</span>
   {% if session.is_open %}
   <span style="color:var(--pico-ins-color);font-size:0.85rem">● Open</span>
   {% else %}
-  <span style="color:var(--pico-muted-color);font-size:0.85rem">Closed {{ session.closed_at|date:"N j, Y" }}</span>
+  <span class="muted" style="font-size:0.85rem">Closed {{ session.closed_at|date:"N j, Y" }}</span>
   {% endif %}
 </div>
 
@@ -52,7 +52,7 @@
     </ul>
     {% else %}
     <ul id="session-notes-list"></ul>
-    <p id="no-notes-msg" style="color:var(--pico-muted-color)">No notes yet.</p>
+    <p id="no-notes-msg" class="muted">No notes yet.</p>
     {% endif %}
   </section>
 
@@ -91,7 +91,7 @@
         {% for note in processed_notes %}
         <tr>
           <td>{{ note.title }}</td>
-          <td style="color:var(--pico-muted-color);font-size:0.85rem">{{ note.get_disposition_display }}</td>
+          <td class="muted" style="font-size:0.85rem">{{ note.get_disposition_display }}</td>
         </tr>
         {% endfor %}
       </tbody>

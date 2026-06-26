@@ -12,7 +12,7 @@
     {% for project in projects_with_deadline %}
     <li>
       <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-      — <small>deadline {{ project.deadline|date:"N j, Y" }}</small>
+      — <small class="muted">deadline {{ project.deadline|date:"N j, Y" }}</small>
     </li>
     {% endfor %}
   </ul>
@@ -41,13 +41,13 @@
             <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:35 }}</a>
           {% endif %}
         </td>
-        <td><small>{% if action.scheduled_for %}{{ action.scheduled_for|date:"g:i a" }}{% endif %}</small></td>
-        <td><small>{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</small></td>
+        <td><small class="muted">{% if action.scheduled_for %}{{ action.scheduled_for|date:"g:i a" }}{% endif %}</small></td>
+        <td><small class="muted">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</small></td>
         <td style="white-space:nowrap">
           <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
             {% csrf_token %}
             <input type="hidden" name="next" value="{% url 'gtd:today' %}">
-            <button type="submit" class="outline" style="padding:0.2rem 0.6rem;font-size:0.8rem">Done</button>
+            <button type="submit" class="outline btn-xs">Done</button>
           </form>
         </td>
       </tr>
@@ -70,11 +70,10 @@
       {% for item in follow_ups_due %}
       <tr>
         <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
-        <td><small>{{ item.person }}</small></td>
-        <td><small>{{ item.follow_up_on|date:"N j" }}</small></td>
+        <td><small class="muted">{{ item.person }}</small></td>
+        <td><small class="muted">{{ item.follow_up_on|date:"N j" }}</small></td>
         <td>
-          <a href="{% url 'gtd:waiting_for_receive' item.pk %}" role="button" class="outline"
-             style="padding:0.2rem 0.6rem;font-size:0.8rem">Received</a>
+          <a href="{% url 'gtd:waiting_for_receive' item.pk %}" role="button" class="outline btn-xs">Received</a>
         </td>
       </tr>
       {% endfor %}

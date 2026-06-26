@@ -3,9 +3,9 @@
 {% block title %}Agenda — GTD Manager{% endblock %}
 
 {% block content %}
-<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
-  <h1 style="margin:0">Agenda</h1>
-  <a href="{% url 'gtd:agenda_item_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add item</a>
+<div class="page-header">
+  <h1>Agenda</h1>
+  <a href="{% url 'gtd:agenda_item_add' %}" role="button" class="outline btn-sm">+ Add item</a>
 </div>
 
 {% if not by_person and not by_meeting %}
@@ -26,13 +26,13 @@
     <li style="display:flex;align-items:baseline;gap:0.5rem">
       <span>
         <a href="{% url 'gtd:agenda_item_edit' item.pk %}">{{ item.title }}</a>
-        {% if item.body %}<br><small>{{ item.body|truncatechars:80 }}</small>{% endif %}
+        {% if item.body %}<br><small class="muted">{{ item.body|truncatechars:80 }}</small>{% endif %}
       </span>
       <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}" style="margin:0;flex-shrink:0">
         {% csrf_token %}
         <input type="hidden" name="next" value="/agenda/">
         <button type="submit" class="outline secondary"
-                style="padding:0.1rem 0.4rem;font-size:0.75rem">Raised</button>
+                style="padding:0.1rem 0.4rem;font-size:0.75rem;width:auto">Raised</button>
       </form>
     </li>
     {% endfor %}
@@ -55,13 +55,13 @@
     <li style="display:flex;align-items:baseline;gap:0.5rem">
       <span>
         <a href="{% url 'gtd:agenda_item_edit' item.pk %}">{{ item.title }}</a>
-        {% if item.body %}<br><small>{{ item.body|truncatechars:80 }}</small>{% endif %}
+        {% if item.body %}<br><small class="muted">{{ item.body|truncatechars:80 }}</small>{% endif %}
       </span>
       <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}" style="margin:0;flex-shrink:0">
         {% csrf_token %}
         <input type="hidden" name="next" value="/agenda/">
         <button type="submit" class="outline secondary"
-                style="padding:0.1rem 0.4rem;font-size:0.75rem">Raised</button>
+                style="padding:0.1rem 0.4rem;font-size:0.75rem;width:auto">Raised</button>
       </form>
     </li>
     {% endfor %}

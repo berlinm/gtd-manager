@@ -3,10 +3,9 @@
 {% block title %}{{ object.title }} — GTD Manager{% endblock %}
 
 {% block content %}
-<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:0.5rem">
-  <h1 style="margin:0">{{ object.title }}</h1>
-  <a href="{% url 'gtd:project_edit' object.pk %}" class="outline secondary" role="button"
-     style="font-size:0.85rem;padding:0.25rem 0.75rem">Edit</a>
+<div class="page-header">
+  <h1>{{ object.title }}</h1>
+  <a href="{% url 'gtd:project_edit' object.pk %}" class="outline secondary btn-sm" role="button">Edit</a>
 </div>
 
 <p>
@@ -27,24 +26,25 @@
 <p><mark>This project is stuck — no available next actions and no waiting-for items.</mark></p>
 {% endif %}
 
-<div style="display:flex;align-items:center;gap:1rem;margin-top:1.5rem">
-  <h2 style="margin:0">Actions</h2>
-  <a href="{% url 'gtd:action_add' %}?project={{ object.pk }}" role="button" class="outline"
-     style="font-size:0.85rem;padding:0.2rem 0.6rem">+ Add action</a>
+<div class="page-header" style="margin-top:1.5rem">
+  <h2>Actions</h2>
+  <a href="{% url 'gtd:action_add' %}?project={{ object.pk }}" role="button" class="outline btn-sm">+ Add action</a>
 </div>
 
 {% if available_actions %}
 <h3>Available now</h3>
 <ul>
   {% for action in available_actions %}
-  <li>
-    <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-    {% if action.deadline %}<small>· deadline {{ action.deadline|date:"N j" }}</small>{% endif %}
-    {% for c in action.contexts.all %}<small>{{ c.label }}</small>{% endfor %}
-    <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+  <li style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+    <span style="flex:1">
+      <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
+      {% if action.deadline %}<small class="muted">· deadline {{ action.deadline|date:"N j" }}</small>{% endif %}
+      {% for c in action.contexts.all %}<small class="muted">{{ c.label }}</small>{% endfor %}
+    </span>
+    <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="margin:0">
       {% csrf_token %}
       <input type="hidden" name="next" value="{% url 'gtd:project_detail' object.pk %}">
-      <button type="submit" class="outline" style="padding:0.1rem 0.5rem;font-size:0.8rem;margin-left:0.5rem">Done</button>
+      <button type="submit" class="outline btn-xs">Done</button>
     </form>
   </li>
   {% endfor %}
@@ -57,7 +57,7 @@
   {% for action in deferred_actions %}
   <li>
     <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-    <small>· available {{ action.defer_until|date:"N j" }}</small>
+    <small class="muted">· available {{ action.defer_until|date:"N j" }}</small>
   </li>
   {% endfor %}
 </ul>
@@ -69,7 +69,7 @@
   {% for action in scheduled_actions %}
   <li>
     <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-    <small>· {{ action.scheduled_for|date:"N j, g:i a" }}</small>
+    <small class="muted">· {{ action.scheduled_for|date:"N j, g:i a" }}</small>
   </li>
   {% endfor %}
 </ul>
@@ -85,8 +85,8 @@
   {% for wf in waiting_items %}
   <li>
     <a href="{% url 'gtd:waiting_for_edit' wf.pk %}">{{ wf.title }}</a>
-    <small>· {{ wf.person }}</small>
-    {% if wf.expected_by %}<small>· expected {{ wf.expected_by|date:"N j" }}</small>{% endif %}
+    <small class="muted">· {{ wf.person }}</small>
+    {% if wf.expected_by %}<small class="muted">· expected {{ wf.expected_by|date:"N j" }}</small>{% endif %}
   </li>
   {% endfor %}
 </ul>
@@ -98,9 +98,9 @@
   {% for wf in received_items %}
   <li>
     {{ wf.title }}
-    <small>· {{ wf.person }}</small>
-    {% if wf.completed_at %}<small>· {{ wf.completed_at|date:"N j, Y" }}</small>{% endif %}
-    {% if wf.result_notes %}<br><small style="color:var(--pico-muted-color)">{{ wf.result_notes }}</small>{% endif %}
+    <small class="muted">· {{ wf.person }}</small>
+    {% if wf.completed_at %}<small class="muted">· {{ wf.completed_at|date:"N j, Y" }}</small>{% endif %}
+    {% if wf.result_notes %}<br><small class="muted">{{ wf.result_notes }}</small>{% endif %}
   </li>
   {% endfor %}
 </ul>

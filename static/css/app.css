@@ -32,28 +32,57 @@ main a:not([role="button"]) {
   text-decoration: none;
 }
 
-/* Bordered pill for all links inside table cells and list items */
-main table td a:not([role="button"]),
-main ul li a:not([role="button"]),
+/* --- Utility classes --- */
+
+/* Page-level heading row: h1/h2 + action buttons */
+.page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.page-header h1,
+.page-header h2 { margin: 0; }
+
+/* Sized action buttons */
+.btn-sm { font-size: 0.85rem; padding: 0.25rem 0.75rem; }
+.btn-xs { font-size: 0.8rem;  padding: 0.2rem  0.6rem;  width: auto; }
+
+/* Muted text */
+.muted { color: var(--pico-muted-color); }
+
+/* --- Django framework messages --- */
+.msg {
+  border-left: 3px solid var(--pico-muted-border-color);
+  padding: 0.35rem 0 0.35rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.msg-error, .msg-warning {
+  border-color: var(--pico-del-color);
+  color: var(--pico-del-color);
+}
+.msg-success {
+  border-color: var(--pico-ins-color);
+  color: var(--pico-ins-color);
+}
+
+/* --- Chip / pill link ---
+   Applied explicitly to secondary utility links (History, Edit, Process, etc.)
+   Do NOT apply via a blanket selector — add class="chip" where needed. */
 a.chip {
   display: inline-block;
   border: 1px solid var(--pico-muted-border-color);
   border-radius: 0.3rem;
   padding: 0.1rem 0.5rem;
   line-height: 1.5;
+  font-size: 0.85rem;
+  white-space: nowrap;
   text-decoration: none;
   color: var(--pico-color);
 }
-main table td a:not([role="button"]):hover,
-main ul li a:not([role="button"]):hover,
 a.chip:hover {
   border-color: var(--pico-primary);
   color: var(--pico-primary);
   text-decoration: none;
-}
-
-/* .chip used standalone (outside tables/lists) stays a bit smaller */
-a.chip {
-  font-size: 0.85rem;
-  white-space: nowrap;
 }

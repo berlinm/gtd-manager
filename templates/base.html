@@ -16,25 +16,56 @@
 </head>
 <body>
 
+{% with view=request.resolver_match %}
 <header class="container-fluid">
   <nav>
     <ul>
       <li><strong><a href="{% url 'dashboard' %}" class="secondary">GTD Manager</a></strong></li>
     </ul>
     <ul>
-      <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
       <li>
-        <a href="{% url 'capture:inbox' %}">Inbox (<span id="nav-inbox-count">{{ inbox_count }}</span>)</a>
+        <a href="{% url 'dashboard' %}"
+           {% if view.url_name == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
       </li>
-      <li><a href="{% url 'gtd:next_actions' %}">Actions</a></li>
-      <li><a href="{% url 'gtd:today' %}">Today</a></li>
-      <li><a href="{% url 'gtd:waiting_for_list' %}">Waiting</a></li>
-      <li><a href="{% url 'gtd:agenda_list' %}">Agenda</a></li>
-      <li><a href="{% url 'gtd:someday_list' %}">Someday</a></li>
-      <li><a href="{% url 'gtd:projects' %}">Projects</a></li>
-      <li><a href="{% url 'gtd:reference_list' %}">Reference</a></li>
       <li>
-        <a href="{% url 'meetings:meeting_list' %}">Meetings{% if pending_notes_count %} (<span id="nav-notes-count">{{ pending_notes_count }}</span>){% endif %}</a>
+        <a href="{% url 'capture:inbox' %}"
+           {% if view.app_name == 'capture' %}aria-current="page"{% endif %}>
+          Inbox (<span id="nav-inbox-count">{{ inbox_count }}</span>)
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:next_actions' %}"
+           {% if view.app_name == 'gtd' and 'action' in view.url_name %}aria-current="page"{% endif %}>Actions</a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:today' %}"
+           {% if view.url_name == 'today' %}aria-current="page"{% endif %}>Today</a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:waiting_for_list' %}"
+           {% if view.app_name == 'gtd' and 'waiting_for' in view.url_name %}aria-current="page"{% endif %}>Waiting</a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:agenda_list' %}"
+           {% if view.app_name == 'gtd' and 'agenda' in view.url_name %}aria-current="page"{% endif %}>Agenda</a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:someday_list' %}"
+           {% if view.app_name == 'gtd' and 'someday' in view.url_name %}aria-current="page"{% endif %}>Someday</a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:projects' %}"
+           {% if view.app_name == 'gtd' and 'project' in view.url_name %}aria-current="page"{% endif %}>Projects</a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:reference_list' %}"
+           {% if view.app_name == 'gtd' and 'reference' in view.url_name %}aria-current="page"{% endif %}>Reference</a>
+      </li>
+      <li>
+        <a href="{% url 'meetings:meeting_list' %}"
+           {% if view.app_name == 'meetings' %}aria-current="page"{% endif %}>
+          Meetings{% if pending_notes_count %} (<span id="nav-notes-count">{{ pending_notes_count }}</span>){% endif %}
+        </a>
       </li>
     </ul>
     <ul>
@@ -75,11 +106,14 @@
     <div id="capture-feedback" aria-live="polite"></div>
   </div>
 </header>
+{% endwith %}
 
 <main class="container">
   {% if messages %}
     {% for message in messages %}
-      <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+      <p class="msg {% if 'error' in message.tags or 'warning' in message.tags %}msg-error{% elif 'success' in message.tags %}msg-success{% endif %}">
+        {{ message }}
+      </p>
     {% endfor %}
   {% endif %}
 
