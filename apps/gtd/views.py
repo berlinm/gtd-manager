@@ -217,6 +217,9 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
         ctx['waiting_items'] = WaitingFor.objects.filter(
             project=project, status=WaitingFor.Status.WAITING
         ).select_related('person')
+        ctx['received_items'] = WaitingFor.objects.filter(
+            project=project, status=WaitingFor.Status.RECEIVED
+        ).select_related('person').order_by('-completed_at')
         ctx['agenda_items'] = AgendaItem.objects.filter(
             Q(person__waitingfor__project=project) | Q(meeting__isnull=False)
         ).distinct()
@@ -277,6 +280,8 @@ class WaitingForReceiveView(LoginRequiredMixin, View):
             item.status = WaitingFor.Status.RECEIVED
             item.completed_at = timezone.now()
             item.save()
+            if item.project_id:
+                return redirect('gtd:project_detail', pk=item.project_id)
             return redirect('gtd:waiting_for_list')
         return render(request, 'gtd/waiting_for_receive.html', {'item': item, 'form': form})
 
@@ -300,6 +305,19 @@ class WaitingForFollowUpView(LoginRequiredMixin, View):
             item.follow_up_on = new_date
         item.save()
         return redirect('gtd:waiting_for_list')
+
+
+class WaitingForHistoryView(LoginRequiredMixin, ListView):
+    template_name = 'gtd/waiting_for_history.html'
+    context_object_name = 'history_items'
+    paginate_by = 50
+
+    def get_queryset(self):
+        return (
+            WaitingFor.objects.exclude(status=WaitingFor.Status.WAITING)
+            .select_related('person', 'project')
+            .order_by('-completed_at')
+        )
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Waiting For — History — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
+  <h1 style="margin:0">Waiting For — History</h1>
+</div>
+
+{% if history_items %}
+<table>
+  <thead>
+    <tr>
+      <th>What</th>
+      <th>Who</th>
+      <th>Project</th>
+      <th>Status</th>
+      <th>Completed</th>
+      <th>Result notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in history_items %}
+    <tr>
+      <td>{{ item.title }}</td>
+      <td><small>{{ item.person }}</small></td>
+      <td>
+        {% if item.project %}
+          <a href="{% url 'gtd:project_detail' item.project.pk %}"><small>{{ item.project.title|truncatechars:30 }}</small></a>
+        {% endif %}
+      </td>
+      <td><small>{{ item.get_status_display }}</small></td>
+      <td><small>{% if item.completed_at %}{{ item.completed_at|date:"N j, Y" }}{% endif %}</small></td>
+      <td>{% if item.result_notes %}<small>{{ item.result_notes }}</small>{% else %}<small style="color:var(--pico-muted-color)">—</small>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<nav style="margin-top:1rem">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">← Previous</a>
+  {% endif %}
+  <span style="margin:0 1rem">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next →</a>
+  {% endif %}
+</nav>
+{% endif %}
+
+{% else %}
+<p>No received or cancelled items yet.</p>
+{% endif %}
+
+<p style="margin-top:1.5rem"><a href="{% url 'gtd:waiting_for_list' %}" class="secondary">← Waiting For</a></p>
+{% endblock %}

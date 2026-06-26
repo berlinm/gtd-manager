@@ -94,7 +94,7 @@ class WaitingForWorkflowTests(TestCase):
 
     def test_receive_marks_item_received(self):
         wf = WaitingFor.objects.create(title='Report from Dave', person=self.person)
-        self.client.post(
+        response = self.client.post(
             reverse('gtd:waiting_for_receive', kwargs={'pk': wf.pk}),
             {'result_notes': 'Got it, looks good.'},
         )
@@ -102,6 +102,54 @@ class WaitingForWorkflowTests(TestCase):
         self.assertEqual(wf.status, WaitingFor.Status.RECEIVED)
         self.assertIsNotNone(wf.completed_at)
         self.assertEqual(wf.result_notes, 'Got it, looks good.')
+        self.assertRedirects(response, reverse('gtd:waiting_for_list'))
+
+    def test_receive_redirects_to_project_when_linked(self):
+        project = Project.objects.create(title='Big report')
+        wf = WaitingFor.objects.create(
+            title='Report from Dave', person=self.person, project=project
+        )
+        response = self.client.post(
+            reverse('gtd:waiting_for_receive', kwargs={'pk': wf.pk}),
+            {'result_notes': ''},
+        )
+        self.assertRedirects(
+            response,
+            reverse('gtd:project_detail', kwargs={'pk': project.pk}),
+        )
+
+    def test_history_shows_received_items(self):
+        WaitingFor.objects.create(
+            title='Still waiting', person=self.person,
+        )
+        WaitingFor.objects.create(
+            title='Done delegation', person=self.person,
+            status=WaitingFor.Status.RECEIVED,
+            completed_at=timezone.now(),
+            result_notes='Came back fine.',
+        )
+        response = self.client.get(reverse('gtd:waiting_for_history'))
+        self.assertContains(response, 'Done delegation')
+        self.assertContains(response, 'Came back fine.')
+        self.assertNotContains(response, 'Still waiting')
+
+    def test_history_link_on_waiting_list(self):
+        response = self.client.get(reverse('gtd:waiting_for_list'))
+        self.assertContains(response, reverse('gtd:waiting_for_history'))
+
+    def test_project_detail_shows_received_items(self):
+        project = Project.objects.create(title='Alpha')
+        WaitingFor.objects.create(
+            title='Got the report', person=self.person, project=project,
+            status=WaitingFor.Status.RECEIVED,
+            completed_at=timezone.now(),
+            result_notes='All good.',
+        )
+        response = self.client.get(
+            reverse('gtd:project_detail', kwargs={'pk': project.pk})
+        )
+        self.assertContains(response, 'Got the report')
+        self.assertContains(response, 'All good.')
 
     def test_cancel_marks_item_cancelled(self):
         wf = WaitingFor.objects.create(title='Report from Dave', person=self.person)

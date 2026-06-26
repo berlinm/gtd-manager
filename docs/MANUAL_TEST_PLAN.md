@@ -39,36 +39,44 @@ Each section lists numbered steps and the expected outcome in **bold**.
 For each sub-test: capture a fresh item first, then click **Process**.
 
 ### 3a. Trash
-1. Expand "No — trash it". Click **Trash**.
+1. Click **Trash it**.
    **→ Redirected to Inbox. Item is gone from the list.**
 
 ### 3b. Done immediately
-1. Expand "Yes — do it now". Click **Done — mark complete**.
+1. Click **Done immediately**.
    **→ Redirected to Inbox. Item is gone.**
 
 ### 3c. Someday / Maybe
-1. Expand "No — someday/maybe". Click **Add to Someday/Maybe**.
+1. Click **Someday / maybe**.
    **→ Redirected to Inbox. Item removed from inbox.**
 2. Navigate to **Someday**. **→ The item appears in the list.**
 
 ### 3d. Reference
-1. Expand "No — file as reference". Click **Save as Reference**.
-   **→ Redirected to Inbox. Item removed.**
+1. Click **Save as reference**.
+   **→ Redirected to the new reference detail page. Item removed from inbox.**
 
 ### 3e. Delegate (validation)
-1. Expand "Yes — delegate it". Leave the name field empty. Click **Create Waiting-For item**.
-   **→ Error message appears. The delegate section remains open. Item is NOT processed.**
+1. Leave the name field empty in the Delegate fieldset. Click **Create Waiting-For**.
+   **→ Error message appears. Item is NOT processed.**
 
 ### 3f. Delegate (success)
-1. Expand "Yes — delegate it". Type a name (e.g. "Alice"). Click **Create Waiting-For item**.
-   **→ Redirected to the Waiting For list. A new waiting-for item appears with title from the inbox item and person "Alice".**
+1. Type a name (e.g. "Alice") in the Delegate fieldset. Optionally select a project. Click **Create Waiting-For**.
+   **→ Redirected to the Waiting For list. A new waiting-for item appears with title from the inbox item, person "Alice", and the chosen project (if any).**
 
 ### 3g. Action
-1. Expand "Yes — single next action". Edit the title if you like. Click **Create Next Action**.
+1. Edit the title in the "Single next action" fieldset if you like. Click **Create Action**.
    **→ Redirected to the Actions list. The new action appears.**
 
+### 3g2. Add action to existing project
+1. First ensure at least one active project exists (create one via **Projects → + Add project** if needed).
+2. Capture a fresh inbox item and click **Process**.
+3. In the "Add action to an existing project" fieldset, select the project from the dropdown. Edit the action title if needed. Click **Add to Project**.
+   **→ Redirected to that project's detail page. The new action appears under the project.**
+4. Process another inbox item. Leave the project dropdown on "— select a project —". Click **Add to Project**.
+   **→ Error message appears. Item is NOT processed.**
+
 ### 3h. Project
-1. Expand "Yes — this is a project". Fill in a project title and first action. Click **Create Project**.
+1. Fill in a project title and first action in the "Project" fieldset. Click **Create Project**.
    **→ Redirected directly to the new project's detail page. The project title and first action are visible.**
 2. Leave the first action blank. Click **Create Project**.
    **→ Same redirect. Project detail page shows "No actions yet."**
@@ -140,13 +148,21 @@ For each sub-test: capture a fresh item first, then click **Process**.
 
 ---
 
-## 9. Waiting For (`/waiting/`)
+## 9. Waiting For (`/waiting/`) and history
 
 1. Navigate to **Waiting**. Items with `follow_up_on` ≤ today are **highlighted**.
-2. Click **Received** on an item. Optionally add result notes.
-   **→ Redirected to Waiting list. The item is gone (it's no longer "waiting").**
-3. Edit a waiting-for item. Change the follow-up date to tomorrow. Save.
+2. Click **Received** on an item that is NOT linked to a project. Optionally add result notes.
+   **→ Redirected to Waiting list. The item is gone.**
+3. Click **Received** on an item that IS linked to a project.
+   **→ Redirected to that project's detail page** (so you can immediately add a follow-up action if needed).
+4. Edit a waiting-for item. Assign it to a project using the **Project** dropdown. Save.
+   **→ Item appears in the project's detail page under "Waiting for".**
+5. Edit a waiting-for item. Change the follow-up date to tomorrow. Save.
    **→ Highlight is gone.**
+6. Click **History** on the Waiting For page.
+   **→ All received and cancelled items are listed with their result notes, person, project (if any), and completion date.**
+7. Open a project that had a delegation received. Go to the project detail.
+   **→ A "Received" section appears below "Waiting for", showing the item, person, date, and result notes.**
 
 ### 9a. Delegate from an action
 1. Open any active action via **Edit**.

@@ -26,9 +26,18 @@ class QuickCaptureView(LoginRequiredMixin, View):
 
 
 class ClarifyView(LoginRequiredMixin, View):
+    def _ctx(self, item, **extra):
+        return {
+            'item': item,
+            'active_projects': Project.objects.filter(
+                status=Project.Status.ACTIVE
+            ).order_by('title'),
+            **extra,
+        }
+
     def get(self, request, pk):
         item = get_object_or_404(InboxItem, pk=pk, processed_at__isnull=True)
-        return render(request, 'capture/clarify.html', {'item': item})
+        return render(request, 'capture/clarify.html', self._ctx(item))
 
     def post(self, request, pk):
         item = get_object_or_404(InboxItem, pk=pk, processed_at__isnull=True)
@@ -61,16 +70,24 @@ class ClarifyView(LoginRequiredMixin, View):
             from apps.gtd.models import Person
             person_name = request.POST.get('person_name', '').strip()
             if not person_name:
-                return render(request, 'capture/clarify.html', {
-                    'item': item,
-                    'error': 'Enter the name of the person you are waiting on.',
-                    'open_delegate': True,
-                })
+                return render(request, 'capture/clarify.html', self._ctx(
+                    item,
+                    error='Enter the name of the person you are waiting on.',
+                    open_delegate=True,
+                ))
             person, _ = Person.objects.get_or_create(name=person_name)
+            delegate_project = None
+            delegate_project_id = request.POST.get('delegate_project_id', '').strip()
+            if delegate_project_id:
+                try:
+                    delegate_project = Project.objects.get(pk=delegate_project_id)
+                except (Project.DoesNotExist, ValueError):
+                    pass
             created_object = WaitingFor.objects.create(
                 title=item.title,
                 body=item.body,
                 person=person,
+                project=delegate_project,
             )
             item.disposition = InboxItem.Disposition.DELEGATED
 
@@ -80,6 +97,24 @@ class ClarifyView(LoginRequiredMixin, View):
                 body=item.body,
             )
             item.disposition = InboxItem.Disposition.ACTION_CREATED
+
+        elif disposition == 'add_to_project':
+            project_id = request.POST.get('add_project_id', '').strip()
+            action_title = request.POST.get('add_project_action_title', item.title).strip() or item.title
+            try:
+                project = Project.objects.get(pk=project_id, status=Project.Status.ACTIVE)
+            except (Project.DoesNotExist, ValueError):
+                return render(request, 'capture/clarify.html', self._ctx(
+                    item,
+                    error='Select an active project.',
+                    open_add_to_project=True,
+                ))
+            created_object = NextAction.objects.create(
+                title=action_title,
+                body=item.body,
+                project=project,
+            )
+            item.disposition = InboxItem.Disposition.ACTION_ADDED_TO_PROJECT
 
         elif disposition == 'project':
             project_title = request.POST.get('project_title', item.title).strip() or item.title
@@ -94,11 +129,10 @@ class ClarifyView(LoginRequiredMixin, View):
             item.disposition = InboxItem.Disposition.PROJECT_CREATED
 
         else:
-            # Unknown disposition — return to clarify page.
-            return render(request, 'capture/clarify.html', {
-                'item': item,
-                'error': 'Please choose a destination.',
-            })
+            return render(request, 'capture/clarify.html', self._ctx(
+                item,
+                error='Please choose a destination.',
+            ))
 
         item.processed_at = now
         if created_object is not None:
@@ -109,6 +143,8 @@ class ClarifyView(LoginRequiredMixin, View):
 
         if disposition == 'project' and created_object is not None:
             return redirect('gtd:project_detail', pk=created_object.pk)
+        if disposition == 'add_to_project' and created_object is not None:
+            return redirect('gtd:project_detail', pk=created_object.project_id)
         if disposition == 'action' and created_object is not None:
             return redirect('gtd:next_actions')
         if disposition == 'delegate' and created_object is not None:

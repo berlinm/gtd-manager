@@ -20,6 +20,7 @@ urlpatterns = [
     path('projects/<int:pk>/edit/', views.ProjectUpdateView.as_view(), name='project_edit'),
     # Waiting For
     path('waiting/', views.WaitingForListView.as_view(), name='waiting_for_list'),
+    path('waiting/history/', views.WaitingForHistoryView.as_view(), name='waiting_for_history'),
     path('waiting/add/', views.WaitingForCreateView.as_view(), name='waiting_for_add'),
     path('waiting/<int:pk>/edit/', views.WaitingForUpdateView.as_view(), name='waiting_for_edit'),
     path('waiting/<int:pk>/receive/', views.WaitingForReceiveView.as_view(), name='waiting_for_receive'),

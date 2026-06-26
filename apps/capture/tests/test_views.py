@@ -74,6 +74,17 @@ class ClarifyViewTests(TestCase):
         self.assertEqual(wf.person.name, 'Alice')
         self.assertEqual(wf.status, WaitingFor.Status.WAITING)
 
+    def test_delegate_links_project_when_provided(self):
+        project = Project.objects.create(title='Alpha')
+        url = reverse('capture:clarify', kwargs={'pk': self.item.pk})
+        self.client.post(url, {
+            'disposition': 'delegate',
+            'person_name': 'Alice',
+            'delegate_project_id': project.pk,
+        })
+        wf = WaitingFor.objects.get()
+        self.assertEqual(wf.project, project)
+
     def test_delegate_reuses_existing_person(self):
         from apps.gtd.models import Person
         existing = Person.objects.create(name='Alice')
@@ -130,6 +141,49 @@ class ClarifyViewTests(TestCase):
         })
         self.assertEqual(Project.objects.count(), 1)
         self.assertEqual(NextAction.objects.count(), 0)
+
+    # --- add to existing project ---
+
+    def test_add_to_project_creates_action_linked_to_project(self):
+        project = Project.objects.create(title='Kitchen')
+        url = reverse('capture:clarify', kwargs={'pk': self.item.pk})
+        response = self.client.post(url, {
+            'disposition': 'add_to_project',
+            'add_project_id': project.pk,
+            'add_project_action_title': 'Buy milk',
+        })
+        self.assertRedirects(
+            response,
+            reverse('gtd:project_detail', kwargs={'pk': project.pk}),
+        )
+        action = NextAction.objects.get(project=project)
+        self.assertEqual(action.title, 'Buy milk')
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.disposition, InboxItem.Disposition.ACTION_ADDED_TO_PROJECT)
+
+    def test_add_to_project_without_project_shows_error(self):
+        url = reverse('capture:clarify', kwargs={'pk': self.item.pk})
+        response = self.client.post(url, {
+            'disposition': 'add_to_project',
+            'add_project_id': '',
+            'add_project_action_title': 'Buy milk',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Select an active project')
+        self.item.refresh_from_db()
+        self.assertIsNone(self.item.processed_at)
+
+    def test_add_to_project_shows_active_projects_in_context(self):
+        Project.objects.create(title='Alpha')
+        Project.objects.create(title='Beta', status=Project.Status.ON_HOLD,
+                               on_hold_reason='paused')
+        response = self.client.get(
+            reverse('capture:clarify', kwargs={'pk': self.item.pk})
+        )
+        projects = list(response.context['active_projects'])
+        titles = [p.title for p in projects]
+        self.assertIn('Alpha', titles)
+        self.assertNotIn('Beta', titles)
 
     # --- someday ---
 

@@ -92,5 +92,19 @@
 </ul>
 {% endif %}
 
+{% if received_items %}
+<h2>Received</h2>
+<ul>
+  {% for wf in received_items %}
+  <li>
+    {{ wf.title }}
+    <small>· {{ wf.person }}</small>
+    {% if wf.completed_at %}<small>· {{ wf.completed_at|date:"N j, Y" }}</small>{% endif %}
+    {% if wf.result_notes %}<br><small style="color:var(--pico-muted-color)">{{ wf.result_notes }}</small>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
 <p style="margin-top:2rem"><a href="{% url 'gtd:projects' %}" class="secondary">← Projects</a></p>
 {% endblock %}

@@ -15,6 +15,7 @@ class InboxItem(models.Model):
         PROJECT_CREATED = 'project_created', 'Project created'
         SOMEDAY_CREATED = 'someday_created', 'Someday/maybe created'
         REFERENCE_CREATED = 'reference_created', 'Reference created'
+        ACTION_ADDED_TO_PROJECT = 'action_added_to_project', 'Action added to project'
 
     title = models.CharField(max_length=500)
     body = models.TextField(blank=True)
