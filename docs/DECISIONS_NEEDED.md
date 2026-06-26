@@ -18,7 +18,7 @@ phases. Do not silently resolve these — record the decision here when it is ma
 **Impact:** Template structure throughout the project. Must be decided before
 the first template is written.
 
-**Status:** Unresolved
+**Status:** Resolved — see decision log (Pico CSS 2.0.6, vendored to `static/css/`)
 
 ---
 
@@ -34,7 +34,7 @@ the first template is written.
 **Impact:** Template and partial structure throughout Phases 1–6. Must be
 decided before the first template is written.
 
-**Status:** Unresolved
+**Status:** Resolved — see decision log (htmx 2.0.3, vendored to `static/js/`)
 
 ---
 
@@ -49,7 +49,7 @@ decided before the first template is written.
 
 **Impact:** `NextAction` model field type; Today view display.
 
-**Status:** Unresolved
+**Status:** Resolved — see decision log (DateTimeField)
 
 ---
 
@@ -62,7 +62,7 @@ decided before the first template is written.
 
 **Impact:** `Reference` model; reference detail template.
 
-**Status:** Unresolved
+**Status:** Resolved — see decision log (Markdown via mistune 3.0.2, vendored)
 
 ---
 
@@ -97,7 +97,7 @@ any item's GTD classification.
 
 **Impact:** `Project` model; project list and review queries.
 
-**Status:** Unresolved
+**Status:** Resolved — see decision log (computed annotation)
 
 ---
 
@@ -191,7 +191,7 @@ prefer a different backend, this decision should be revisited.
 **Impact:** Password-hashing algorithm defaults; LTS support window; any ORM
 features used. Must be resolved before wheelhouse generation begins.
 
-**Status:** TBD
+**Status:** Resolved — see decision log (Django 5.2)
 
 ---
 
@@ -232,8 +232,9 @@ must be consistent across all entities (Project, NextAction, WaitingFor).
 
 | Decision | Resolved | Value | Notes |
 |---|---|---|---|
-| CSS approach | 2026-06-27 | Vendored classless CSS | Pico CSS or equivalent; single file in `static/css/`; committed to repo |
-| JavaScript strategy | 2026-06-27 | Vendored htmx | `htmx.min.js` in `static/js/`; committed to repo; no build step |
-| `scheduled_for` precision | 2026-06-27 | DateTimeField | Supports time-specific actions; timezone handling required in views |
-| Reference body format | 2026-06-27 | Markdown with rendering | One vendored Python library (mistune or python-markdown); add to requirements.txt |
+| CSS approach | 2026-06-27 | Vendored classless CSS | Pico CSS 2.0.6; `static/css/pico.min.css`; committed to repo |
+| JavaScript strategy | 2026-06-27 | Vendored htmx | htmx 2.0.3; `static/js/htmx.min.js`; committed to repo; no build step |
+| `scheduled_for` precision | 2026-06-27 | DateTimeField | Supports time-specific actions; timezone handling in views |
+| Reference body format | 2026-06-27 | Markdown with rendering | mistune 3.0.2 vendored; `gtd_tags.markdown` template filter |
 | `last_activity_at` strategy | 2026-06-27 | Computed annotation | `Greatest(Max(...))` queryset annotation on demand; no stored field |
+| Django version | 2026-06-27 | Django 5.2 | LTS release; in use since Phase 1 |

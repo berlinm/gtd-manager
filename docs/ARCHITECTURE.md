@@ -7,7 +7,7 @@
 | Language | Python | See ADR 001 |
 | Framework | Django | See ADR 001 |
 | UI rendering | Server-side HTML | See ADR 003 |
-| JavaScript | Minimal (strategy TBD) | See ADR 003 |
+| JavaScript | Vendored htmx 2.0.3 | See ADR 003 and section 4 |
 | Database | SQLite | See ADR 002 |
 | Architecture | Monolithic | See ADR 001 |
 | Auth | Django built-in | Single-user; no external IdP needed |

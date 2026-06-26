@@ -85,6 +85,32 @@ Do not silently resolve these; see `docs/DECISIONS_NEEDED.md`:
 - Django version
 - Existing data import path
 
+## Living documentation
+
+Keep these files current as implementation progresses. Update them in the **same commit** as the code they describe — never defer documentation.
+
+### Every feature or workflow added
+- **`docs/MANUAL_TEST_PLAN.md`** — add a numbered section covering the happy path and key edge cases. No feature ships without a test plan section. This is a standing requirement.
+
+### Every phase completed, or significant capability added
+- **`docs/PROJECT_STATUS.md`** — update the phase status table, the "What is working" inventory, and "Next intended work". Reflect the actual running app, not the roadmap plan.
+
+### Every implementation decision (technology choice, field type, library, pattern)
+- **`docs/DECISIONS_NEEDED.md`** — mark the item's `Status:` line as `Resolved — see decision log` and append a row to the Decision Log table at the bottom with the date and value chosen. Never implement a decision without recording it. The log is the audit trail.
+
+### When actual code structure diverges from the docs
+- **`docs/ARCHITECTURE.md`** — update the technology table (section 1), app list (section 2), or page inventory (section 3) if the real code differs. The table row "JavaScript | Minimal (strategy TBD)" should have been updated when htmx was adopted.
+
+### Domain model changes (rare)
+- **`docs/GTD_DOMAIN_MODEL.md`** — update only when an entity, field, or validation rule genuinely changes. Treat this as the authoritative source; change it deliberately and update the GTD domain rules section of this file if affected.
+
+### Documents that must NOT be routinely edited
+- `docs/PRODUCT_REQUIREMENTS.md` — stable scope definition; change only if requirements change.
+- `docs/USER_WORKFLOWS.md` — stable workflow descriptions; change only if a workflow changes.
+- `docs/SECURITY.md` / `docs/AIR_GAP_DEPLOYMENT.md` — change only if security or deployment approach changes.
+- `docs/adr/*.md` — ADRs are immutable once written; write a new ADR rather than amending an existing one.
+- `docs/ROADMAP.md` — the phased plan; do not mark phases complete here; use `docs/PROJECT_STATUS.md` for current state.
+
 ## Code conventions
 
 - No comments unless the WHY is non-obvious.
