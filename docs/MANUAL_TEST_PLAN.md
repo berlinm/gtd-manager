@@ -19,8 +19,8 @@ Each section lists numbered steps and the expected outcome in **bold**.
    **→ Same result.**
 3. Check the Inbox count in the nav updates without a page reload.
    **→ The number in `Inbox (N)` increases by one each time.**
-4. Capture an item, then reload the page.
-   **→ The captured item is present in the inbox list.**
+4. Capture an item, then navigate to **Inbox** via the nav link.
+   **→ The captured item appears in the inbox table.**
 
 ---
 
