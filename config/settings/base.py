@@ -81,6 +81,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+BACKUP_DIR = BASE_DIR / 'backups'
+
 # Authentication
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'

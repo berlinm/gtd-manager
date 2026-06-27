@@ -144,6 +144,12 @@
           Review history
         </a>
       </li>
+      <li>
+        <a href="{% url 'core:settings' %}"
+           {% if view.url_name == 'settings' %}aria-current="page"{% endif %}>
+          Settings
+        </a>
+      </li>
     </ul>
     <hr>
     <ul>
@@ -151,7 +157,7 @@
         <button id="theme-toggle" class="outline secondary"
                 style="width:100%;text-align:left"
                 title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
-          <span id="theme-icon">☀</span> Toggle theme
+          <span id="theme-icon">☀</span>
         </button>
       </li>
       <li>

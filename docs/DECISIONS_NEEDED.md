@@ -1,4 +1,4 @@
-# Decisions Needed
+﻿# Decisions Needed
 
 Unresolved decisions that must be made before or during specific implementation
 phases. Do not silently resolve these — record the decision here when it is made.
@@ -128,7 +128,7 @@ header must be adjusted.
 
 **Impact:** Operational documentation; Phase 7 deliverable.
 
-**Status:** Unresolved
+**Status:** Resolved — see decision log (in-application trigger: Settings page "Backup now" button)
 
 ---
 
@@ -143,7 +143,7 @@ What needs to be known:
 
 **Impact:** `ALLOWED_HOSTS`; WSGI server choice; security headers.
 
-**Status:** TBD — target operating system not yet known
+**Status:** Resolved — see decision log (Windows 10 PC workstation; localhost only; no reverse proxy; Windows Task Scheduler or NSSM for service management)
 
 ---
 
@@ -155,7 +155,7 @@ What needs to be known:
 
 **Impact:** Wheelhouse contents; deployment procedure documentation.
 
-**Status:** TBD — depends on deployment topology
+**Status:** Resolved — see decision log (waitress; gunicorn and uWSGI do not support Windows)
 
 ---
 
@@ -170,7 +170,7 @@ What needs to be known:
 
 **Impact:** `SESSION_COOKIE_SECURE`; certificate management.
 
-**Status:** TBD — depends on deployment topology
+**Status:** Resolved — see decision log (plain HTTP on 127.0.0.1; single-machine access only; SESSION_COOKIE_SECURE remains False)
 
 ---
 
@@ -180,7 +180,7 @@ Django's database-backed session store is the default and is appropriate for
 a single-user application. If the deployment topology introduces a reason to
 prefer a different backend, this decision should be revisited.
 
-**Status:** Defaulting to database-backed; confirm when topology is known
+**Status:** Resolved — see decision log (database-backed; confirmed for Windows 10 single-user deployment)
 
 ---
 
@@ -239,3 +239,8 @@ must be consistent across all entities (Project, NextAction, WaitingFor).
 | `last_activity_at` strategy | 2026-06-27 | Computed annotation | `Greatest(Max(...))` queryset annotation on demand; no stored field |
 | Django version | 2026-06-27 | Django 5.2 | LTS release; in use since Phase 1 |
 | DailyReview focus list storage | 2026-06-27 | Django session store | `request.session['gtd_focus_pks']` list of PKs; cleared explicitly or on session expiry; no GTD classification altered |
+| Backup invocation | 2026-06-27 | In-application trigger | Settings page "Backup now" button; `manage.py backupdb` also available |
+| Deployment topology | 2026-06-27 | Windows 10 PC workstation | Localhost only; 127.0.0.1; no reverse proxy; NSSM or Task Scheduler for service |
+| Production WSGI server | 2026-06-27 | waitress | Pure-Python; Windows-compatible; gunicorn/uWSGI excluded (no Windows support) |
+| HTTPS vs plain HTTP | 2026-06-27 | Plain HTTP on 127.0.0.1 | Single-machine only; SESSION_COOKIE_SECURE = False |
+| Session store backend | 2026-06-27 | Database-backed (default) | Appropriate for single-user; no topology reason to change |

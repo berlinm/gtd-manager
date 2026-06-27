@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Settings — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Settings</h1>
+
+<section>
+  <h2>Backup</h2>
+  <p>
+    {% if last_backup %}
+      Last backup: <strong>{{ last_backup.name }}</strong>
+      ({{ backup_count }} backup{{ backup_count|pluralize }} in <code>{{ backup_dir }}</code>)
+    {% else %}
+      No backups yet. Backups are saved to <code>{{ backup_dir }}</code>.
+    {% endif %}
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="backup">
+    <button type="submit">Backup now</button>
+  </form>
+</section>
+
+<hr>
+
+<section>
+  <h2>Areas of Responsibility</h2>
+  <p>Manage the areas that group your projects and reference material.</p>
+  <a href="{% url 'core:area_list' %}" role="button" class="outline">Manage areas</a>
+</section>
+
+<hr>
+
+<section>
+  <h2>System</h2>
+  <table>
+    <tbody>
+      <tr><th>Database</th><td><code>{{ db_path }}</code></td></tr>
+      <tr><th>Backup directory</th><td><code>{{ backup_dir }}</code></td></tr>
+      <tr><th>Python</th><td>{{ python_version }}</td></tr>
+      <tr><th>Django</th><td>{{ django_version }}</td></tr>
+    </tbody>
+  </table>
+</section>
+{% endblock %}
