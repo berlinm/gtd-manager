@@ -115,7 +115,7 @@ header must be adjusted.
 
 **Impact:** `SECURITY_MIDDLEWARE` configuration; template review.
 
-**Status:** Unresolved (non-blocking for earlier phases; must resolve in Phase 7)
+**Status:** Resolved — see decision log (no CSP header; inline scripts and styles retained; disproportionate for single-user localhost deployment)
 
 ---
 
@@ -244,3 +244,4 @@ must be consistent across all entities (Project, NextAction, WaitingFor).
 | Production WSGI server | 2026-06-27 | waitress | Pure-Python; Windows-compatible; gunicorn/uWSGI excluded (no Windows support) |
 | HTTPS vs plain HTTP | 2026-06-27 | Plain HTTP on 127.0.0.1 | Single-machine only; SESSION_COOKIE_SECURE = False |
 | Session store backend | 2026-06-27 | Database-backed (default) | Appropriate for single-user; no topology reason to change |
+| CSP treatment | 2026-06-27 | No CSP header | Inline scripts/styles retained; strict CSP disproportionate for single-user localhost app |
