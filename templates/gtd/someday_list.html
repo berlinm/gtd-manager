@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Someday / Maybe — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
+  <h1 style="margin:0">Someday / Maybe</h1>
+  <a href="{% url 'gtd:someday_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add</a>
+</div>
+
+{% if someday_items %}
+<table>
+  <thead>
+    <tr>
+      <th>Idea</th>
+      <th>Area</th>
+      <th>Added</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in someday_items %}
+    <tr>
+      <td>
+        <a href="{% url 'gtd:someday_edit' item.pk %}">{{ item.title }}</a>
+        {% if item.body %}<br><small>{{ item.body|truncatechars:70 }}</small>{% endif %}
+      </td>
+      <td><small>{{ item.area|default:"" }}</small></td>
+      <td><small>{{ item.created_at|date:"N j, Y" }}</small></td>
+      <td style="white-space:nowrap">
+        <a href="{% url 'gtd:someday_promote' item.pk %}" role="button" class="outline"
+           style="padding:0.2rem 0.6rem;font-size:0.8rem">Activate</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>Nothing in someday / maybe.</p>
+{% endif %}
+{% endblock %}

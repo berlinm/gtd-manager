@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit agenda item{% else %}Add agenda item{% endif %} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit agenda item{% else %}Add agenda item{% endif %}</h1>
+
+<form method="post" style="max-width:40rem">
+  {% csrf_token %}
+
+  <label for="{{ form.title.id_for_label }}">What to raise</label>
+  {{ form.title }}
+
+  <label for="{{ form.body.id_for_label }}">Notes <small>(optional)</small></label>
+  {{ form.body }}
+
+  <div class="grid">
+    <div>
+      <label for="{{ form.person.id_for_label }}">Person</label>
+      {{ form.person }}
+    </div>
+    <div>
+      <label for="{{ form.meeting.id_for_label }}">Meeting</label>
+      {{ form.meeting }}
+    </div>
+  </div>
+  <small>Choose one — person or meeting, not both.</small>
+
+  {% if form.non_field_errors %}
+    <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+  {% endif %}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Save</button>
+    <a href="/agenda/" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

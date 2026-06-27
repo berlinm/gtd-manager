@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Next Actions — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
+  <h1 style="margin:0">Next Actions</h1>
+  <a href="{% url 'gtd:action_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add action</a>
+</div>
+
+{% if contexts %}
+<nav style="margin:1rem 0 0.5rem">
+  <a href="{% url 'gtd:next_actions' %}" {% if not active_context %}aria-current="page"{% endif %}>All</a>
+  {% for ctx in contexts %}
+    <a href="?context={{ ctx.label }}"
+       {% if active_context == ctx.label %}aria-current="page"{% endif %}>
+      {{ ctx.label }}
+    </a>
+  {% endfor %}
+</nav>
+{% endif %}
+
+{% if actions %}
+  <table>
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Project</th>
+        <th>Context</th>
+        <th>Deadline</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for action in actions %}
+      <tr>
+        <td>
+          <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
+          {% if action.scheduled_for %}<br><small>Scheduled: {{ action.scheduled_for|date:"N j, g:i a" }}</small>{% endif %}
+        </td>
+        <td>
+          {% if action.project %}
+            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:40 }}</a>
+          {% endif %}
+        </td>
+        <td><small>{% for c in action.contexts.all %}{{ c.label }} {% endfor %}</small></td>
+        <td>
+          {% if action.deadline %}
+            <small>{{ action.deadline|date:"N j" }}</small>
+          {% endif %}
+        </td>
+        <td style="white-space:nowrap">
+          <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="outline" style="padding:0.2rem 0.6rem;font-size:0.8rem">Done</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No available actions{% if active_context %} for {{ active_context }}{% endif %}.</p>
+{% endif %}
+{% endblock %}

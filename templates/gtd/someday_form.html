@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit idea{% else %}Add someday / maybe{% endif %} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit idea{% else %}Add someday / maybe{% endif %}</h1>
+
+<form method="post" style="max-width:40rem">
+  {% csrf_token %}
+
+  <label for="{{ form.title.id_for_label }}">Idea</label>
+  {{ form.title }}
+
+  <label for="{{ form.body.id_for_label }}">Notes <small>(optional)</small></label>
+  {{ form.body }}
+
+  <label for="{{ form.area.id_for_label }}">Area <small>(optional)</small></label>
+  {{ form.area }}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Save</button>
+    <a href="/someday/" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

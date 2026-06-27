@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}{{ object.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:0.5rem">
+  <h1 style="margin:0">{{ object.title }}</h1>
+  <a href="{% url 'gtd:project_edit' object.pk %}" class="outline secondary" role="button"
+     style="font-size:0.85rem;padding:0.25rem 0.75rem">Edit</a>
+</div>
+
+<p>
+  <mark>{{ object.get_status_display }}</mark>
+  {% if object.deadline %}&nbsp;· Deadline: <strong>{{ object.deadline|date:"N j, Y" }}</strong>{% endif %}
+  {% if object.area %}&nbsp;· {{ object.area }}{% endif %}
+</p>
+
+{% if object.desired_outcome %}
+<blockquote>{{ object.desired_outcome }}</blockquote>
+{% endif %}
+
+{% if object.on_hold_reason %}
+<p><small><strong>On hold:</strong> {{ object.on_hold_reason }}</small></p>
+{% endif %}
+
+{% if object.is_stuck %}
+<p><mark>This project is stuck — no available next actions and no waiting-for items.</mark></p>
+{% endif %}
+
+<div style="display:flex;align-items:center;gap:1rem;margin-top:1.5rem">
+  <h2 style="margin:0">Actions</h2>
+  <a href="{% url 'gtd:action_add' %}?project={{ object.pk }}" role="button" class="outline"
+     style="font-size:0.85rem;padding:0.2rem 0.6rem">+ Add action</a>
+</div>
+
+{% if available_actions %}
+<h3>Available now</h3>
+<ul>
+  {% for action in available_actions %}
+  <li>
+    <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
+    {% if action.deadline %}<small>· deadline {{ action.deadline|date:"N j" }}</small>{% endif %}
+    {% for c in action.contexts.all %}<small>{{ c.label }}</small>{% endfor %}
+    <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{% url 'gtd:project_detail' object.pk %}">
+      <button type="submit" class="outline" style="padding:0.1rem 0.5rem;font-size:0.8rem;margin-left:0.5rem">Done</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if deferred_actions %}
+<h3>Deferred</h3>
+<ul>
+  {% for action in deferred_actions %}
+  <li>
+    <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
+    <small>· available {{ action.defer_until|date:"N j" }}</small>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if scheduled_actions %}
+<h3>Scheduled</h3>
+<ul>
+  {% for action in scheduled_actions %}
+  <li>
+    <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
+    <small>· {{ action.scheduled_for|date:"N j, g:i a" }}</small>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if not available_actions and not deferred_actions and not scheduled_actions %}
+<p>No actions yet.</p>
+{% endif %}
+
+{% if waiting_items %}
+<h2>Waiting for</h2>
+<ul>
+  {% for wf in waiting_items %}
+  <li>
+    <a href="{% url 'gtd:waiting_for_edit' wf.pk %}">{{ wf.title }}</a>
+    <small>· {{ wf.person }}</small>
+    {% if wf.expected_by %}<small>· expected {{ wf.expected_by|date:"N j" }}</small>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<p style="margin-top:2rem"><a href="{% url 'gtd:projects' %}" class="secondary">← Projects</a></p>
+{% endblock %}

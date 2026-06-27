@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Process: {{ item.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Process inbox item</h1>
+
+<article>
+  <header><strong>{{ item.title }}</strong></header>
+  {% if item.body %}<p>{{ item.body }}</p>{% endif %}
+  <footer><small>Captured {{ item.captured_at|date:"N j, Y g:i a" }}</small></footer>
+</article>
+
+{% if error %}<p><mark>{{ error }}</mark></p>{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+
+  <fieldset>
+    <legend>Is it actionable?</legend>
+
+    <details>
+      <summary><strong>No — trash it</strong></summary>
+      <p>Not needed and not useful as reference.</p>
+      <button type="submit" name="disposition" value="trashed" class="outline secondary">Trash</button>
+    </details>
+
+    <details>
+      <summary><strong>No — someday/maybe</strong></summary>
+      <p>Might be worth doing one day, but not now.</p>
+      <button type="submit" name="disposition" value="someday" class="outline">Add to Someday/Maybe</button>
+    </details>
+
+    <details>
+      <summary><strong>No — file as reference</strong></summary>
+      <p>Useful information to keep, but no action required.</p>
+      <button type="submit" name="disposition" value="reference" class="outline">Save as Reference</button>
+    </details>
+
+    <details>
+      <summary><strong>Yes — do it now (under 2 minutes)</strong></summary>
+      <p>Do it immediately, then mark it done.</p>
+      <button type="submit" name="disposition" value="done_immediately">Done — mark complete</button>
+    </details>
+
+    <details {% if open_delegate %}open{% endif %}>
+      <summary><strong>Yes — delegate it</strong></summary>
+      <label for="person_name">Who are you waiting on? <small>(required)</small></label>
+      <input type="text" id="person_name" name="person_name" placeholder="Person's name" required>
+      <button type="submit" name="disposition" value="delegate" class="outline">Create Waiting-For item</button>
+    </details>
+
+    <details>
+      <summary><strong>Yes — single next action</strong></summary>
+      <label for="action_title">Next action title</label>
+      <input type="text" id="action_title" name="action_title" value="{{ item.title }}">
+      <button type="submit" name="disposition" value="action">Create Next Action</button>
+    </details>
+
+    <details>
+      <summary><strong>Yes — this is a project (more than one action)</strong></summary>
+      <label for="project_title">Project title <small>(what does done look like?)</small></label>
+      <input type="text" id="project_title" name="project_title" value="{{ item.title }}">
+      <label for="desired_outcome">Desired outcome <small>(optional)</small></label>
+      <textarea id="desired_outcome" name="desired_outcome" rows="2"></textarea>
+      <label for="first_action_title">First next action</label>
+      <input type="text" id="first_action_title" name="first_action_title" placeholder="What is the very next physical action?">
+      <button type="submit" name="disposition" value="project">Create Project</button>
+    </details>
+  </fieldset>
+</form>
+
+<p><a href="{% url 'capture:inbox' %}" class="secondary">← Back to inbox</a></p>
+{% endblock %}

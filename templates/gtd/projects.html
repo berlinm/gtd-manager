@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Projects — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
+  <h1 style="margin:0">Projects</h1>
+  <a href="{% url 'gtd:project_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add project</a>
+</div>
+
+{% if active_projects %}
+<h2>Active</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>Area</th>
+      <th>Deadline</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for project in active_projects %}
+    <tr>
+      <td>
+        <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+        {% if project.is_stuck %}
+          <mark style="font-size:0.75rem;vertical-align:middle;margin-left:0.4rem">stuck</mark>
+        {% endif %}
+      </td>
+      <td><small>{{ project.area|default:"" }}</small></td>
+      <td><small>{% if project.deadline %}{{ project.deadline|date:"N j, Y" }}{% endif %}</small></td>
+      <td><small>{{ project.active_actions|length }} action{{ project.active_actions|length|pluralize }}</small></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>No active projects.</p>
+{% endif %}
+
+{% if on_hold_projects %}
+<h2>On hold</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>Reason</th>
+      <th>Review on</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for project in on_hold_projects %}
+    <tr>
+      <td><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></td>
+      <td><small>{{ project.on_hold_reason|truncatechars:60 }}</small></td>
+      <td><small>{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% endif %}</small></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

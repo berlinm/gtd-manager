@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit action{% else %}Add action{% endif %} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit action{% else %}Add next action{% endif %}</h1>
+
+<form method="post" style="max-width:40rem">
+  {% csrf_token %}
+
+  <label for="{{ form.title.id_for_label }}">Action <small>(what is the next physical step?)</small></label>
+  {{ form.title }}
+  {% if form.title.errors %}<small>{{ form.title.errors }}</small>{% endif %}
+
+  <label for="{{ form.body.id_for_label }}">Notes <small>(optional)</small></label>
+  {{ form.body }}
+
+  <div class="grid">
+    <div>
+      <label for="{{ form.project.id_for_label }}">Project</label>
+      {{ form.project }}
+    </div>
+    <div>
+      <label for="{{ form.area.id_for_label }}">Area</label>
+      {{ form.area }}
+    </div>
+  </div>
+
+  <label>Contexts</label>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap">
+    {% for checkbox in form.contexts %}
+      <label style="display:flex;align-items:center;gap:0.4rem;font-weight:normal">
+        {{ checkbox.tag }} {{ checkbox.choice_label }}
+      </label>
+    {% endfor %}
+  </div>
+
+  <details {% if form.instance.defer_until or form.instance.scheduled_for or form.instance.deadline %}open{% endif %}>
+    <summary>Dates</summary>
+    <div class="grid">
+      <div>
+        <label for="{{ form.defer_until.id_for_label }}">Defer until <small>(unavailable before)</small></label>
+        {{ form.defer_until }}
+      </div>
+      <div>
+        <label for="{{ form.scheduled_for.id_for_label }}">Scheduled for <small>(must happen at this time)</small></label>
+        {{ form.scheduled_for }}
+      </div>
+      <div>
+        <label for="{{ form.deadline.id_for_label }}">Deadline <small>(real external commitment only)</small></label>
+        {{ form.deadline }}
+      </div>
+    </div>
+    {% if form.defer_until.errors or form.scheduled_for.errors or form.deadline.errors %}
+      <small style="color:var(--pico-del-color)">
+        {{ form.defer_until.errors }}{{ form.scheduled_for.errors }}{{ form.deadline.errors }}
+      </small>
+    {% endif %}
+  </details>
+
+  {% if form.non_field_errors %}
+    <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+  {% endif %}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap">
+    <button type="submit">Save</button>
+    {% if form.instance.pk %}
+      <a href="{% url 'gtd:action_delegate' form.instance.pk %}" role="button" class="outline secondary">Delegate…</a>
+    {% endif %}
+    <a href="/actions/" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

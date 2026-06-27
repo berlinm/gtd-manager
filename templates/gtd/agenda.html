@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Agenda — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
+  <h1 style="margin:0">Agenda</h1>
+  <a href="{% url 'gtd:agenda_item_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add item</a>
+</div>
+
+{% if not by_person and not by_meeting %}
+  <p>No agenda items.</p>
+{% endif %}
+
+{% if by_person %}
+<h2>By person</h2>
+{% for person, items in by_person.items %}
+<section>
+  <h3 style="margin-bottom:0.4rem">
+    {{ person.name }}
+    <a href="{% url 'gtd:agenda_item_add' %}?person={{ person.pk }}"
+       style="font-size:0.75rem;font-weight:normal;margin-left:0.5rem">+ add</a>
+  </h3>
+  <ul style="margin-top:0">
+    {% for item in items %}
+    <li style="display:flex;align-items:baseline;gap:0.5rem">
+      <span>
+        <a href="{% url 'gtd:agenda_item_edit' item.pk %}">{{ item.title }}</a>
+        {% if item.body %}<br><small>{{ item.body|truncatechars:80 }}</small>{% endif %}
+      </span>
+      <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}" style="margin:0;flex-shrink:0">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="/agenda/">
+        <button type="submit" class="outline secondary"
+                style="padding:0.1rem 0.4rem;font-size:0.75rem">Raised</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}
+{% endif %}
+
+{% if by_meeting %}
+<h2>By meeting</h2>
+{% for meeting, items in by_meeting.items %}
+<section>
+  <h3 style="margin-bottom:0.4rem">
+    {{ meeting.title }}
+    <a href="{% url 'gtd:agenda_item_add' %}?meeting={{ meeting.pk }}"
+       style="font-size:0.75rem;font-weight:normal;margin-left:0.5rem">+ add</a>
+  </h3>
+  <ul style="margin-top:0">
+    {% for item in items %}
+    <li style="display:flex;align-items:baseline;gap:0.5rem">
+      <span>
+        <a href="{% url 'gtd:agenda_item_edit' item.pk %}">{{ item.title }}</a>
+        {% if item.body %}<br><small>{{ item.body|truncatechars:80 }}</small>{% endif %}
+      </span>
+      <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}" style="margin:0;flex-shrink:0">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="/agenda/">
+        <button type="submit" class="outline secondary"
+                style="padding:0.1rem 0.4rem;font-size:0.75rem">Raised</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}
+{% endif %}
+{% endblock %}

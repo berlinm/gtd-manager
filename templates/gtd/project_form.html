@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit project{% else %}Add project{% endif %} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit project{% else %}Add project{% endif %}</h1>
+
+<form method="post" style="max-width:40rem">
+  {% csrf_token %}
+
+  <label for="{{ form.title.id_for_label }}">
+    Title <small>(what does done look like?)</small>
+  </label>
+  {{ form.title }}
+  {% if form.title.errors %}<small>{{ form.title.errors }}</small>{% endif %}
+
+  <label for="{{ form.desired_outcome.id_for_label }}">
+    Desired outcome <small>(optional — describe the successful end state)</small>
+  </label>
+  {{ form.desired_outcome }}
+
+  <label for="{{ form.area.id_for_label }}">
+    Area of responsibility
+    {% if not form.area.field.queryset.exists %}
+      <small>— <a href="{% url 'core:area_add' %}" target="_blank">add an area first</a></small>
+    {% endif %}
+  </label>
+  {{ form.area }}
+
+  <label for="{{ form.deadline.id_for_label }}">
+    Deadline <small>(real external deadline for this outcome only)</small>
+  </label>
+  {{ form.deadline }}
+
+  <label for="{{ form.status.id_for_label }}">Status</label>
+  {{ form.status }}
+
+  <div id="on-hold-reason-row" {% if form.instance.status != 'on_hold' %}style="display:none"{% endif %}>
+    <label for="{{ form.on_hold_reason.id_for_label }}">On-hold reason <small>(required)</small></label>
+    {{ form.on_hold_reason }}
+    {% if form.on_hold_reason.errors %}<small>{{ form.on_hold_reason.errors }}</small>{% endif %}
+  </div>
+
+  {% if form.non_field_errors %}
+    <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+  {% endif %}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Save</button>
+    <a href="{% if form.instance.pk %}{% url 'gtd:project_detail' form.instance.pk %}{% else %}/projects/{% endif %}"
+       role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+
+<script>
+  document.getElementById('id_status').addEventListener('change', function () {
+    document.getElementById('on-hold-reason-row').style.display =
+      this.value === 'on_hold' ? '' : 'none';
+  });
+</script>
+{% endblock %}

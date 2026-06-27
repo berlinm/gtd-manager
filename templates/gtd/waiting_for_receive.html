@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Received: {{ item.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Mark as received</h1>
+
+<article>
+  <header><strong>{{ item.title }}</strong></header>
+  <p>Waiting on: {{ item.person }}</p>
+  {% if item.expected_by %}<p>Expected by: {{ item.expected_by|date:"N j, Y" }}</p>{% endif %}
+</article>
+
+<form method="post" style="max-width:35rem">
+  {% csrf_token %}
+  <label for="{{ form.result_notes.id_for_label }}">Result notes <small>(optional)</small></label>
+  {{ form.result_notes }}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Mark received</button>
+    <a href="/waiting/" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

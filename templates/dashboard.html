@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="grid">
+  <article>
+    <header><strong>Inbox</strong></header>
+    {% if inbox_count %}
+      <p><a href="{% url 'capture:inbox' %}">{{ inbox_count }} item{{ inbox_count|pluralize }} to process</a></p>
+    {% else %}
+      <p>Inbox is empty.</p>
+    {% endif %}
+  </article>
+
+  <article>
+    <header><strong>Today</strong></header>
+    <p><a href="{% url 'gtd:today' %}">View scheduled and overdue actions</a></p>
+  </article>
+
+  <article>
+    <header><strong>Waiting For</strong></header>
+    {% if followups_due %}
+      <p><a href="{% url 'gtd:today' %}">{{ followups_due }} follow-up{{ followups_due|pluralize }} due</a></p>
+    {% else %}
+      <p><a href="{% url 'gtd:waiting_for_list' %}">View waiting-for list</a></p>
+    {% endif %}
+  </article>
+
+  <article>
+    <header><strong>Projects</strong></header>
+    {% if stuck_count %}
+      <p><a href="{% url 'gtd:projects' %}">{{ stuck_count }} stuck project{{ stuck_count|pluralize }}</a></p>
+    {% else %}
+      <p><a href="{% url 'gtd:projects' %}">View projects</a></p>
+    {% endif %}
+  </article>
+</div>
+{% endblock %}

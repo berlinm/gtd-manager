@@ -1,0 +1,32 @@
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Django
+db.sqlite3
+db/
+staticfiles/
+media/
+
+# Secrets
+.env
+local_settings.py
+
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Wheelhouse (generated; not committed)
+wheelhouse/

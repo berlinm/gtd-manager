@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit area{% else %}Add area{% endif %} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit area{% else %}Add area{% endif %}</h1>
+
+<form method="post" style="max-width:30rem">
+  {% csrf_token %}
+
+  <label for="{{ form.title.id_for_label }}">Title</label>
+  {{ form.title }}
+
+  <label for="{{ form.description.id_for_label }}">Description <small>(optional)</small></label>
+  {{ form.description }}
+
+  <label style="display:flex;align-items:center;gap:0.5rem;font-weight:normal">
+    {{ form.active }} Active
+  </label>
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Save</button>
+    <a href="{% url 'core:area_list' %}" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

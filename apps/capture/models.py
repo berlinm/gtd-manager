@@ -1,0 +1,47 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.utils import timezone
+
+
+class InboxItem(models.Model):
+
+    class Disposition(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        TRASHED = 'trashed', 'Trashed'
+        DONE_IMMEDIATELY = 'done_immediately', 'Done immediately'
+        DELEGATED = 'delegated', 'Delegated'
+        ACTION_CREATED = 'action_created', 'Action created'
+        PROJECT_CREATED = 'project_created', 'Project created'
+        SOMEDAY_CREATED = 'someday_created', 'Someday/maybe created'
+        REFERENCE_CREATED = 'reference_created', 'Reference created'
+
+    title = models.CharField(max_length=500)
+    body = models.TextField(blank=True)
+    captured_at = models.DateTimeField(default=timezone.now)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    disposition = models.CharField(
+        max_length=50,
+        choices=Disposition.choices,
+        default=Disposition.PENDING,
+    )
+
+    # Generic FK to the object created during clarification (null until processed).
+    content_type = models.ForeignKey(
+        ContentType,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    created_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['-captured_at']
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def is_processed(self):
+        return self.processed_at is not None

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Waiting For — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
+  <h1 style="margin:0">Waiting For</h1>
+  <a href="{% url 'gtd:waiting_for_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add</a>
+</div>
+
+{% if waiting_items %}
+<table>
+  <thead>
+    <tr>
+      <th>What</th>
+      <th>Who</th>
+      <th>Project</th>
+      <th>Follow up</th>
+      <th>Expected by</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in waiting_items %}
+    <tr {% if item.follow_up_on and item.follow_up_on <= today %}style="background:var(--pico-del-color-30,rgba(255,0,0,0.06))"{% endif %}>
+      <td>
+        <a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a>
+        {% if item.body %}<br><small>{{ item.body|truncatechars:60 }}</small>{% endif %}
+      </td>
+      <td><small>{{ item.person }}</small></td>
+      <td>
+        {% if item.project %}
+          <a href="{% url 'gtd:project_detail' item.project.pk %}"><small>{{ item.project.title|truncatechars:30 }}</small></a>
+        {% endif %}
+      </td>
+      <td>
+        {% if item.follow_up_on %}
+          <small {% if item.follow_up_on <= today %}style="font-weight:bold;color:var(--pico-del-color)"{% endif %}>
+            {{ item.follow_up_on|date:"N j" }}
+          </small>
+        {% endif %}
+      </td>
+      <td><small>{% if item.expected_by %}{{ item.expected_by|date:"N j" }}{% endif %}</small></td>
+      <td style="white-space:nowrap">
+        <a href="{% url 'gtd:waiting_for_receive' item.pk %}" role="button" class="outline"
+           style="padding:0.2rem 0.6rem;font-size:0.8rem">Received</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>Nothing waiting.</p>
+{% endif %}
+{% endblock %}

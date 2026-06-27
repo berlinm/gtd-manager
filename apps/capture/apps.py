@@ -1,0 +1,6 @@
+from django.apps import AppConfig
+
+
+class CaptureConfig(AppConfig):
+    name = 'apps.capture'
+    verbose_name = 'Capture'

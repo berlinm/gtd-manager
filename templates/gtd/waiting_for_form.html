@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit waiting-for{% else %}Add waiting-for{% endif %} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit waiting-for item{% else %}Add waiting-for item{% endif %}</h1>
+
+<form method="post" style="max-width:40rem">
+  {% csrf_token %}
+
+  <label for="{{ form.title.id_for_label }}">What are you waiting for?</label>
+  {{ form.title }}
+
+  <label for="{{ form.person.id_for_label }}">Who</label>
+  {{ form.person }}
+  {% if form.person.errors %}<small>{{ form.person.errors }}</small>{% endif %}
+
+  <label for="{{ form.body.id_for_label }}">Notes <small>(optional)</small></label>
+  {{ form.body }}
+
+  <label for="{{ form.project.id_for_label }}">Project <small>(optional)</small></label>
+  {{ form.project }}
+
+  <div class="grid">
+    <div>
+      <label for="{{ form.delegated_at.id_for_label }}">Delegated on</label>
+      {{ form.delegated_at }}
+    </div>
+    <div>
+      <label for="{{ form.expected_by.id_for_label }}">Expected by</label>
+      {{ form.expected_by }}
+    </div>
+    <div>
+      <label for="{{ form.follow_up_on.id_for_label }}">Follow up on</label>
+      {{ form.follow_up_on }}
+    </div>
+  </div>
+
+  {% if form.non_field_errors %}
+    <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+  {% endif %}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Save</button>
+    <a href="/waiting/" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in — GTD Manager</title>
+  <link rel="stylesheet" href="{% static 'css/pico.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+<main class="container" style="max-width:24rem;padding-top:4rem">
+  <h1>GTD Manager</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% if form.errors %}
+      <p><small>Invalid username or password.</small></p>
+    {% endif %}
+    <label for="id_username">Username</label>
+    <input type="text" id="id_username" name="username" autofocus autocomplete="username" required>
+    <label for="id_password">Password</label>
+    <input type="password" id="id_password" name="password" autocomplete="current-password" required>
+    <button type="submit">Log in</button>
+  </form>
+</main>
+</body>
+</html>

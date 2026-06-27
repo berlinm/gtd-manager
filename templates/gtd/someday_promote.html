@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Activate: {{ item.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Activate idea as project</h1>
+
+<article>
+  <header><strong>{{ item.title }}</strong></header>
+  {% if item.body %}<p>{{ item.body }}</p>{% endif %}
+</article>
+
+<form method="post" style="max-width:40rem">
+  {% csrf_token %}
+
+  <label for="{{ form.project_title.id_for_label }}">
+    Project title <small>(what does done look like?)</small>
+  </label>
+  {{ form.project_title }}
+  {% if form.project_title.errors %}<small>{{ form.project_title.errors }}</small>{% endif %}
+
+  <label for="{{ form.desired_outcome.id_for_label }}">
+    Desired outcome <small>(optional)</small>
+  </label>
+  {{ form.desired_outcome }}
+
+  <label for="{{ form.first_action_title.id_for_label }}">
+    First next action <small>(optional)</small>
+  </label>
+  {{ form.first_action_title }}
+
+  <div style="display:flex;gap:0.75rem;margin-top:1rem">
+    <button type="submit">Create project</button>
+    <a href="/someday/" role="button" class="outline secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

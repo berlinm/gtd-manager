@@ -1,0 +1,28 @@
+/* Application-level overrides on top of Pico CSS */
+
+/* Capture bar sits flush below the nav */
+header .container-fluid form {
+  margin-bottom: 0;
+}
+
+header .container-fluid [role="group"] {
+  margin-bottom: 0.25rem;
+}
+
+/* Inline capture feedback — subtle, non-intrusive */
+#capture-feedback {
+  min-height: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--pico-muted-color);
+}
+
+/* Inbox count badge in nav */
+#nav-inbox-count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Table — tighten row height for list views */
+main table td,
+main table th {
+  padding: 0.4rem 0.75rem;
+}
