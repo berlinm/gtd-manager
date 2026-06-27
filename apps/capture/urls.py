@@ -8,4 +8,5 @@ urlpatterns = [
     path('', views.InboxView.as_view(), name='inbox'),
     path('capture/', views.QuickCaptureView.as_view(), name='quick_capture'),
     path('<int:pk>/clarify/', views.ClarifyView.as_view(), name='clarify'),
+    path('history/', views.InboxHistoryView.as_view(), name='history'),
 ]

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Inbox History — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Inbox History</h1>
+
+{% if processed_items %}
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Disposition</th>
+      <th>Processed</th>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in processed_items %}
+    <tr>
+      <td>{{ item.title }}</td>
+      <td><small>{{ item.get_disposition_display }}</small></td>
+      <td><small>{{ item.processed_at|date:"N j, Y g:i a" }}</small></td>
+      <td>
+        {% if item.content_type and item.object_id %}
+          {% with ct=item.content_type.model %}
+            {% if ct == 'nextaction' %}
+              <a href="{% url 'gtd:action_edit' item.object_id %}"><small>Action</small></a>
+            {% elif ct == 'project' %}
+              <a href="{% url 'gtd:project_detail' item.object_id %}"><small>Project</small></a>
+            {% elif ct == 'waitingfor' %}
+              <a href="{% url 'gtd:waiting_for_edit' item.object_id %}"><small>Waiting For</small></a>
+            {% elif ct == 'somedaymaybe' %}
+              <a href="{% url 'gtd:someday_edit' item.object_id %}"><small>Someday</small></a>
+            {% elif ct == 'reference' %}
+              <a href="{% url 'gtd:reference_detail' item.object_id %}"><small>Reference</small></a>
+            {% endif %}
+          {% endwith %}
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<nav style="display:flex;gap:0.5rem;margin-top:1rem">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" role="button" class="outline secondary">← Previous</a>
+  {% endif %}
+  <small style="align-self:center">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</small>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" role="button" class="outline secondary">Next →</a>
+  {% endif %}
+</nav>
+{% endif %}
+
+{% else %}
+  <p>No processed items yet.</p>
+{% endif %}
+
+<p style="margin-top:2rem"><a href="{% url 'capture:inbox' %}" class="secondary">← Inbox</a></p>
+{% endblock %}

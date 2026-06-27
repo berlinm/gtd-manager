@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ object.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:0.5rem">
+  <h1 style="margin:0">{{ object.title }}</h1>
+  <a href="{% url 'core:area_edit' object.pk %}" class="outline secondary" role="button"
+     style="font-size:0.85rem;padding:0.25rem 0.75rem">Edit</a>
+</div>
+{% if object.description %}<p>{{ object.description }}</p>{% endif %}
+
+{% if active_projects %}
+<h2>Active projects</h2>
+<ul>
+  {% for project in active_projects %}
+  <li>
+    <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+    {% if project.is_stuck %}<small> · <mark>stuck</mark></small>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if on_hold_projects %}
+<h2>On hold</h2>
+<ul>
+  {% for project in on_hold_projects %}
+  <li><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if active_actions %}
+<h2>Standalone actions</h2>
+<ul>
+  {% for action in active_actions %}
+  <li>
+    <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
+    {% if action.project %}<small> · {{ action.project.title }}</small>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if references %}
+<h2>Reference</h2>
+<ul>
+  {% for ref in references %}
+  <li>
+    <a href="{% url 'gtd:reference_detail' ref.pk %}">{{ ref.title }}</a>
+    {% for tag in ref.tags.all %}<small> · {{ tag.label }}</small>{% endfor %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if someday_items %}
+<h2>Someday / Maybe</h2>
+<ul>
+  {% for item in someday_items %}
+  <li><a href="{% url 'gtd:someday_edit' item.pk %}">{{ item.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if not active_projects and not on_hold_projects and not active_actions and not references and not someday_items %}
+<p>Nothing assigned to this area yet.</p>
+{% endif %}
+
+<p style="margin-top:2rem"><a href="{% url 'core:area_list' %}" class="secondary">← Areas</a></p>
+{% endblock %}

@@ -30,6 +30,13 @@ urlpatterns = [
     path('someday/add/', views.SomedayMaybeCreateView.as_view(), name='someday_add'),
     path('someday/<int:pk>/edit/', views.SomedayMaybeUpdateView.as_view(), name='someday_edit'),
     path('someday/<int:pk>/promote/', views.SomedayPromoteView.as_view(), name='someday_promote'),
+    # Reference
+    path('reference/', views.ReferenceListView.as_view(), name='reference_list'),
+    path('reference/add/', views.ReferenceCreateView.as_view(), name='reference_add'),
+    path('reference/<int:pk>/', views.ReferenceDetailView.as_view(), name='reference_detail'),
+    path('reference/<int:pk>/edit/', views.ReferenceUpdateView.as_view(), name='reference_edit'),
+    # Areas
+    path('areas/<int:pk>/', views.AreaDetailView.as_view(), name='area_detail'),
     # Agenda
     path('agenda/', views.AgendaListView.as_view(), name='agenda_list'),
     path('agenda/add/', views.AgendaItemCreateView.as_view(), name='agenda_item_add'),

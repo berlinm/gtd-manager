@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load gtd_tags %}
+
+{% block title %}{{ object.title }} — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:0.5rem">
+  <h1 style="margin:0">{{ object.title }}</h1>
+  <a href="{% url 'gtd:reference_edit' object.pk %}" class="outline secondary" role="button"
+     style="font-size:0.85rem;padding:0.25rem 0.75rem">Edit</a>
+</div>
+
+<p style="margin-bottom:1.5rem">
+  {% if object.area %}<small>{{ object.area }}</small>{% endif %}
+  {% if object.tags.all %}
+    &nbsp;·
+    {% for tag in object.tags.all %}
+      <mark style="font-size:0.8rem">{{ tag.label }}</mark>
+    {% endfor %}
+  {% endif %}
+  <small style="margin-left:0.5rem">Updated {{ object.updated_at|date:"N j, Y" }}</small>
+</p>
+
+{% if object.body %}
+<div class="reference-body">
+  {{ object.body|markdown }}
+</div>
+{% else %}
+  <p><em>No content yet. <a href="{% url 'gtd:reference_edit' object.pk %}">Add some.</a></em></p>
+{% endif %}
+
+<p style="margin-top:2rem"><a href="{% url 'gtd:reference_list' %}" class="secondary">← Reference</a></p>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Reference — GTD Manager{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap">
+  <h1 style="margin:0">Reference</h1>
+  <a href="{% url 'gtd:reference_add' %}" role="button" class="outline" style="font-size:0.85rem;padding:0.25rem 0.75rem">+ Add</a>
+</div>
+
+<form method="get" style="margin:1rem 0;max-width:30rem">
+  <div role="group">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search title and body…" autocomplete="off">
+    <button type="submit">Search</button>
+  </div>
+</form>
+
+{% if q and not references %}
+  <p>No results for "<strong>{{ q }}</strong>".</p>
+{% elif references %}
+<table>
+  <thead>
+    <tr><th>Title</th><th>Area</th><th>Tags</th><th>Updated</th></tr>
+  </thead>
+  <tbody>
+    {% for ref in references %}
+    <tr>
+      <td><a href="{% url 'gtd:reference_detail' ref.pk %}">{{ ref.title }}</a></td>
+      <td><small>{{ ref.area|default:"" }}</small></td>
+      <td>
+        <small>{% for tag in ref.tags.all %}{{ tag.label }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+      </td>
+      <td><small>{{ ref.updated_at|date:"N j, Y" }}</small></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>No reference items yet.</p>
+{% endif %}
+{% endblock %}

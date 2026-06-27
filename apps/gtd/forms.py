@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from .models import (
     AgendaItem, AreaOfResponsibility, Context, Meeting, NextAction,
-    Person, Project, SomedayMaybe, WaitingFor,
+    Person, Project, Reference, SomedayMaybe, Tag, WaitingFor,
 )
 
 
@@ -111,6 +111,25 @@ class SomedayPromoteForm(forms.Form):
     project_title = forms.CharField(max_length=500)
     desired_outcome = forms.CharField(widget=forms.Textarea(attrs={'rows': 2}), required=False)
     first_action_title = forms.CharField(max_length=500, required=False)
+
+
+class ReferenceForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+
+    class Meta:
+        model = Reference
+        fields = ['title', 'body', 'area', 'tags']
+        widgets = {'body': forms.Textarea(attrs={'rows': 12})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['area'].queryset = AreaOfResponsibility.objects.filter(active=True)
+        for field in ['body', 'area']:
+            self.fields[field].required = False
 
 
 class AgendaItemForm(forms.ModelForm):

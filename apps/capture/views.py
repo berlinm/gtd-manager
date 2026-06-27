@@ -113,4 +113,19 @@ class ClarifyView(LoginRequiredMixin, View):
             return redirect('gtd:next_actions')
         if disposition == 'delegate' and created_object is not None:
             return redirect('gtd:waiting_for_list')
+        if disposition == 'reference' and created_object is not None:
+            return redirect('gtd:reference_detail', pk=created_object.pk)
         return redirect('capture:inbox')
+
+
+class InboxHistoryView(LoginRequiredMixin, ListView):
+    template_name = 'capture/inbox_history.html'
+    context_object_name = 'processed_items'
+    paginate_by = 50
+
+    def get_queryset(self):
+        return (
+            InboxItem.objects.filter(processed_at__isnull=False)
+            .select_related('content_type')
+            .order_by('-processed_at')
+        )

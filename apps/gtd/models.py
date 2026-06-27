@@ -254,7 +254,7 @@ class AgendaItem(models.Model):
 
 class Reference(models.Model):
     title = models.CharField(max_length=500)
-    body = models.TextField()
+    body = models.TextField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     area = models.ForeignKey(
         AreaOfResponsibility, null=True, blank=True, on_delete=models.SET_NULL

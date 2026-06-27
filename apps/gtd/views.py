@@ -6,12 +6,12 @@ from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView, View
 
 from .forms import (
-    AgendaItemForm, NextActionForm, ProjectForm, SomedayMaybeForm,
-    SomedayPromoteForm, WaitingForForm, WaitingForReceiveForm,
+    AgendaItemForm, NextActionForm, ProjectForm, ReferenceForm,
+    SomedayMaybeForm, SomedayPromoteForm, WaitingForForm, WaitingForReceiveForm,
 )
 from .models import (
-    AgendaItem, Context, Meeting, NextAction, Person, Project,
-    SomedayMaybe, WaitingFor,
+    AgendaItem, AreaOfResponsibility, Context, Meeting, NextAction,
+    Person, Project, Reference, SomedayMaybe, WaitingFor,
 )
 
 
@@ -419,3 +419,76 @@ class AgendaItemDoneView(LoginRequiredMixin, View):
         item.delete()
         next_url = request.POST.get('next', '/agenda/')
         return redirect(next_url)
+
+
+# ---------------------------------------------------------------------------
+# Reference
+# ---------------------------------------------------------------------------
+
+class ReferenceListView(LoginRequiredMixin, ListView):
+    template_name = 'gtd/reference_list.html'
+    context_object_name = 'references'
+
+    def get_queryset(self):
+        qs = Reference.objects.select_related('area').prefetch_related('tags')
+        q = self.request.GET.get('q', '').strip()
+        if q:
+            qs = qs.filter(Q(title__icontains=q) | Q(body__icontains=q))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['q'] = self.request.GET.get('q', '')
+        return ctx
+
+
+class ReferenceDetailView(LoginRequiredMixin, DetailView):
+    model = Reference
+    template_name = 'gtd/reference_detail.html'
+
+
+class ReferenceCreateView(LoginRequiredMixin, CreateView):
+    model = Reference
+    form_class = ReferenceForm
+    template_name = 'gtd/reference_form.html'
+
+    def get_success_url(self):
+        return f'/reference/{self.object.pk}/'
+
+
+class ReferenceUpdateView(LoginRequiredMixin, UpdateView):
+    model = Reference
+    form_class = ReferenceForm
+    template_name = 'gtd/reference_form.html'
+
+    def get_success_url(self):
+        return f'/reference/{self.object.pk}/'
+
+
+# ---------------------------------------------------------------------------
+# Area detail
+# ---------------------------------------------------------------------------
+
+class AreaDetailView(LoginRequiredMixin, DetailView):
+    model = AreaOfResponsibility
+    template_name = 'gtd/area_detail.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        area = self.object
+        ctx['active_projects'] = Project.objects.filter(
+            area=area, status=Project.Status.ACTIVE
+        )
+        ctx['on_hold_projects'] = Project.objects.filter(
+            area=area, status=Project.Status.ON_HOLD
+        )
+        ctx['active_actions'] = (
+            NextAction.objects.filter(area=area, status=NextAction.Status.ACTIVE)
+            .filter(Q(defer_until__isnull=True) | Q(defer_until__lte=timezone.now().date()))
+            .select_related('project')
+        )
+        ctx['references'] = Reference.objects.filter(area=area).prefetch_related('tags')
+        ctx['someday_items'] = SomedayMaybe.objects.filter(
+            area=area, promoted_at__isnull=True
+        )
+        return ctx
