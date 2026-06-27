@@ -215,7 +215,67 @@ For each sub-test: capture a fresh item first, then click **Process**.
 
 ---
 
-## 15. Authentication
+## 15. Reference (`/reference/`)
+
+1. Navigate to **Reference**. Click **+ Add**. Fill in a title and body using Markdown:
+   ```
+   ## Heading
+   - bullet one
+   - bullet two
+   ```
+   Click **Save**.
+   **→ Redirected to the reference detail page. Body is rendered as HTML (heading + list visible).**
+
+2. Clarify an inbox item as "file as reference". Click **Save as Reference**.
+   **→ Redirected directly to the new reference detail page (not back to inbox).**
+
+3. Go to **Reference**. Type a word from the body in the search box. Click **Search**.
+   **→ Only items whose title or body contain that word are shown.**
+
+4. Search for a word that matches nothing.
+   **→ "No results for…" message shown.**
+
+5. Edit a reference. Change the body. Save.
+   **→ The updated content is shown on the detail page. "Updated" date has changed.**
+
+---
+
+## 16. Area detail (`/areas/<pk>/`)
+
+1. Create an area at `/settings/areas/`. Click its name in the list.
+   **→ Area detail page opens showing "Nothing assigned to this area yet."**
+
+2. Create a project and assign it to the area. Return to the area detail.
+   **→ Project appears under "Active projects".**
+
+3. Create a next action (no project) assigned to the area.
+   **→ Appears under "Standalone actions".**
+
+4. Create a reference assigned to the area.
+   **→ Appears under "Reference".**
+
+5. Put the project on hold. Reload area detail.
+   **→ Project moves to "On hold" section.**
+
+---
+
+## 17. Inbox history (`/inbox/history/`)
+
+1. Click **History** on the inbox page.
+   **→ All processed items are listed with their disposition label (e.g. "Action created", "Delegated").**
+
+2. An item processed as "action" shows a clickable **Action** link in the Created column.
+   **→ Link opens the action edit page.**
+
+3. An item processed as "project" shows a **Project** link → opens the project detail.
+
+4. An item processed as "trash" or "done immediately" shows no link in the Created column (nothing was created).
+
+5. If you have more than 50 processed items, pagination controls appear.
+
+---
+
+## 18. Authentication
 
 1. Log out via the **Log out** button.
    **→ Redirected to login page.**
