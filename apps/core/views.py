@@ -1,8 +1,42 @@
+import sys
+
+import django
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 
 from apps.gtd.models import AreaOfResponsibility
+from apps.core.management.commands.backupdb import run_backup
+
+
+class AdminSettingsView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/settings.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        backup_dir = getattr(settings, 'BACKUP_DIR', settings.BASE_DIR / 'backups')
+        backups = []
+        if backup_dir.exists():
+            backups = sorted(backup_dir.glob('gtd-*.db'), reverse=True)
+        ctx['last_backup'] = backups[0] if backups else None
+        ctx['backup_count'] = len(backups)
+        ctx['backup_dir'] = backup_dir
+        ctx['db_path'] = settings.DATABASES['default']['NAME']
+        ctx['python_version'] = sys.version.split()[0]
+        ctx['django_version'] = django.get_version()
+        ctx['base_dir'] = settings.BASE_DIR
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('action') == 'backup':
+            try:
+                dest = run_backup()
+                messages.success(request, f'Backup saved: {dest.name}')
+            except Exception as e:
+                messages.error(request, f'Backup failed: {e}')
+        return self.get(request, *args, **kwargs)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
