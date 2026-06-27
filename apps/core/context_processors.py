@@ -17,4 +17,9 @@ def inbox_count(request):
         ).count()
     except (OperationalError, ProgrammingError):
         pending_notes = 0
-    return {'inbox_count': inbox, 'pending_notes_count': pending_notes}
+    focus_pks = request.session.get('gtd_focus_pks', [])
+    return {
+        'inbox_count': inbox,
+        'pending_notes_count': pending_notes,
+        'focus_count': len(focus_pks),
+    }

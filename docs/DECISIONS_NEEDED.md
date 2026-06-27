@@ -83,7 +83,7 @@ decided before the first template is written.
 beyond the daily review session or an explicit clear action. It must not alter
 any item's GTD classification.
 
-**Status:** Unresolved
+**Status:** Resolved — see decision log (Django session store)
 
 ---
 
@@ -238,3 +238,4 @@ must be consistent across all entities (Project, NextAction, WaitingFor).
 | Reference body format | 2026-06-27 | Markdown with rendering | mistune 3.0.2 vendored; `gtd_tags.markdown` template filter |
 | `last_activity_at` strategy | 2026-06-27 | Computed annotation | `Greatest(Max(...))` queryset annotation on demand; no stored field |
 | Django version | 2026-06-27 | Django 5.2 | LTS release; in use since Phase 1 |
+| DailyReview focus list storage | 2026-06-27 | Django session store | `request.session['gtd_focus_pks']` list of PKs; cleared explicitly or on session expiry; no GTD classification altered |

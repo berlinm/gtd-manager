@@ -10,6 +10,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('inbox/', include('apps.capture.urls', namespace='capture')),
     path('meetings/', include('apps.meetings.urls', namespace='meetings')),
+    path('reviews/', include('apps.reviews.urls', namespace='reviews')),
     path('', include('apps.gtd.urls', namespace='gtd')),
     path('', include('apps.core.urls', namespace='core')),
     path('admin/', admin.site.urls),

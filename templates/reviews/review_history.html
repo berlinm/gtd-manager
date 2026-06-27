@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Review History — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Review History</h1>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+
+<section>
+  <h2>Daily Reviews</h2>
+  <p><a href="{% url 'reviews:daily_review' %}" role="button" class="outline">Start daily review</a></p>
+  {% if daily_reviews %}
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      {% for review in daily_reviews %}
+      <tr>
+        <td><small>{{ review.completed_at|date:"N j, Y g:i a" }}</small></td>
+        <td><small class="muted">{{ review.notes|truncatechars:60 }}</small></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">No daily reviews recorded yet.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Weekly Reviews</h2>
+  <p><a href="{% url 'reviews:weekly_review' %}" role="button" class="outline">Start weekly review</a></p>
+  {% if weekly_reviews %}
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      {% for review in weekly_reviews %}
+      <tr>
+        <td><small>{{ review.completed_at|date:"N j, Y g:i a" }}</small></td>
+        <td><small class="muted">{{ review.notes|truncatechars:60 }}</small></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">No weekly reviews recorded yet.</p>
+  {% endif %}
+</section>
+
+</div>
+{% endblock %}

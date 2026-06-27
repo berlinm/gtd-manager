@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Review — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Daily Review — {{ today|date:"N j, Y" }}</h1>
+
+{% if focus_pks %}
+<p><a href="{% url 'reviews:focus_list' %}" role="button" class="outline">View current focus list ({{ focus_pks|length }} items)</a></p>
+{% endif %}
+
+<section>
+  <h2>1. Inbox</h2>
+  {% if inbox_count %}
+    <p>
+      <a href="{% url 'capture:inbox' %}">{{ inbox_count }} unprocessed item{{ inbox_count|pluralize }}</a>
+      — scan for anything urgent.
+    </p>
+  {% else %}
+    <p class="muted">Inbox is empty.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>2. Scheduled today</h2>
+  {% if scheduled_today %}
+  <table>
+    <thead>
+      <tr><th>Action</th><th>Project</th><th>Time</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for action in scheduled_today %}
+      <tr>
+        <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
+        <td>
+          {% if action.project %}
+            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:30 }}</a>
+          {% endif %}
+        </td>
+        <td><small class="muted">{{ action.scheduled_for|date:"g:i a" }}</small></td>
+        <td>
+          <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'reviews:daily_review' %}">
+            <button type="submit" class="outline btn-xs">Done</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">Nothing scheduled for today.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>3. Deadlines</h2>
+  {% if deadline_projects %}
+  <h3>Projects</h3>
+  <ul>
+    {% for project in deadline_projects %}
+    <li>
+      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+      — <small class="muted">deadline {{ project.deadline|date:"N j, Y" }}</small>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if deadline_actions %}
+  <h3>Actions</h3>
+  <table>
+    <thead>
+      <tr><th>Action</th><th>Project</th><th>Deadline</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for action in deadline_actions %}
+      <tr>
+        <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
+        <td>
+          {% if action.project %}
+            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:30 }}</a>
+          {% endif %}
+        </td>
+        <td><small class="muted">{{ action.deadline|date:"N j, Y" }}</small></td>
+        <td>
+          <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'reviews:daily_review' %}">
+            <button type="submit" class="outline btn-xs">Done</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if not deadline_projects and not deadline_actions %}
+    <p class="muted">No deadlines in the next 7 days.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>4. Waiting-for follow-ups due</h2>
+  {% if follow_ups_due %}
+  <table>
+    <thead>
+      <tr><th>Waiting for</th><th>Who</th><th>Follow-up</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for item in follow_ups_due %}
+      <tr>
+        <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
+        <td><small class="muted">{{ item.person }}</small></td>
+        <td><small class="muted">{{ item.follow_up_on|date:"N j" }}</small></td>
+        <td>
+          <a href="{% url 'gtd:waiting_for_followup' item.pk %}" role="button" class="outline btn-xs">Update</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">No follow-ups due.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>5. Stuck projects</h2>
+  {% if stuck_projects %}
+  <ul>
+    {% for project in stuck_projects %}
+    <li>
+      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+      — <small class="muted">no active actions or waiting-for items</small>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p class="muted">No stuck projects.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>6. Focus selection</h2>
+  <p class="muted">Choose a small set of actions to focus on today. Leave all unchecked to skip focus.</p>
+  <form method="post" action="{% url 'reviews:daily_review' %}">
+    {% csrf_token %}
+    {% if available_actions %}
+    <fieldset>
+      {% for action in available_actions %}
+      <label>
+        <input type="checkbox" name="focus_pks" value="{{ action.pk }}"
+               {% if action.pk in focus_pks %}checked{% endif %}>
+        {{ action.title }}
+        {% if action.project %}
+          <small class="muted">— {{ action.project.title|truncatechars:40 }}</small>
+        {% endif %}
+        {% if action.deadline %}
+          <small class="muted">(due {{ action.deadline|date:"N j" }})</small>
+        {% endif %}
+      </label>
+      {% endfor %}
+    </fieldset>
+    {% else %}
+      <p class="muted">No available actions.</p>
+    {% endif %}
+    <label for="daily-notes">Notes (optional)</label>
+    <textarea id="daily-notes" name="notes" rows="3" placeholder="Anything to note from this review…"></textarea>
+    <button type="submit">Complete daily review</button>
+  </form>
+</section>
+{% endblock %}

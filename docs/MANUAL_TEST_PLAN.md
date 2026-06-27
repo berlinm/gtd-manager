@@ -367,3 +367,103 @@ For each sub-test: capture a fresh item first, then click **Process**.
    **→ Sessions table shows date, Open/Closed status, note count, and pending count for closed sessions.**
 2. Pending count for a closed session with unprocessed notes is a link.
    **→ Clicking it opens the session detail.**
+
+---
+
+## 20. Daily review
+
+### 20a. Daily review page loads and shows inbox count
+
+1. Capture an item via the capture bar without processing it.
+2. Navigate to **Review** in the nav.
+   **→ Daily Review page loads. Section 1 shows "1 unprocessed item" with a link to the inbox.**
+
+### 20b. Scheduled-today action appears
+
+1. Create a next action with **Scheduled for** set to today's date.
+2. Open the daily review.
+   **→ Section 2 shows the scheduled action with its time and a Done button.**
+3. Click Done.
+   **→ Page reloads; action is gone from the list.**
+
+### 20c. Deadline action appears
+
+1. Create a next action with **Deadline** set to today or within 7 days.
+2. Open the daily review.
+   **→ Section 3 shows the action with its deadline date.**
+
+### 20d. Follow-up due appears
+
+1. Create a waiting-for item with **Follow-up on** set to yesterday.
+2. Open the daily review.
+   **→ Section 4 shows the waiting-for item with an Update button.**
+
+### 20e. Stuck project appears
+
+1. Create a project with no next actions.
+2. Open the daily review.
+   **→ Section 5 shows the project as stuck.**
+
+### 20f. Focus selection and storage
+
+1. Open the daily review. Check two actions in Section 6 (Focus selection).
+2. Click **Complete daily review**.
+   **→ Redirected to the focus list. The two checked actions appear.**
+3. Check the nav — **Review (2)** is shown.
+   **→ Focus count in nav reflects the two focused items.**
+
+### 20g. Complete without focus redirects to dashboard
+
+1. Open the daily review. Leave all focus checkboxes unchecked.
+2. Click **Complete daily review**.
+   **→ Redirected to the dashboard. No Review (N) badge in nav.**
+
+### 20h. Focus list — mark done and clear
+
+1. Navigate to the focus list (via nav Review link or /reviews/focus/).
+   **→ Focused actions are listed with Done buttons.**
+2. Click Done on one action.
+   **→ Action is removed from the list (it is now done, not active).**
+3. Click **Clear focus and return to dashboard**.
+   **→ Redirected to dashboard. Nav Review link no longer shows a count.**
+
+---
+
+## 21. Weekly review
+
+### 21a. Weekly review page loads
+
+1. Navigate to **Review** then click **Start weekly review** from Review History.
+   **→ Weekly Review page loads with all 9 steps.**
+
+### 21b. Stuck projects shown in step 2
+
+1. Ensure a project with no next actions exists.
+2. Open the weekly review.
+   **→ Step 2 shows the project under "Stuck projects".**
+
+### 21c. On-hold projects shown in step 3
+
+1. Ensure a project with status On Hold exists.
+2. Open the weekly review.
+   **→ Step 3 shows the project with its next-review-on date and reason.**
+
+### 21d. Waiting-for with no follow-up shown in step 5
+
+1. Create a waiting-for item with no follow-up date.
+2. Open the weekly review.
+   **→ Step 5 shows the item with "not set" in the follow-up column.**
+
+### 21e. Mark complete records review
+
+1. Open the weekly review. Fill in optional notes. Click **Mark weekly review complete**.
+   **→ Redirected to Review History. The weekly review appears with today's date.**
+
+---
+
+## 22. Review history
+
+1. Navigate to **Review → History** (or /reviews/history/).
+   **→ Page shows two columns: Daily Reviews and Weekly Reviews.**
+2. Confirm completed reviews appear in each column with their timestamps and truncated notes.
+   **→ Each completed review shows date and notes preview.**

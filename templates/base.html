@@ -42,47 +42,18 @@
            {% if view.url_name == 'today' %}aria-current="page"{% endif %}>Today</a>
       </li>
       <li>
-        <a href="{% url 'gtd:waiting_for_list' %}"
-           {% if view.app_name == 'gtd' and 'waiting_for' in view.url_name %}aria-current="page"{% endif %}>Waiting</a>
-      </li>
-      <li>
-        <a href="{% url 'gtd:agenda_list' %}"
-           {% if view.app_name == 'gtd' and 'agenda' in view.url_name %}aria-current="page"{% endif %}>Agenda</a>
-      </li>
-      <li>
-        <a href="{% url 'gtd:someday_list' %}"
-           {% if view.app_name == 'gtd' and 'someday' in view.url_name %}aria-current="page"{% endif %}>Someday</a>
-      </li>
-      <li>
-        <a href="{% url 'gtd:projects' %}"
-           {% if view.app_name == 'gtd' and 'project' in view.url_name %}aria-current="page"{% endif %}>Projects</a>
-      </li>
-      <li>
-        <a href="{% url 'gtd:reference_list' %}"
-           {% if view.app_name == 'gtd' and 'reference' in view.url_name %}aria-current="page"{% endif %}>Reference</a>
-      </li>
-      <li>
-        <a href="{% url 'meetings:meeting_list' %}"
-           {% if view.app_name == 'meetings' %}aria-current="page"{% endif %}>
-          Meetings{% if pending_notes_count %} (<span id="nav-notes-count">{{ pending_notes_count }}</span>){% endif %}
+        <a href="{% if focus_count %}{% url 'reviews:focus_list' %}{% else %}{% url 'reviews:daily_review' %}{% endif %}"
+           {% if view.app_name == 'reviews' %}aria-current="page"{% endif %}>
+          Review{% if focus_count %} ({{ focus_count }}){% endif %}
         </a>
       </li>
     </ul>
     <ul>
       <li>
-        <button id="theme-toggle" class="outline secondary"
-                style="padding:0.25rem 0.6rem;font-size:1rem;line-height:1;border:none;background:none;cursor:pointer"
-                title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
-          <span id="theme-icon">☀</span>
+        <button id="drawer-toggle" class="outline secondary drawer-toggle-btn"
+                title="Menu" aria-label="Open menu" aria-expanded="false" aria-controls="side-drawer">
+          &#9776;
         </button>
-      </li>
-      <li>
-        <form method="post" action="{% url 'logout' %}" style="margin:0">
-          {% csrf_token %}
-          <button type="submit" class="outline secondary" style="padding:0.25rem 0.75rem">
-            Log out
-          </button>
-        </form>
       </li>
     </ul>
   </nav>
@@ -106,6 +77,7 @@
     <div id="capture-feedback" aria-live="polite"></div>
   </div>
 </header>
+
 {% endwith %}
 
 <main class="container">
@@ -120,6 +92,81 @@
   {% block content %}{% endblock %}
 </main>
 
+{% with view=request.resolver_match %}
+<div id="drawer-overlay" aria-hidden="true"></div>
+<div id="side-drawer" role="complementary" aria-label="Secondary navigation">
+  <div class="drawer-header">
+    <span class="drawer-title">Menu</span>
+    <button id="drawer-close" class="outline secondary drawer-close-btn"
+            aria-label="Close menu">&#x2715;</button>
+  </div>
+  <nav class="drawer-nav">
+    <ul>
+      <li>
+        <a href="{% url 'gtd:projects' %}"
+           {% if view.app_name == 'gtd' and 'project' in view.url_name %}aria-current="page"{% endif %}>
+          Projects
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:waiting_for_list' %}"
+           {% if view.app_name == 'gtd' and 'waiting_for' in view.url_name %}aria-current="page"{% endif %}>
+          Waiting
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:agenda_list' %}"
+           {% if view.app_name == 'gtd' and 'agenda' in view.url_name %}aria-current="page"{% endif %}>
+          Agenda
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:someday_list' %}"
+           {% if view.app_name == 'gtd' and 'someday' in view.url_name %}aria-current="page"{% endif %}>
+          Someday
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'gtd:reference_list' %}"
+           {% if view.app_name == 'gtd' and 'reference' in view.url_name %}aria-current="page"{% endif %}>
+          Reference
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'meetings:meeting_list' %}"
+           {% if view.app_name == 'meetings' %}aria-current="page"{% endif %}>
+          Meetings{% if pending_notes_count %} (<span id="nav-notes-count">{{ pending_notes_count }}</span>){% endif %}
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'reviews:review_history' %}"
+           {% if view.app_name == 'reviews' and view.url_name == 'review_history' %}aria-current="page"{% endif %}>
+          Review history
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <ul>
+      <li>
+        <button id="theme-toggle" class="outline secondary"
+                style="width:100%;text-align:left"
+                title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
+          <span id="theme-icon">☀</span> Toggle theme
+        </button>
+      </li>
+      <li>
+        <form method="post" action="{% url 'logout' %}" style="margin:0">
+          {% csrf_token %}
+          <button type="submit" class="outline secondary" style="width:100%;text-align:left">
+            Log out
+          </button>
+        </form>
+      </li>
+    </ul>
+  </nav>
+</div>
+{% endwith %}
+
 {% block extra_js %}{% endblock %}
 <script src="{% static 'js/htmx.min.js' %}"></script>
 <script>
@@ -131,6 +178,31 @@
   });
 
   (function () {
+    var drawer  = document.getElementById('side-drawer');
+    var overlay = document.getElementById('drawer-overlay');
+    var toggle  = document.getElementById('drawer-toggle');
+    var close   = document.getElementById('drawer-close');
+
+    function openDrawer() {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      toggle.setAttribute('aria-expanded', 'true');
+      close.focus();
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    }
+
+    toggle.addEventListener('click', openDrawer);
+    close.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeDrawer();
+    });
+
     function applyTheme(t) {
       document.documentElement.setAttribute('data-theme', t);
       document.getElementById('theme-icon').textContent = t === 'dark' ? '☽' : '☀';

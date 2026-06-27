@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Today's Focus — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Today's Focus</h1>
+
+{% if focus_actions %}
+<table>
+  <thead>
+    <tr><th>Action</th><th>Project</th><th>Deadline</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for action in focus_actions %}
+    <tr>
+      <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
+      <td>
+        {% if action.project %}
+          <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:35 }}</a>
+        {% endif %}
+      </td>
+      <td><small class="muted">{% if action.deadline %}{{ action.deadline|date:"N j, Y" }}{% endif %}</small></td>
+      <td style="white-space:nowrap">
+        <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'reviews:focus_list' %}">
+          <button type="submit" class="outline btn-xs">Done</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>No focused actions — all done or focus was cleared.</p>
+{% endif %}
+
+<form method="post" action="{% url 'reviews:focus_list' %}" style="margin-top:1.5rem">
+  {% csrf_token %}
+  <button type="submit" class="outline secondary">Clear focus and return to dashboard</button>
+</form>
+
+<p style="margin-top:1rem">
+  <a href="{% url 'reviews:daily_review' %}">Start a new daily review</a>
+</p>
+{% endblock %}

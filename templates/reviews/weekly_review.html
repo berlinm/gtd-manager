@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Weekly Review — GTD Manager{% endblock %}
+
+{% block content %}
+<h1>Weekly Review — {{ today|date:"N j, Y" }}</h1>
+
+<p class="muted">Work through each section top to bottom, then mark the review complete at the bottom.</p>
+
+<section>
+  <h2>Step 1 — Process inbox to empty</h2>
+  {% if inbox_count %}
+    <p>
+      <a href="{% url 'capture:inbox' %}">{{ inbox_count }} unprocessed item{{ inbox_count|pluralize }}</a>
+      in inbox.
+    </p>
+  {% else %}
+    <p class="muted">Inbox is empty.</p>
+  {% endif %}
+  {% if pending_notes_count %}
+    <p>
+      <a href="{% url 'meetings:meeting_list' %}">{{ pending_notes_count }} meeting note{{ pending_notes_count|pluralize }}</a>
+      pending processing.
+    </p>
+  {% else %}
+    <p class="muted">No unprocessed meeting notes.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Step 2 — Review active projects</h2>
+  {% if stuck_projects %}
+  <p><strong>Stuck projects</strong> — no active next action or waiting-for item:</p>
+  <ul>
+    {% for project in stuck_projects %}
+    <li>
+      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+      {% if project.deadline %}<small class="muted">— due {{ project.deadline|date:"N j, Y" }}</small>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if ok_projects %}
+  <details {% if not stuck_projects %}open{% endif %}>
+    <summary>{{ ok_projects|length }} project{{ ok_projects|pluralize }} with active next actions</summary>
+    <ul>
+      {% for project in ok_projects %}
+      <li><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+  {% if not stuck_projects and not ok_projects %}
+    <p class="muted">No active projects.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Step 3 — Review on-hold projects</h2>
+  {% if on_hold_projects %}
+  <table>
+    <thead>
+      <tr><th>Project</th><th>Next review</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      {% for project in on_hold_projects %}
+      <tr>
+        <td><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></td>
+        <td><small class="muted">{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% else %}—{% endif %}</small></td>
+        <td><small class="muted">{{ project.on_hold_reason|truncatechars:60 }}</small></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">No on-hold projects.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Step 4 — Project deadlines within 2 weeks</h2>
+  {% if deadline_projects %}
+  <ul>
+    {% for project in deadline_projects %}
+    <li>
+      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+      — <small class="muted">deadline {{ project.deadline|date:"N j, Y" }}</small>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p class="muted">No project deadlines in the next 2 weeks.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Step 5 — Waiting-for items needing attention</h2>
+  <p class="muted">Items with a follow-up date due today or earlier, or with no follow-up date set.</p>
+  {% if waiting_needs_attention %}
+  <table>
+    <thead>
+      <tr><th>Waiting for</th><th>Who</th><th>Follow-up</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for item in waiting_needs_attention %}
+      <tr>
+        <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
+        <td><small class="muted">{{ item.person }}</small></td>
+        <td>
+          <small class="muted">
+            {% if item.follow_up_on %}{{ item.follow_up_on|date:"N j" }}{% else %}not set{% endif %}
+          </small>
+        </td>
+        <td>
+          <a href="{% url 'gtd:waiting_for_followup' item.pk %}" role="button" class="outline btn-xs">Update</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">All waiting-for items have current follow-up dates.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Step 6 — Review someday/maybe</h2>
+  <p>
+    <a href="{% url 'gtd:someday_list' %}">{{ someday_count }} active someday/maybe item{{ someday_count|pluralize }}</a>
+    — promote anything now relevant.
+  </p>
+</section>
+
+<section>
+  <h2>Step 7 — Review agenda items</h2>
+  <p>
+    <a href="{% url 'gtd:agenda_list' %}">{{ agenda_count }} agenda item{{ agenda_count|pluralize }}</a>
+    — drop anything already resolved.
+  </p>
+</section>
+
+<section>
+  <h2>Step 8 — Upcoming this week</h2>
+  {% if upcoming_actions %}
+  <table>
+    <thead>
+      <tr><th>Action</th><th>Project</th><th>Scheduled</th><th>Deadline</th></tr>
+    </thead>
+    <tbody>
+      {% for action in upcoming_actions %}
+      <tr>
+        <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
+        <td>
+          {% if action.project %}
+            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:30 }}</a>
+          {% endif %}
+        </td>
+        <td><small class="muted">{% if action.scheduled_for %}{{ action.scheduled_for|date:"N j, g:i a" }}{% endif %}</small></td>
+        <td><small class="muted">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</small></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="muted">Nothing scheduled or with a deadline this week.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Step 9 — Mark review complete</h2>
+  <form method="post" action="{% url 'reviews:weekly_review' %}">
+    {% csrf_token %}
+    <label for="weekly-notes">Notes (optional)</label>
+    <textarea id="weekly-notes" name="notes" rows="4" placeholder="Key decisions, patterns noticed, commitments made…"></textarea>
+    <button type="submit">Mark weekly review complete</button>
+  </form>
+</section>
+{% endblock %}

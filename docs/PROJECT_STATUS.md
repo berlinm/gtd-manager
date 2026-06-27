@@ -11,7 +11,7 @@
 | Phase 3 — Delegation, Agenda, Incubation | Complete |
 | Phase 4 — Reference, Areas, Inbox History | Complete |
 | Phase 5 — Meeting Capture | Complete |
-| Phase 6 — Reviews | Not started |
+| Phase 6 — Reviews | Complete |
 | Phase 7 — Hardening | Not started |
 
 ## What is working
@@ -77,22 +77,30 @@
 - Meetings nav link with pending-notes badge (unprocessed from closed sessions)
 - Redirects to project detail when note processed as new project; to session otherwise
 
+**Reviews**
+- Daily review: inbox status, scheduled today, deadlines (7-day horizon), follow-ups due, stuck projects, focus selection
+- Focus list stored in Django session; displayed in nav with count; cleared explicitly or on new daily review without focus
+- Weekly review: all 9 GTD steps with live data (inbox, projects, on-hold, deadlines, waiting-for, someday/maybe, agenda, upcoming)
+- Review history page showing last 20 daily and weekly reviews
+- Review nav link (highlights when in reviews app; shows focus count badge when focus is active)
+
 **Cross-cutting**
 - Dark / light mode (localStorage)
 - Login / logout; all views require authentication
-- 137 automated tests (model validation + view/workflow integration)
-- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (19 sections)
+- 162 automated tests (model validation + view/workflow integration)
+- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (22 sections)
 
 ## Next intended work
 
-**Phase 6 — Reviews**
+**Phase 7 — Hardening**
 
-- `reviews` app: `DailyReview`, `WeeklyReview` models
-- Guided daily review workflow: urgent inbox, scheduled today, deadlines,
-  waiting-for follow-ups, focus selection, stuck projects
-- Transient focus list mechanism (storage strategy TBD)
-- Guided weekly review checklist (all steps from USER_WORKFLOWS.md)
-- Stuck-project detection; review history page
+- `audit` app: audit event model; logging of important changes
+- CSP and all security headers configured
+- Full offline asset audit
+- `manage.py backupdb` management command
+- Validated restore procedure
+- Wheelhouse build and transfer documentation
+- Pre-deployment checklist verified
 
 See `docs/ROADMAP.md` for full phase definitions.
 
@@ -112,3 +120,4 @@ See `docs/DECISIONS_NEEDED.md`. No decisions have been silently resolved.
 | Phase 4 | 2026-06-27 | Reference, area detail, inbox history |
 | Clarify + WaitingFor | 2026-06-27 | Bug fixes, project integration, delegation history |
 | Phase 5 | 2026-06-26 | Meeting capture, session notes, note clarify, pending badge |
+| Phase 6 | 2026-06-27 | Daily review, weekly review, focus list (session), review history |
