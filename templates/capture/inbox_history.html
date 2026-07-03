@@ -19,8 +19,8 @@
     {% for item in processed_items %}
     <tr>
       <td>{{ item.title }}</td>
-      <td><small>{{ item.get_disposition_display }}</small></td>
-      <td><small>{{ item.processed_at|date:"N j, Y g:i a" }}</small></td>
+      <td class="muted">{{ item.get_disposition_display }}</td>
+      <td class="muted nowrap">{{ item.processed_at|date:"N j, Y g:i a" }}</td>
       <td>
         {% if item.content_type and item.object_id %}
           {% with ct=item.content_type.model %}
@@ -44,20 +44,20 @@
 </table>
 
 {% if is_paginated %}
-<nav style="display:flex;gap:0.5rem;margin-top:1rem">
+<nav class="pagination">
   {% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}" role="button" class="outline secondary">← Previous</a>
+    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm">← Previous</a>
   {% endif %}
-  <small style="align-self:center">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</small>
+  <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
   {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}" role="button" class="outline secondary">Next →</a>
+    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm">Next →</a>
   {% endif %}
 </nav>
 {% endif %}
 
 {% else %}
-  <p>No processed items yet.</p>
+  <p class="empty">No processed items yet.</p>
 {% endif %}
 
-<p style="margin-top:2rem"><a href="{% url 'capture:inbox' %}" class="secondary">← Inbox</a></p>
+<p class="backlink"><a href="{% url 'capture:inbox' %}">← Inbox</a></p>
 {% endblock %}

@@ -3,13 +3,13 @@
 {% block title %}{{ session.meeting.title }} — {{ session.occurred_on|date:"N j, Y" }} — GTD Manager{% endblock %}
 
 {% block content %}
-<div class="page-header" style="margin-bottom:0.25rem">
+<div class="page-header">
   <h1>{{ session.meeting.title }}</h1>
-  <span class="muted">{{ session.occurred_on|date:"N j, Y" }}</span>
+  <span class="page-meta">{{ session.occurred_on|date:"N j, Y" }}</span>
   {% if session.is_open %}
-  <span style="color:var(--pico-ins-color);font-size:0.85rem">● Open</span>
+  <span class="badge badge-ok">Open</span>
   {% else %}
-  <span class="muted" style="font-size:0.85rem">Closed {{ session.closed_at|date:"N j, Y" }}</span>
+  <span class="badge badge-muted">Closed {{ session.closed_at|date:"N j, Y" }}</span>
   {% endif %}
 </div>
 
@@ -17,62 +17,63 @@
 
   {% if agenda_items %}
   <section style="margin-bottom:1.5rem">
-    <h2>Agenda</h2>
-    <ul>
+    <h2 class="mt-0">Agenda</h2>
+    <ul class="item-list">
       {% for item in agenda_items %}
-      <li>{{ item.title }}</li>
+      <li><span class="item-main">{{ item.title }}</span></li>
       {% endfor %}
     </ul>
   </section>
   {% endif %}
 
   <section style="margin-bottom:1.5rem">
-    <h2>Capture notes</h2>
+    <h2 class="mt-0">Capture notes</h2>
     <form id="note-capture-form"
+          class="form-medium"
+          style="margin-bottom:1rem"
           hx-post="{% url 'meetings:quick_note' session.pk %}"
           hx-target="#session-notes-list"
-          hx-swap="beforeend"
-          style="max-width:40rem;margin-bottom:1rem">
+          hx-swap="beforeend">
       {% csrf_token %}
-      <div role="group">
+      <div class="input-group">
         <input type="text"
                name="title"
                placeholder="Note…"
                autocomplete="off"
                aria-label="Capture note">
-        <button type="submit">Add</button>
+        <button type="submit" class="btn-primary">Add</button>
       </div>
     </form>
 
     {% if notes %}
-    <ul id="session-notes-list">
+    <ul class="item-list" id="session-notes-list">
       {% for note in notes %}
       <li id="note-{{ note.pk }}">{{ note.title }}</li>
       {% endfor %}
     </ul>
     {% else %}
-    <ul id="session-notes-list"></ul>
-    <p id="no-notes-msg" class="muted">No notes yet.</p>
+    <ul class="item-list" id="session-notes-list"></ul>
+    <p id="no-notes-msg" class="muted small">No notes yet.</p>
     {% endif %}
   </section>
 
   <form method="post" action="{% url 'meetings:session_close' session.pk %}" style="margin-top:2rem">
     {% csrf_token %}
-    <button type="submit" class="outline secondary">Close session</button>
+    <button type="submit">Close session</button>
   </form>
 
 {% else %}
 
   {% if unprocessed_notes %}
   <section style="margin-bottom:1.5rem">
-    <h2>Notes to process ({{ unprocessed_notes|length }})</h2>
+    <h2 class="mt-0">Notes to process ({{ unprocessed_notes|length }})</h2>
     <table>
       <tbody>
         {% for note in unprocessed_notes %}
         <tr>
           <td>{{ note.title }}</td>
-          <td style="width:8rem;text-align:right">
-            <a href="{% url 'meetings:note_clarify' note.pk %}" class="chip">Process →</a>
+          <td class="row-actions">
+            <a href="{% url 'meetings:note_clarify' note.pk %}" class="btn btn-xs">Process</a>
           </td>
         </tr>
         {% endfor %}
@@ -80,7 +81,7 @@
     </table>
   </section>
   {% else %}
-  <p style="color:var(--pico-ins-color)">All notes processed.</p>
+  <p class="msg msg-success">All notes processed.</p>
   {% endif %}
 
   {% if processed_notes %}
@@ -91,7 +92,7 @@
         {% for note in processed_notes %}
         <tr>
           <td>{{ note.title }}</td>
-          <td class="muted" style="font-size:0.85rem">{{ note.get_disposition_display }}</td>
+          <td class="muted small">{{ note.get_disposition_display }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -101,7 +102,7 @@
 
 {% endif %}
 
-<p style="margin-top:2rem">
+<p class="backlink">
   <a href="{% url 'meetings:meeting_detail' session.meeting_id %}">← {{ session.meeting.title }}</a>
 </p>
 {% endblock %}

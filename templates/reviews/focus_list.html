@@ -16,15 +16,15 @@
       <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
       <td>
         {% if action.project %}
-          <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:35 }}</a>
+          <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:35 }}</a>
         {% endif %}
       </td>
-      <td><small class="muted">{% if action.deadline %}{{ action.deadline|date:"N j, Y" }}{% endif %}</small></td>
-      <td style="white-space:nowrap">
-        <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+      <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:"N j, Y" }}{% endif %}</td>
+      <td class="row-actions">
+        <form method="post" action="{% url 'gtd:action_done' action.pk %}">
           {% csrf_token %}
           <input type="hidden" name="next" value="{% url 'reviews:focus_list' %}">
-          <button type="submit" class="outline btn-xs">Done</button>
+          <button type="submit" class="btn-xs">Done</button>
         </form>
       </td>
     </tr>
@@ -32,15 +32,15 @@
   </tbody>
 </table>
 {% else %}
-  <p>No focused actions — all done or focus was cleared.</p>
+  <p class="empty">No focused actions — all done or focus was cleared.</p>
 {% endif %}
 
 <form method="post" action="{% url 'reviews:focus_list' %}" style="margin-top:1.5rem">
   {% csrf_token %}
-  <button type="submit" class="outline secondary">Clear focus and return to dashboard</button>
+  <button type="submit">Clear focus and return to dashboard</button>
 </form>
 
-<p style="margin-top:1rem">
+<p class="backlink">
   <a href="{% url 'reviews:daily_review' %}">Start a new daily review</a>
 </p>
 {% endblock %}

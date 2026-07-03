@@ -5,16 +5,18 @@
 {% block content %}
 <div class="page-header">
   <h1>Inbox</h1>
+  {% if inbox_items %}<span class="page-meta">{{ inbox_items|length }} item{{ inbox_items|length|pluralize }} to process</span>{% endif %}
+  <span class="spacer"></span>
   <a href="{% url 'capture:history' %}" class="chip">History</a>
 </div>
 
 {% if inbox_items %}
-  <p>{{ inbox_items|length }} item{{ inbox_items|length|pluralize }} to process.</p>
   <table>
     <thead>
       <tr>
         <th>Item</th>
-        <th style="white-space:nowrap">Captured</th>
+        <th class="nowrap">Captured</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -22,17 +24,17 @@
       <tr>
         <td>
           {{ item.title }}
-          {% if item.body %}<br><small class="muted">{{ item.body|truncatechars:80 }}</small>{% endif %}
+          {% if item.body %}<span class="cell-sub">{{ item.body|truncatechars:80 }}</span>{% endif %}
         </td>
-        <td style="white-space:nowrap"><small class="muted">{{ item.captured_at|date:"N j, g:i a" }}</small></td>
-        <td style="white-space:nowrap">
-          <a href="{% url 'capture:clarify' item.pk %}" role="button" class="outline btn-xs">Process</a>
+        <td class="nowrap muted">{{ item.captured_at|date:"N j, g:i a" }}</td>
+        <td class="row-actions">
+          <a href="{% url 'capture:clarify' item.pk %}" class="btn btn-xs">Process</a>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 {% else %}
-  <p>Inbox is empty. Well done.</p>
+  <p class="empty">Inbox is empty. Capture anything on your mind with the bar above — press <kbd>/</kbd> to jump to it.</p>
 {% endif %}
 {% endblock %}

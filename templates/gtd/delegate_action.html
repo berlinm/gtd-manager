@@ -6,11 +6,11 @@
 <h1>Delegate action</h1>
 
 <article>
-  <header><strong>{{ action.title }}</strong></header>
-  <p><small>This action will be cancelled and a waiting-for item created in its place.</small></p>
+  <header>{{ action.title }}</header>
+  <p class="small mb-0">This action will be cancelled and a waiting-for item created in its place.</p>
 </article>
 
-<form method="post" style="max-width:40rem">
+<form method="post" class="form-medium">
   {% csrf_token %}
 
   <label for="{{ form.title.id_for_label }}">What are you waiting for?</label>
@@ -18,7 +18,7 @@
 
   <label for="{{ form.person.id_for_label }}">Who</label>
   {{ form.person }}
-  {% if form.person.errors %}<small>{{ form.person.errors }}</small>{% endif %}
+  {% if form.person.errors %}<p class="field-errors">{{ form.person.errors }}</p>{% endif %}
 
   <label for="{{ form.body.id_for_label }}">Notes <small>(optional)</small></label>
   {{ form.body }}
@@ -42,12 +42,12 @@
   </div>
 
   {% if form.non_field_errors %}
-    <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+    <p class="field-errors">{{ form.non_field_errors }}</p>
   {% endif %}
 
-  <div style="display:flex;gap:0.75rem;margin-top:1rem">
-    <button type="submit">Delegate</button>
-    <a href="{% url 'gtd:action_edit' action.pk %}" role="button" class="outline secondary">Cancel</a>
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">Delegate</button>
+    <a href="{% url 'gtd:action_edit' action.pk %}" class="btn btn-quiet">Cancel</a>
   </div>
 </form>
 {% endblock %}

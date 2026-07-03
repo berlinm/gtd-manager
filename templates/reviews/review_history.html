@@ -5,11 +5,11 @@
 {% block content %}
 <h1>Review History</h1>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+<div class="grid" style="gap:1.5rem">
 
 <section>
-  <h2>Daily Reviews</h2>
-  <p><a href="{% url 'reviews:daily_review' %}" role="button" class="outline">Start daily review</a></p>
+  <h2 class="mt-0">Daily Reviews</h2>
+  <p><a href="{% url 'reviews:daily_review' %}" class="btn btn-sm">Start daily review</a></p>
   {% if daily_reviews %}
   <table>
     <thead>
@@ -18,8 +18,8 @@
     <tbody>
       {% for review in daily_reviews %}
       <tr>
-        <td><small>{{ review.completed_at|date:"N j, Y g:i a" }}</small></td>
-        <td><small class="muted">{{ review.notes|truncatechars:60 }}</small></td>
+        <td class="nowrap small">{{ review.completed_at|date:"N j, Y g:i a" }}</td>
+        <td class="muted small">{{ review.notes|truncatechars:60 }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -30,8 +30,8 @@
 </section>
 
 <section>
-  <h2>Weekly Reviews</h2>
-  <p><a href="{% url 'reviews:weekly_review' %}" role="button" class="outline">Start weekly review</a></p>
+  <h2 class="mt-0">Weekly Reviews</h2>
+  <p><a href="{% url 'reviews:weekly_review' %}" class="btn btn-sm">Start weekly review</a></p>
   {% if weekly_reviews %}
   <table>
     <thead>
@@ -40,8 +40,8 @@
     <tbody>
       {% for review in weekly_reviews %}
       <tr>
-        <td><small>{{ review.completed_at|date:"N j, Y g:i a" }}</small></td>
-        <td><small class="muted">{{ review.notes|truncatechars:60 }}</small></td>
+        <td class="nowrap small">{{ review.completed_at|date:"N j, Y g:i a" }}</td>
+        <td class="muted small">{{ review.notes|truncatechars:60 }}</td>
       </tr>
       {% endfor %}
     </tbody>

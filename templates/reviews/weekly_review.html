@@ -3,12 +3,16 @@
 {% block title %}Weekly Review — GTD Manager{% endblock %}
 
 {% block content %}
-<h1>Weekly Review — {{ today|date:"N j, Y" }}</h1>
+<div class="page-header">
+  <h1>Weekly Review</h1>
+  <span class="spacer"></span>
+  <span class="page-meta">{{ today|date:"l, N j, Y" }}</span>
+</div>
 
-<p class="muted">Work through each section top to bottom, then mark the review complete at the bottom.</p>
+<p class="page-intro">Work through each section top to bottom, then mark the review complete at the bottom.</p>
 
-<section>
-  <h2>Step 1 — Process inbox to empty</h2>
+<section class="review-step">
+  <h2><span class="step-num">1</span> Process inbox to empty</h2>
   {% if inbox_count %}
     <p>
       <a href="{% url 'capture:inbox' %}">{{ inbox_count }} unprocessed item{{ inbox_count|pluralize }}</a>
@@ -27,15 +31,17 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>Step 2 — Review active projects</h2>
+<section class="review-step">
+  <h2><span class="step-num">2</span> Review active projects</h2>
   {% if stuck_projects %}
   <p><strong>Stuck projects</strong> — no active next action or waiting-for item:</p>
-  <ul>
+  <ul class="item-list">
     {% for project in stuck_projects %}
     <li>
-      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-      {% if project.deadline %}<small class="muted">— due {{ project.deadline|date:"N j, Y" }}</small>{% endif %}
+      <span class="item-main">
+        <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+        {% if project.deadline %}<small class="muted"> — due {{ project.deadline|date:"N j, Y" }}</small>{% endif %}
+      </span>
     </li>
     {% endfor %}
   </ul>
@@ -43,9 +49,9 @@
   {% if ok_projects %}
   <details {% if not stuck_projects %}open{% endif %}>
     <summary>{{ ok_projects|length }} project{{ ok_projects|pluralize }} with active next actions</summary>
-    <ul>
+    <ul class="item-list">
       {% for project in ok_projects %}
-      <li><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></li>
+      <li><span class="item-main"><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></span></li>
       {% endfor %}
     </ul>
   </details>
@@ -55,8 +61,8 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>Step 3 — Review on-hold projects</h2>
+<section class="review-step">
+  <h2><span class="step-num">3</span> Review on-hold projects</h2>
   {% if on_hold_projects %}
   <table>
     <thead>
@@ -66,8 +72,8 @@
       {% for project in on_hold_projects %}
       <tr>
         <td><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></td>
-        <td><small class="muted">{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% else %}—{% endif %}</small></td>
-        <td><small class="muted">{{ project.on_hold_reason|truncatechars:60 }}</small></td>
+        <td class="muted nowrap">{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% else %}—{% endif %}</td>
+        <td class="muted">{{ project.on_hold_reason|truncatechars:60 }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -77,14 +83,16 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>Step 4 — Project deadlines within 2 weeks</h2>
+<section class="review-step">
+  <h2><span class="step-num">4</span> Project deadlines within 2 weeks</h2>
   {% if deadline_projects %}
-  <ul>
+  <ul class="item-list">
     {% for project in deadline_projects %}
     <li>
-      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-      — <small class="muted">deadline {{ project.deadline|date:"N j, Y" }}</small>
+      <span class="item-main">
+        <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+        <small class="muted"> · deadline {{ project.deadline|date:"N j, Y" }}</small>
+      </span>
     </li>
     {% endfor %}
   </ul>
@@ -93,9 +101,9 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>Step 5 — Waiting-for items needing attention</h2>
-  <p class="muted">Items with a follow-up date due today or earlier, or with no follow-up date set.</p>
+<section class="review-step">
+  <h2><span class="step-num">5</span> Waiting-for items needing attention</h2>
+  <p class="muted small">Items with a follow-up date due today or earlier, or with no follow-up date set.</p>
   {% if waiting_needs_attention %}
   <table>
     <thead>
@@ -105,14 +113,12 @@
       {% for item in waiting_needs_attention %}
       <tr>
         <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
-        <td><small class="muted">{{ item.person }}</small></td>
-        <td>
-          <small class="muted">
-            {% if item.follow_up_on %}{{ item.follow_up_on|date:"N j" }}{% else %}not set{% endif %}
-          </small>
+        <td class="muted">{{ item.person }}</td>
+        <td class="muted nowrap">
+          {% if item.follow_up_on %}{{ item.follow_up_on|date:"N j" }}{% else %}not set{% endif %}
         </td>
-        <td>
-          <a href="{% url 'gtd:waiting_for_followup' item.pk %}" role="button" class="outline btn-xs">Update</a>
+        <td class="row-actions">
+          <a href="{% url 'gtd:waiting_for_followup' item.pk %}" class="btn btn-xs">Update</a>
         </td>
       </tr>
       {% endfor %}
@@ -123,24 +129,24 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>Step 6 — Review someday/maybe</h2>
+<section class="review-step">
+  <h2><span class="step-num">6</span> Review someday / maybe</h2>
   <p>
     <a href="{% url 'gtd:someday_list' %}">{{ someday_count }} active someday/maybe item{{ someday_count|pluralize }}</a>
     — promote anything now relevant.
   </p>
 </section>
 
-<section>
-  <h2>Step 7 — Review agenda items</h2>
+<section class="review-step">
+  <h2><span class="step-num">7</span> Review agenda items</h2>
   <p>
     <a href="{% url 'gtd:agenda_list' %}">{{ agenda_count }} agenda item{{ agenda_count|pluralize }}</a>
     — drop anything already resolved.
   </p>
 </section>
 
-<section>
-  <h2>Step 8 — Upcoming this week</h2>
+<section class="review-step">
+  <h2><span class="step-num">8</span> Upcoming this week</h2>
   {% if upcoming_actions %}
   <table>
     <thead>
@@ -152,11 +158,11 @@
         <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
         <td>
           {% if action.project %}
-            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:30 }}</a>
+            <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:30 }}</a>
           {% endif %}
         </td>
-        <td><small class="muted">{% if action.scheduled_for %}{{ action.scheduled_for|date:"N j, g:i a" }}{% endif %}</small></td>
-        <td><small class="muted">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</small></td>
+        <td class="muted nowrap">{% if action.scheduled_for %}{{ action.scheduled_for|date:"N j, g:i a" }}{% endif %}</td>
+        <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -166,13 +172,15 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>Step 9 — Mark review complete</h2>
+<section class="review-step">
+  <h2><span class="step-num">9</span> Mark review complete</h2>
   <form method="post" action="{% url 'reviews:weekly_review' %}">
     {% csrf_token %}
-    <label for="weekly-notes">Notes (optional)</label>
+    <label for="weekly-notes" class="mt-0">Notes <small>(optional)</small></label>
     <textarea id="weekly-notes" name="notes" rows="4" placeholder="Key decisions, patterns noticed, commitments made…"></textarea>
-    <button type="submit">Mark weekly review complete</button>
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Mark weekly review complete</button>
+    </div>
   </form>
 </section>
 {% endblock %}

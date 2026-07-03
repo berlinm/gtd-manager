@@ -5,34 +5,33 @@
 {% block content %}
 <div class="page-header">
   <h1>Agenda</h1>
-  <a href="{% url 'gtd:agenda_item_add' %}" role="button" class="outline btn-sm">+ Add item</a>
+  <span class="spacer"></span>
+  <a href="{% url 'gtd:agenda_item_add' %}" class="btn btn-sm btn-primary">+ Add item</a>
 </div>
 
 {% if not by_person and not by_meeting %}
-  <p>No agenda items.</p>
+  <p class="empty">No agenda items. Add things to raise with a person or in a meeting.</p>
 {% endif %}
 
 {% if by_person %}
-<h2>By person</h2>
+<h2 class="mt-0">By person</h2>
 {% for person, items in by_person.items %}
 <section>
-  <h3 style="margin-bottom:0.4rem">
+  <h3 class="flex">
     {{ person.name }}
-    <a href="{% url 'gtd:agenda_item_add' %}?person={{ person.pk }}"
-       style="font-size:0.75rem;font-weight:normal;margin-left:0.5rem">+ add</a>
+    <a href="{% url 'gtd:agenda_item_add' %}?person={{ person.pk }}" class="chip">+ add</a>
   </h3>
-  <ul style="margin-top:0">
+  <ul class="item-list">
     {% for item in items %}
-    <li style="display:flex;align-items:baseline;gap:0.5rem">
-      <span>
+    <li>
+      <span class="item-main">
         <a href="{% url 'gtd:agenda_item_edit' item.pk %}">{{ item.title }}</a>
-        {% if item.body %}<br><small class="muted">{{ item.body|truncatechars:80 }}</small>{% endif %}
+        {% if item.body %}<span class="cell-sub">{{ item.body|truncatechars:80 }}</span>{% endif %}
       </span>
-      <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}" style="margin:0;flex-shrink:0">
+      <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}">
         {% csrf_token %}
         <input type="hidden" name="next" value="/agenda/">
-        <button type="submit" class="outline secondary"
-                style="padding:0.1rem 0.4rem;font-size:0.75rem;width:auto">Raised</button>
+        <button type="submit" class="btn-xs">Raised</button>
       </form>
     </li>
     {% endfor %}
@@ -45,23 +44,21 @@
 <h2>By meeting</h2>
 {% for meeting, items in by_meeting.items %}
 <section>
-  <h3 style="margin-bottom:0.4rem">
+  <h3 class="flex">
     {{ meeting.title }}
-    <a href="{% url 'gtd:agenda_item_add' %}?meeting={{ meeting.pk }}"
-       style="font-size:0.75rem;font-weight:normal;margin-left:0.5rem">+ add</a>
+    <a href="{% url 'gtd:agenda_item_add' %}?meeting={{ meeting.pk }}" class="chip">+ add</a>
   </h3>
-  <ul style="margin-top:0">
+  <ul class="item-list">
     {% for item in items %}
-    <li style="display:flex;align-items:baseline;gap:0.5rem">
-      <span>
+    <li>
+      <span class="item-main">
         <a href="{% url 'gtd:agenda_item_edit' item.pk %}">{{ item.title }}</a>
-        {% if item.body %}<br><small class="muted">{{ item.body|truncatechars:80 }}</small>{% endif %}
+        {% if item.body %}<span class="cell-sub">{{ item.body|truncatechars:80 }}</span>{% endif %}
       </span>
-      <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}" style="margin:0;flex-shrink:0">
+      <form method="post" action="{% url 'gtd:agenda_item_done' item.pk %}">
         {% csrf_token %}
         <input type="hidden" name="next" value="/agenda/">
-        <button type="submit" class="outline secondary"
-                style="padding:0.1rem 0.4rem;font-size:0.75rem;width:auto">Raised</button>
+        <button type="submit" class="btn-xs">Raised</button>
       </form>
     </li>
     {% endfor %}

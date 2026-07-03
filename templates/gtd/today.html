@@ -3,16 +3,22 @@
 {% block title %}Today — GTD Manager{% endblock %}
 
 {% block content %}
-<h1>Today</h1>
+<div class="page-header">
+  <h1>Today</h1>
+  <span class="spacer"></span>
+  <span class="page-meta">{% now "l, N j" %}</span>
+</div>
 
 {% if projects_with_deadline %}
 <section>
   <h2>Project deadlines</h2>
-  <ul>
+  <ul class="item-list">
     {% for project in projects_with_deadline %}
     <li>
-      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-      — <small class="muted">deadline {{ project.deadline|date:"N j, Y" }}</small>
+      <span class="item-main">
+        <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+        <small class="muted">· deadline {{ project.deadline|date:"N j, Y" }}</small>
+      </span>
     </li>
     {% endfor %}
   </ul>
@@ -38,16 +44,16 @@
         <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
         <td>
           {% if action.project %}
-            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:35 }}</a>
+            <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:35 }}</a>
           {% endif %}
         </td>
-        <td><small class="muted">{% if action.scheduled_for %}{{ action.scheduled_for|date:"g:i a" }}{% endif %}</small></td>
-        <td><small class="muted">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</small></td>
-        <td style="white-space:nowrap">
-          <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+        <td class="muted nowrap">{% if action.scheduled_for %}{{ action.scheduled_for|date:"g:i a" }}{% endif %}</td>
+        <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</td>
+        <td class="row-actions">
+          <form method="post" action="{% url 'gtd:action_done' action.pk %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="{% url 'gtd:today' %}">
-            <button type="submit" class="outline btn-xs">Done</button>
+            <button type="submit" class="btn-xs">Done</button>
           </form>
         </td>
       </tr>
@@ -56,7 +62,7 @@
   </table>
 </section>
 {% else %}
-  <p>Nothing scheduled or overdue today.</p>
+  <p class="empty">Nothing scheduled or overdue today.</p>
 {% endif %}
 
 {% if follow_ups_due %}
@@ -70,10 +76,10 @@
       {% for item in follow_ups_due %}
       <tr>
         <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
-        <td><small class="muted">{{ item.person }}</small></td>
-        <td><small class="muted">{{ item.follow_up_on|date:"N j" }}</small></td>
-        <td>
-          <a href="{% url 'gtd:waiting_for_receive' item.pk %}" role="button" class="outline btn-xs">Received</a>
+        <td class="muted">{{ item.person }}</td>
+        <td class="muted nowrap">{{ item.follow_up_on|date:"N j" }}</td>
+        <td class="row-actions">
+          <a href="{% url 'gtd:waiting_for_receive' item.pk %}" class="btn btn-xs">Received</a>
         </td>
       </tr>
       {% endfor %}

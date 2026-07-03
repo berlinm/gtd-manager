@@ -3,14 +3,18 @@
 {% block title %}Daily Review — GTD Manager{% endblock %}
 
 {% block content %}
-<h1>Daily Review — {{ today|date:"N j, Y" }}</h1>
+<div class="page-header">
+  <h1>Daily Review</h1>
+  <span class="spacer"></span>
+  <span class="page-meta">{{ today|date:"l, N j, Y" }}</span>
+</div>
 
 {% if focus_pks %}
-<p><a href="{% url 'reviews:focus_list' %}" role="button" class="outline">View current focus list ({{ focus_pks|length }} items)</a></p>
+<p><a href="{% url 'reviews:focus_list' %}" class="btn">View current focus list ({{ focus_pks|length }} items)</a></p>
 {% endif %}
 
-<section>
-  <h2>1. Inbox</h2>
+<section class="review-step">
+  <h2><span class="step-num">1</span> Inbox</h2>
   {% if inbox_count %}
     <p>
       <a href="{% url 'capture:inbox' %}">{{ inbox_count }} unprocessed item{{ inbox_count|pluralize }}</a>
@@ -21,8 +25,8 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>2. Scheduled today</h2>
+<section class="review-step">
+  <h2><span class="step-num">2</span> Scheduled today</h2>
   {% if scheduled_today %}
   <table>
     <thead>
@@ -34,15 +38,15 @@
         <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
         <td>
           {% if action.project %}
-            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:30 }}</a>
+            <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:30 }}</a>
           {% endif %}
         </td>
-        <td><small class="muted">{{ action.scheduled_for|date:"g:i a" }}</small></td>
-        <td>
-          <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+        <td class="muted nowrap">{{ action.scheduled_for|date:"g:i a" }}</td>
+        <td class="row-actions">
+          <form method="post" action="{% url 'gtd:action_done' action.pk %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="{% url 'reviews:daily_review' %}">
-            <button type="submit" class="outline btn-xs">Done</button>
+            <button type="submit" class="btn-xs">Done</button>
           </form>
         </td>
       </tr>
@@ -54,21 +58,23 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>3. Deadlines</h2>
+<section class="review-step">
+  <h2><span class="step-num">3</span> Deadlines</h2>
   {% if deadline_projects %}
-  <h3>Projects</h3>
-  <ul>
+  <h3 class="mt-0">Projects</h3>
+  <ul class="item-list">
     {% for project in deadline_projects %}
     <li>
-      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-      — <small class="muted">deadline {{ project.deadline|date:"N j, Y" }}</small>
+      <span class="item-main">
+        <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+        <small class="muted"> · deadline {{ project.deadline|date:"N j, Y" }}</small>
+      </span>
     </li>
     {% endfor %}
   </ul>
   {% endif %}
   {% if deadline_actions %}
-  <h3>Actions</h3>
+  <h3 class="mt-0">Actions</h3>
   <table>
     <thead>
       <tr><th>Action</th><th>Project</th><th>Deadline</th><th></th></tr>
@@ -79,15 +85,15 @@
         <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
         <td>
           {% if action.project %}
-            <a href="{% url 'gtd:project_detail' action.project.pk %}">{{ action.project.title|truncatechars:30 }}</a>
+            <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:30 }}</a>
           {% endif %}
         </td>
-        <td><small class="muted">{{ action.deadline|date:"N j, Y" }}</small></td>
-        <td>
-          <form method="post" action="{% url 'gtd:action_done' action.pk %}" style="display:inline;margin:0">
+        <td class="muted nowrap">{{ action.deadline|date:"N j, Y" }}</td>
+        <td class="row-actions">
+          <form method="post" action="{% url 'gtd:action_done' action.pk %}">
             {% csrf_token %}
             <input type="hidden" name="next" value="{% url 'reviews:daily_review' %}">
-            <button type="submit" class="outline btn-xs">Done</button>
+            <button type="submit" class="btn-xs">Done</button>
           </form>
         </td>
       </tr>
@@ -100,8 +106,8 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>4. Waiting-for follow-ups due</h2>
+<section class="review-step">
+  <h2><span class="step-num">4</span> Waiting-for follow-ups due</h2>
   {% if follow_ups_due %}
   <table>
     <thead>
@@ -111,10 +117,10 @@
       {% for item in follow_ups_due %}
       <tr>
         <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
-        <td><small class="muted">{{ item.person }}</small></td>
-        <td><small class="muted">{{ item.follow_up_on|date:"N j" }}</small></td>
-        <td>
-          <a href="{% url 'gtd:waiting_for_followup' item.pk %}" role="button" class="outline btn-xs">Update</a>
+        <td class="muted">{{ item.person }}</td>
+        <td class="muted nowrap">{{ item.follow_up_on|date:"N j" }}</td>
+        <td class="row-actions">
+          <a href="{% url 'gtd:waiting_for_followup' item.pk %}" class="btn btn-xs">Update</a>
         </td>
       </tr>
       {% endfor %}
@@ -125,14 +131,16 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>5. Stuck projects</h2>
+<section class="review-step">
+  <h2><span class="step-num">5</span> Stuck projects</h2>
   {% if stuck_projects %}
-  <ul>
+  <ul class="item-list">
     {% for project in stuck_projects %}
     <li>
-      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-      — <small class="muted">no active actions or waiting-for items</small>
+      <span class="item-main">
+        <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+        <small class="muted"> · no active actions or waiting-for items</small>
+      </span>
     </li>
     {% endfor %}
   </ul>
@@ -141,33 +149,29 @@
   {% endif %}
 </section>
 
-<section>
-  <h2>6. Focus selection</h2>
-  <p class="muted">Choose a small set of actions to focus on today. Leave all unchecked to skip focus.</p>
+<section class="review-step">
+  <h2><span class="step-num">6</span> Focus selection</h2>
+  <p class="muted small">Choose a small set of actions to focus on today. Leave all unchecked to skip focus.</p>
   <form method="post" action="{% url 'reviews:daily_review' %}">
     {% csrf_token %}
     {% if available_actions %}
-    <fieldset>
+    <div style="margin-bottom:0.8rem">
       {% for action in available_actions %}
-      <label>
+      <label class="check focus-check">
         <input type="checkbox" name="focus_pks" value="{{ action.pk }}"
                {% if action.pk in focus_pks %}checked{% endif %}>
-        {{ action.title }}
-        {% if action.project %}
-          <small class="muted">— {{ action.project.title|truncatechars:40 }}</small>
-        {% endif %}
-        {% if action.deadline %}
-          <small class="muted">(due {{ action.deadline|date:"N j" }})</small>
-        {% endif %}
+        <span>{{ action.title }}{% if action.project %} <small class="muted">— {{ action.project.title|truncatechars:40 }}</small>{% endif %}{% if action.deadline %} <small class="muted">(due {{ action.deadline|date:"N j" }})</small>{% endif %}</span>
       </label>
       {% endfor %}
-    </fieldset>
+    </div>
     {% else %}
       <p class="muted">No available actions.</p>
     {% endif %}
-    <label for="daily-notes">Notes (optional)</label>
+    <label for="daily-notes">Notes <small>(optional)</small></label>
     <textarea id="daily-notes" name="notes" rows="3" placeholder="Anything to note from this review…"></textarea>
-    <button type="submit">Complete daily review</button>
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Complete daily review</button>
+    </div>
   </form>
 </section>
 {% endblock %}

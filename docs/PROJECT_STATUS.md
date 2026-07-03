@@ -85,6 +85,9 @@
 - Review nav link (highlights when in reviews app; shows focus count badge when focus is active)
 
 **Cross-cutting**
+- Bespoke design system (`static/css/app.css`, no CSS framework): design tokens, light/dark themes, sidebar shell with GTD-grouped nav and live count badges, sticky capture bar with `/` keyboard shortcut and inline "✓ Captured" feedback
+- Clarify screens use progressive disclosure: actionable dispositions are tabs revealing one panel at a time
+- Responsive below ~880 px (off-canvas sidebar with hamburger toggle); `prefers-reduced-motion` respected
 - Dark / light mode (localStorage)
 - Login / logout; all views require authentication
 - 162 automated tests (model validation + view/workflow integration)
@@ -121,3 +124,4 @@ See `docs/DECISIONS_NEEDED.md`. No decisions have been silently resolved.
 | Clarify + WaitingFor | 2026-06-27 | Bug fixes, project integration, delegation history |
 | Phase 5 | 2026-06-26 | Meeting capture, session notes, note clarify, pending badge |
 | Phase 6 | 2026-06-27 | Daily review, weekly review, focus list (session), review history |
+| UI redesign | 2026-07-03 | Pico CSS replaced with bespoke design system; sidebar shell, capture bar signature element, clarify progressive disclosure, light/dark themes |

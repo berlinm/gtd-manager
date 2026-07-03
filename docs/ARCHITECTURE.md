@@ -8,6 +8,7 @@
 | Framework | Django | See ADR 001 |
 | UI rendering | Server-side HTML | See ADR 003 |
 | JavaScript | Vendored htmx 2.0.3 | See ADR 003 and section 4 |
+| CSS | Bespoke design system (`static/css/app.css`) | See section 6; tokens + light/dark themes; Pico CSS removed 2026-07-03 |
 | Database | SQLite | See ADR 002 |
 | Architecture | Monolithic | See ADR 001 |
 | Auth | Django built-in | Single-user; no external IdP needed |
@@ -110,7 +111,19 @@ Circular dependencies are avoided by design — `gtd` does not import from
 
 ---
 
-## 4. JavaScript Strategy
+## 4. Navigation and Shell Layout
+
+**Decision (2026-06-28):** Left persistent sidebar on desktop.
+
+`base.html` uses a two-column layout: a fixed 232 px `<aside id="sidebar">` on the left containing the app brand and primary nav, and a `<div id="app-main">` filling the remainder. A sticky capture strip sits at the top of the content area on every page, with a `/` keyboard shortcut that focuses it globally.
+
+Primary nav items are grouped under small-caps labels that mirror the GTD workflow: **Do** (Dashboard, Today, Next Actions), **Capture** (Inbox), **Organize** (Projects, Waiting For, Agendas, Meetings), **Library** (Someday / Maybe, Reference), **Review** (Reviews). Secondary items (Settings, theme toggle, Log out) are anchored at the bottom of the sidebar via `margin-top: auto`. Counts (inbox unprocessed, pending meeting notes, focus items) appear as pill badges beside their nav labels using `<span class="nav-count">`; the inbox count element carries `id="nav-inbox-count"` and is updated live by an htmx out-of-band swap after quick capture.
+
+Below 880 px the sidebar collapses off-canvas and a hamburger button in the capture strip toggles it as an overlay (`body.nav-open`).
+
+---
+
+## 5. JavaScript Strategy
 
 **Decision (2026-06-27):** Vendored htmx.
 
@@ -121,17 +134,24 @@ framework is used.
 
 ---
 
-## 5. CSS Strategy
+## 6. CSS Strategy
 
-**Decision (2026-06-27):** Vendored classless CSS framework.
+**Decision (2026-07-03):** Bespoke design system in a single stylesheet (supersedes the 2026-06-27 Pico CSS decision).
 
-A single CSS file (e.g., Pico CSS) is committed to `static/css/`. It provides
-sensible typographic defaults and form styling with minimal or no class
-attributes required on most HTML elements. No build step required.
+`static/css/app.css` is the only stylesheet: a hand-written design system built
+on CSS custom properties (design tokens) with light and dark themes selected by
+`data-theme` on `<html>`. Pico CSS was removed. The system defines the token
+palette (one teal accent, warm neutrals, ok/warn/danger), a system font stack
+(Segoe UI Variable first), base element styles, and component classes
+(`.btn`, `.chip`, `.badge`, `.card`, `.stat-card`, `.item-list`, `.review-step`,
+`.clarify-tabs`, `.msg`, `.empty`, `.filter-row`). Micro-transitions are
+~130 ms and disabled under `prefers-reduced-motion`. No build step, no
+external assets. The visual direction is governed by
+`docs/UI_REFACTOR_PRINCIPLES.md`.
 
 ---
 
-## 6. Production Server (TBD)
+## 7. Production Server (TBD)
 
 `django runserver` is a development-only server and must not be used in
 production. The production WSGI server is TBD pending knowledge of the target

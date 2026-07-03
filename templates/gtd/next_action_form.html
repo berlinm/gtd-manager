@@ -5,12 +5,12 @@
 {% block content %}
 <h1>{% if form.instance.pk %}Edit action{% else %}Add next action{% endif %}</h1>
 
-<form method="post" style="max-width:40rem">
+<form method="post" class="form-medium">
   {% csrf_token %}
 
   <label for="{{ form.title.id_for_label }}">Action <small>(what is the next physical step?)</small></label>
   {{ form.title }}
-  {% if form.title.errors %}<small>{{ form.title.errors }}</small>{% endif %}
+  {% if form.title.errors %}<p class="field-errors">{{ form.title.errors }}</p>{% endif %}
 
   <label for="{{ form.body.id_for_label }}">Notes <small>(optional)</small></label>
   {{ form.body }}
@@ -27,15 +27,15 @@
   </div>
 
   <label>Contexts</label>
-  <div style="display:flex;gap:1rem;flex-wrap:wrap">
+  <div class="flex">
     {% for checkbox in form.contexts %}
-      <label style="display:flex;align-items:center;gap:0.4rem;font-weight:normal">
+      <label class="check mb-0 mt-0">
         {{ checkbox.tag }} {{ checkbox.choice_label }}
       </label>
     {% endfor %}
   </div>
 
-  <details {% if form.instance.defer_until or form.instance.scheduled_for or form.instance.deadline %}open{% endif %}>
+  <details {% if form.instance.defer_until or form.instance.scheduled_for or form.instance.deadline %}open{% endif %} style="margin-top:1rem">
     <summary>Dates</summary>
     <div class="grid">
       <div>
@@ -52,22 +52,22 @@
       </div>
     </div>
     {% if form.defer_until.errors or form.scheduled_for.errors or form.deadline.errors %}
-      <small style="color:var(--pico-del-color)">
+      <p class="field-errors">
         {{ form.defer_until.errors }}{{ form.scheduled_for.errors }}{{ form.deadline.errors }}
-      </small>
+      </p>
     {% endif %}
   </details>
 
   {% if form.non_field_errors %}
-    <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+    <p class="field-errors">{{ form.non_field_errors }}</p>
   {% endif %}
 
-  <div style="display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap">
-    <button type="submit">Save</button>
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">Save</button>
     {% if form.instance.pk %}
-      <a href="{% url 'gtd:action_delegate' form.instance.pk %}" role="button" class="outline secondary">Delegate…</a>
+      <a href="{% url 'gtd:action_delegate' form.instance.pk %}" class="btn">Delegate…</a>
     {% endif %}
-    <a href="/actions/" role="button" class="outline secondary">Cancel</a>
+    <a href="/actions/" class="btn btn-quiet">Cancel</a>
   </div>
 </form>
 {% endblock %}

@@ -5,8 +5,9 @@
 {% block content %}
 <div class="page-header">
   <h1>Waiting For</h1>
-  <a href="{% url 'gtd:waiting_for_add' %}" role="button" class="outline btn-sm">+ Add</a>
+  <span class="spacer"></span>
   <a href="{% url 'gtd:waiting_for_history' %}" class="chip">History</a>
+  <a href="{% url 'gtd:waiting_for_add' %}" class="btn btn-sm btn-primary">+ Add</a>
 </div>
 
 {% if waiting_items %}
@@ -23,33 +24,35 @@
   </thead>
   <tbody>
     {% for item in waiting_items %}
-    <tr {% if item.follow_up_on and item.follow_up_on <= today %}style="background:var(--pico-del-color-30,rgba(255,0,0,0.06))"{% endif %}>
+    <tr {% if item.follow_up_on and item.follow_up_on <= today %}class="row-attn"{% endif %}>
       <td>
         <a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a>
-        {% if item.body %}<br><small class="muted">{{ item.body|truncatechars:60 }}</small>{% endif %}
+        {% if item.body %}<span class="cell-sub">{{ item.body|truncatechars:60 }}</span>{% endif %}
       </td>
-      <td><small class="muted">{{ item.person }}</small></td>
+      <td class="muted">{{ item.person }}</td>
       <td>
         {% if item.project %}
-          <a href="{% url 'gtd:project_detail' item.project.pk %}"><small>{{ item.project.title|truncatechars:30 }}</small></a>
+          <a href="{% url 'gtd:project_detail' item.project.pk %}" class="muted small">{{ item.project.title|truncatechars:30 }}</a>
         {% endif %}
       </td>
-      <td>
+      <td class="nowrap">
         {% if item.follow_up_on %}
-          <small {% if item.follow_up_on <= today %}style="font-weight:bold;color:var(--pico-del-color)"{% else %}class="muted"{% endif %}>
-            {{ item.follow_up_on|date:"N j" }}
-          </small>
+          {% if item.follow_up_on <= today %}
+            <span class="badge badge-danger">{{ item.follow_up_on|date:"N j" }}</span>
+          {% else %}
+            <span class="muted small">{{ item.follow_up_on|date:"N j" }}</span>
+          {% endif %}
         {% endif %}
       </td>
-      <td><small class="muted">{% if item.expected_by %}{{ item.expected_by|date:"N j" }}{% endif %}</small></td>
-      <td style="white-space:nowrap">
-        <a href="{% url 'gtd:waiting_for_receive' item.pk %}" role="button" class="outline btn-xs">Received</a>
+      <td class="muted nowrap">{% if item.expected_by %}{{ item.expected_by|date:"N j" }}{% endif %}</td>
+      <td class="row-actions">
+        <a href="{% url 'gtd:waiting_for_receive' item.pk %}" class="btn btn-xs">Received</a>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-  <p>Nothing waiting.</p>
+  <p class="empty">Nothing waiting. When you delegate something, track it here so it never slips.</p>
 {% endif %}
 {% endblock %}

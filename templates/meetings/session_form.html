@@ -5,7 +5,7 @@
 {% block content %}
 <h1>New session — {{ meeting.title }}</h1>
 
-<form method="post" style="max-width:35rem">
+<form method="post" class="form-narrow">
   {% csrf_token %}
 
   <label for="{{ form.occurred_on.id_for_label }}">Date</label>
@@ -26,12 +26,12 @@
   {{ form.notes }}
 
   {% if form.non_field_errors %}
-  <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+  <p class="field-errors">{{ form.non_field_errors }}</p>
   {% endif %}
 
-  <div style="display:flex;gap:0.75rem;margin-top:1rem">
-    <button type="submit">Start session</button>
-    <a href="{% url 'meetings:meeting_detail' meeting.pk %}" role="button" class="outline secondary">Cancel</a>
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">Start session</button>
+    <a href="{% url 'meetings:meeting_detail' meeting.pk %}" class="btn btn-quiet">Cancel</a>
   </div>
 </form>
 {% endblock %}

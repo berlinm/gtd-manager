@@ -5,7 +5,8 @@
 {% block content %}
 <div class="page-header">
   <h1>Areas of Responsibility</h1>
-  <a href="{% url 'core:area_add' %}" role="button" class="outline btn-sm">+ Add area</a>
+  <span class="spacer"></span>
+  <a href="{% url 'core:area_add' %}" class="btn btn-sm btn-primary">+ Add area</a>
 </div>
 
 {% if areas %}
@@ -17,14 +18,14 @@
     {% for area in areas %}
     <tr>
       <td><a href="{% url 'gtd:area_detail' area.pk %}">{{ area.title }}</a></td>
-      <td><small class="muted">{{ area.description|truncatechars:60 }}</small></td>
-      <td><small class="muted">{% if area.active %}Yes{% else %}No{% endif %}</small></td>
-      <td><a href="{% url 'core:area_edit' area.pk %}" class="chip">Edit</a></td>
+      <td class="muted">{{ area.description|truncatechars:60 }}</td>
+      <td class="muted">{% if area.active %}Yes{% else %}No{% endif %}</td>
+      <td class="row-actions"><a href="{% url 'core:area_edit' area.pk %}" class="chip">Edit</a></td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-  <p>No areas defined yet.</p>
+  <p class="empty">No areas defined yet. <a href="{% url 'core:area_add' %}">Add one</a> to group projects by responsibility.</p>
 {% endif %}
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 <h1>{% if form.instance.pk %}Edit reference{% else %}Add reference{% endif %}</h1>
 
-<form method="post" style="max-width:50rem">
+<form method="post" class="form-wide">
   {% csrf_token %}
 
   <label for="{{ form.title.id_for_label }}">Title</label>
@@ -27,12 +27,12 @@
     {% endif %}
   </div>
 
-  <div style="display:flex;gap:0.75rem;margin-top:1rem">
-    <button type="submit">Save</button>
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">Save</button>
     {% if form.instance.pk %}
-      <a href="{% url 'gtd:reference_detail' form.instance.pk %}" role="button" class="outline secondary">Cancel</a>
+      <a href="{% url 'gtd:reference_detail' form.instance.pk %}" class="btn btn-quiet">Cancel</a>
     {% else %}
-      <a href="{% url 'gtd:reference_list' %}" role="button" class="outline secondary">Cancel</a>
+      <a href="{% url 'gtd:reference_list' %}" class="btn btn-quiet">Cancel</a>
     {% endif %}
   </div>
 </form>

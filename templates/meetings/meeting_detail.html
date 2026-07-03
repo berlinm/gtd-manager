@@ -5,13 +5,15 @@
 {% block content %}
 <div class="page-header">
   <h1>{{ meeting.title }}</h1>
-  <a href="{% url 'meetings:meeting_update' meeting.pk %}" class="chip">Edit</a>
+  <span class="spacer"></span>
+  <a href="{% url 'meetings:meeting_update' meeting.pk %}" class="btn btn-sm">Edit</a>
 </div>
-{% if meeting.notes %}<p class="muted">{{ meeting.notes }}</p>{% endif %}
+{% if meeting.notes %}<p class="page-intro">{{ meeting.notes }}</p>{% endif %}
 
 <div class="page-header" style="margin-top:1.5rem">
-  <h2>Sessions</h2>
-  <a href="{% url 'meetings:session_create' meeting.pk %}" role="button" class="outline btn-sm">+ New session</a>
+  <h2 class="mt-0">Sessions</h2>
+  <span class="spacer"></span>
+  <a href="{% url 'meetings:session_create' meeting.pk %}" class="btn btn-sm btn-primary">+ New session</a>
 </div>
 
 {% if sessions %}
@@ -20,19 +22,19 @@
     <tr>
       <th>Date</th>
       <th>Status</th>
-      <th>Notes</th>
-      <th>Pending</th>
+      <th class="num">Notes</th>
+      <th class="num">Pending</th>
     </tr>
   </thead>
   <tbody>
     {% for session in sessions %}
     <tr>
       <td><a href="{% url 'meetings:session_detail' session.pk %}">{{ session.occurred_on|date:"N j, Y" }}</a></td>
-      <td>{% if session.is_open %}<span style="color:var(--pico-ins-color)">Open</span>{% else %}<span class="muted">Closed</span>{% endif %}</td>
-      <td>{{ session.note_count }}</td>
-      <td>
+      <td>{% if session.is_open %}<span class="badge badge-ok">Open</span>{% else %}<span class="badge badge-muted">Closed</span>{% endif %}</td>
+      <td class="muted num">{{ session.note_count }}</td>
+      <td class="num">
         {% if not session.is_open and session.unprocessed_count %}
-        <a href="{% url 'meetings:session_detail' session.pk %}" style="color:var(--pico-ins-color)">{{ session.unprocessed_count }}</a>
+        <a href="{% url 'meetings:session_detail' session.pk %}"><span class="badge badge-accent">{{ session.unprocessed_count }}</span></a>
         {% elif not session.is_open %}
         <span class="muted">—</span>
         {% endif %}
@@ -42,17 +44,17 @@
   </tbody>
 </table>
 {% else %}
-<p>No sessions yet.</p>
+<p class="empty">No sessions yet. Start one when the meeting begins.</p>
 {% endif %}
 
 {% if agenda_items %}
 <h2>Open agenda items</h2>
-<ul>
+<ul class="item-list">
   {% for item in agenda_items %}
-  <li>{{ item.title }}</li>
+  <li><span class="item-main">{{ item.title }}</span></li>
   {% endfor %}
 </ul>
 {% endif %}
 
-<p style="margin-top:1.5rem"><a href="{% url 'meetings:meeting_list' %}">← All meetings</a></p>
+<p class="backlink"><a href="{% url 'meetings:meeting_list' %}">← All meetings</a></p>
 {% endblock %}

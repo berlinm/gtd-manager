@@ -5,18 +5,19 @@
 {% block content %}
 <div class="page-header">
   <h1>Projects</h1>
-  <a href="{% url 'gtd:project_add' %}" role="button" class="outline btn-sm">+ Add project</a>
+  <span class="spacer"></span>
+  <a href="{% url 'gtd:project_add' %}" class="btn btn-sm btn-primary">+ Add project</a>
 </div>
 
 {% if active_projects %}
-<h2>Active</h2>
+<h2 class="mt-0">Active</h2>
 <table>
   <thead>
     <tr>
       <th>Project</th>
       <th>Area</th>
       <th>Deadline</th>
-      <th>Status</th>
+      <th class="num">Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -24,19 +25,17 @@
     <tr>
       <td>
         <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-        {% if project.is_stuck %}
-          <mark style="font-size:0.75rem;vertical-align:middle;margin-left:0.4rem">stuck</mark>
-        {% endif %}
+        {% if project.is_stuck %}<span class="badge badge-danger">stuck</span>{% endif %}
       </td>
-      <td><small class="muted">{{ project.area|default:"" }}</small></td>
-      <td><small class="muted">{% if project.deadline %}{{ project.deadline|date:"N j, Y" }}{% endif %}</small></td>
-      <td><small class="muted">{{ project.active_actions|length }} action{{ project.active_actions|length|pluralize }}</small></td>
+      <td class="muted">{{ project.area|default:"" }}</td>
+      <td class="muted nowrap">{% if project.deadline %}{{ project.deadline|date:"N j, Y" }}{% endif %}</td>
+      <td class="muted num">{{ project.active_actions|length }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-  <p>No active projects.</p>
+  <p class="empty">No active projects. <a href="{% url 'gtd:project_add' %}">Add one</a> — anything that needs more than one action.</p>
 {% endif %}
 
 {% if on_hold_projects %}
@@ -53,8 +52,8 @@
     {% for project in on_hold_projects %}
     <tr>
       <td><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></td>
-      <td><small class="muted">{{ project.on_hold_reason|truncatechars:60 }}</small></td>
-      <td><small class="muted">{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% endif %}</small></td>
+      <td class="muted">{{ project.on_hold_reason|truncatechars:60 }}</td>
+      <td class="muted nowrap">{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% endif %}</td>
     </tr>
     {% endfor %}
   </tbody>

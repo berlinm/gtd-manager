@@ -5,7 +5,7 @@
 {% block content %}
 <h1>{% if form.instance.pk %}Edit meeting{% else %}New meeting{% endif %}</h1>
 
-<form method="post" style="max-width:35rem">
+<form method="post" class="form-narrow">
   {% csrf_token %}
 
   <label for="{{ form.title.id_for_label }}">Meeting name</label>
@@ -14,20 +14,20 @@
   <label for="{{ form.notes.id_for_label }}">Notes <small>(optional)</small></label>
   {{ form.notes }}
 
-  <label style="display:flex;align-items:center;gap:0.5rem">
+  <label class="check">
     {{ form.active }} Active
   </label>
 
   {% if form.non_field_errors %}
-  <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+  <p class="field-errors">{{ form.non_field_errors }}</p>
   {% endif %}
 
-  <div style="display:flex;gap:0.75rem;margin-top:1rem">
-    <button type="submit">Save</button>
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">Save</button>
     {% if form.instance.pk %}
-    <a href="{% url 'meetings:meeting_detail' form.instance.pk %}" role="button" class="outline secondary">Cancel</a>
+    <a href="{% url 'meetings:meeting_detail' form.instance.pk %}" class="btn btn-quiet">Cancel</a>
     {% else %}
-    <a href="{% url 'meetings:meeting_list' %}" role="button" class="outline secondary">Cancel</a>
+    <a href="{% url 'meetings:meeting_list' %}" class="btn btn-quiet">Cancel</a>
     {% endif %}
   </div>
 </form>

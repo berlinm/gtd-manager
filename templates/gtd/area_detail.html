@@ -5,17 +5,20 @@
 {% block content %}
 <div class="page-header">
   <h1>{{ object.title }}</h1>
-  <a href="{% url 'core:area_edit' object.pk %}" class="outline secondary btn-sm" role="button">Edit</a>
+  <span class="spacer"></span>
+  <a href="{% url 'core:area_edit' object.pk %}" class="btn btn-sm">Edit</a>
 </div>
-{% if object.description %}<p>{{ object.description }}</p>{% endif %}
+{% if object.description %}<p class="page-intro">{{ object.description }}</p>{% endif %}
 
 {% if active_projects %}
-<h2>Active projects</h2>
-<ul>
+<h2 class="mt-0">Active projects</h2>
+<ul class="item-list">
   {% for project in active_projects %}
   <li>
-    <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-    {% if project.is_stuck %}<small> · <mark>stuck</mark></small>{% endif %}
+    <span class="item-main">
+      <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
+      {% if project.is_stuck %}<span class="badge badge-danger">stuck</span>{% endif %}
+    </span>
   </li>
   {% endfor %}
 </ul>
@@ -23,20 +26,22 @@
 
 {% if on_hold_projects %}
 <h2>On hold</h2>
-<ul>
+<ul class="item-list">
   {% for project in on_hold_projects %}
-  <li><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></li>
+  <li><span class="item-main"><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></span></li>
   {% endfor %}
 </ul>
 {% endif %}
 
 {% if active_actions %}
 <h2>Standalone actions</h2>
-<ul>
+<ul class="item-list">
   {% for action in active_actions %}
   <li>
-    <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-    {% if action.project %}<small class="muted"> · {{ action.project.title }}</small>{% endif %}
+    <span class="item-main">
+      <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
+      {% if action.project %}<small class="muted"> · {{ action.project.title }}</small>{% endif %}
+    </span>
   </li>
   {% endfor %}
 </ul>
@@ -44,11 +49,13 @@
 
 {% if references %}
 <h2>Reference</h2>
-<ul>
+<ul class="item-list">
   {% for ref in references %}
   <li>
-    <a href="{% url 'gtd:reference_detail' ref.pk %}">{{ ref.title }}</a>
-    {% for tag in ref.tags.all %}<small class="muted"> · {{ tag.label }}</small>{% endfor %}
+    <span class="item-main">
+      <a href="{% url 'gtd:reference_detail' ref.pk %}">{{ ref.title }}</a>
+      {% for tag in ref.tags.all %}<small class="muted"> · {{ tag.label }}</small>{% endfor %}
+    </span>
   </li>
   {% endfor %}
 </ul>
@@ -56,16 +63,16 @@
 
 {% if someday_items %}
 <h2>Someday / Maybe</h2>
-<ul>
+<ul class="item-list">
   {% for item in someday_items %}
-  <li><a href="{% url 'gtd:someday_edit' item.pk %}">{{ item.title }}</a></li>
+  <li><span class="item-main"><a href="{% url 'gtd:someday_edit' item.pk %}">{{ item.title }}</a></span></li>
   {% endfor %}
 </ul>
 {% endif %}
 
 {% if not active_projects and not on_hold_projects and not active_actions and not references and not someday_items %}
-<p>Nothing assigned to this area yet.</p>
+<p class="empty">Nothing assigned to this area yet.</p>
 {% endif %}
 
-<p style="margin-top:2rem"><a href="{% url 'core:area_list' %}" class="secondary">← Areas</a></p>
+<p class="backlink"><a href="{% url 'core:area_list' %}">← Areas</a></p>
 {% endblock %}

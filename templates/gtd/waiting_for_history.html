@@ -21,35 +21,35 @@
     {% for item in history_items %}
     <tr>
       <td>{{ item.title }}</td>
-      <td><small class="muted">{{ item.person }}</small></td>
+      <td class="muted">{{ item.person }}</td>
       <td>
         {% if item.project %}
-          <a href="{% url 'gtd:project_detail' item.project.pk %}"><small>{{ item.project.title|truncatechars:30 }}</small></a>
+          <a href="{% url 'gtd:project_detail' item.project.pk %}" class="muted small">{{ item.project.title|truncatechars:30 }}</a>
         {% endif %}
       </td>
-      <td><small class="muted">{{ item.get_status_display }}</small></td>
-      <td><small class="muted">{% if item.completed_at %}{{ item.completed_at|date:"N j, Y" }}{% endif %}</small></td>
-      <td>{% if item.result_notes %}<small>{{ item.result_notes }}</small>{% else %}<small class="muted">—</small>{% endif %}</td>
+      <td class="muted">{{ item.get_status_display }}</td>
+      <td class="muted nowrap">{% if item.completed_at %}{{ item.completed_at|date:"N j, Y" }}{% endif %}</td>
+      <td class="small">{% if item.result_notes %}{{ item.result_notes }}{% else %}<span class="muted">—</span>{% endif %}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
 {% if is_paginated %}
-<nav style="margin-top:1rem">
+<nav class="pagination">
   {% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">← Previous</a>
+    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm">← Previous</a>
   {% endif %}
-  <span class="muted" style="margin:0 1rem">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
   {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">Next →</a>
+    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm">Next →</a>
   {% endif %}
 </nav>
 {% endif %}
 
 {% else %}
-<p>No received or cancelled items yet.</p>
+<p class="empty">No received or cancelled items yet.</p>
 {% endif %}
 
-<p style="margin-top:1.5rem"><a href="{% url 'gtd:waiting_for_list' %}" class="secondary">← Waiting For</a></p>
+<p class="backlink"><a href="{% url 'gtd:waiting_for_list' %}">← Waiting For</a></p>
 {% endblock %}

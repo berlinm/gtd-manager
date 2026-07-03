@@ -5,7 +5,7 @@
 {% block content %}
 <h1>{% if form.instance.pk %}Edit waiting-for item{% else %}Add waiting-for item{% endif %}</h1>
 
-<form method="post" style="max-width:40rem">
+<form method="post" class="form-medium">
   {% csrf_token %}
 
   <label for="{{ form.title.id_for_label }}">What are you waiting for?</label>
@@ -13,7 +13,7 @@
 
   <label for="{{ form.person.id_for_label }}">Who</label>
   {{ form.person }}
-  {% if form.person.errors %}<small>{{ form.person.errors }}</small>{% endif %}
+  {% if form.person.errors %}<p class="field-errors">{{ form.person.errors }}</p>{% endif %}
 
   <label for="{{ form.body.id_for_label }}">Notes <small>(optional)</small></label>
   {{ form.body }}
@@ -37,12 +37,12 @@
   </div>
 
   {% if form.non_field_errors %}
-    <p><small style="color:var(--pico-del-color)">{{ form.non_field_errors }}</small></p>
+    <p class="field-errors">{{ form.non_field_errors }}</p>
   {% endif %}
 
-  <div style="display:flex;gap:0.75rem;margin-top:1rem">
-    <button type="submit">Save</button>
-    <a href="/waiting/" role="button" class="outline secondary">Cancel</a>
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">Save</button>
+    <a href="/waiting/" class="btn btn-quiet">Cancel</a>
   </div>
 </form>
 {% endblock %}

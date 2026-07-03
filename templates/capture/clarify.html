@@ -6,29 +6,80 @@
 <h1>Process inbox item</h1>
 
 <article>
-  <header><strong>{{ item.title }}</strong></header>
+  <header>{{ item.title }}</header>
   {% if item.body %}<p>{{ item.body }}</p>{% endif %}
-  <footer><small>Captured {{ item.captured_at|date:"N j, Y g:i a" }}</small></footer>
+  <footer>Captured {{ item.captured_at|date:"N j, Y g:i a" }}</footer>
 </article>
 
-{% if error and not open_delegate %}<p><mark>{{ error }}</mark></p>{% endif %}
+{% if error and not open_delegate and not open_add_to_project %}
+  <p class="msg msg-error">{{ error }}</p>
+{% endif %}
 
 <form method="post">
   {% csrf_token %}
 
-  <h3>Not actionable</h3>
-  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem">
-    <button type="submit" name="disposition" value="trashed" class="outline secondary">Trash it</button>
+  <h2 class="mt-0">Not actionable?</h2>
+  <div class="disposition-row">
+    <button type="submit" name="disposition" value="trashed">Trash it</button>
     <button type="submit" name="disposition" value="done_immediately">Done immediately</button>
-    <button type="submit" name="disposition" value="someday" class="outline">Someday / maybe</button>
-    <button type="submit" name="disposition" value="reference" class="outline">Save as reference</button>
+    <button type="submit" name="disposition" value="someday">Someday / maybe</button>
+    <button type="submit" name="disposition" value="reference">Save as reference</button>
   </div>
 
-  <h3>Actionable</h3>
+  <h2>Actionable — what is it?</h2>
+  <div class="clarify-tabs" role="group" aria-label="Choose what this becomes">
+    <button type="button" class="clarify-tab" data-panel="panel-action" aria-expanded="false">Single next action</button>
+    <button type="button" class="clarify-tab" data-panel="panel-add" aria-expanded="{% if open_add_to_project %}true{% else %}false{% endif %}">Action in a project</button>
+    <button type="button" class="clarify-tab" data-panel="panel-project" aria-expanded="false">New project</button>
+    <button type="button" class="clarify-tab" data-panel="panel-delegate" aria-expanded="{% if open_delegate %}true{% else %}false{% endif %}">Delegate it</button>
+  </div>
 
-  <fieldset>
+  <fieldset class="clarify-panel" id="panel-action" hidden>
+    <legend>Single next action</legend>
+    <label for="action_title">Action <small>(what is the next physical step?)</small></label>
+    <div class="input-group">
+      <input type="text" id="action_title" name="action_title" value="{{ item.title }}">
+      <button type="submit" name="disposition" value="action" class="btn-primary">Create action</button>
+    </div>
+  </fieldset>
+
+  <fieldset class="clarify-panel" id="panel-add" {% if not open_add_to_project %}hidden{% endif %}>
+    <legend>Add action to an existing project</legend>
+    {% if open_add_to_project and error %}<p class="msg msg-error">{{ error }}</p>{% endif %}
+    {% if active_projects %}
+    <label for="add_project_id">Project</label>
+    <select id="add_project_id" name="add_project_id">
+      <option value="">— select a project —</option>
+      {% for p in active_projects %}
+      <option value="{{ p.pk }}">{{ p.title }}</option>
+      {% endfor %}
+    </select>
+    <label for="add_project_action_title">Action title</label>
+    <div class="input-group">
+      <input type="text" id="add_project_action_title" name="add_project_action_title" value="{{ item.title }}">
+      <button type="submit" name="disposition" value="add_to_project" class="btn-primary">Add to project</button>
+    </div>
+    {% else %}
+    <p class="muted mb-0">No active projects yet.</p>
+    {% endif %}
+  </fieldset>
+
+  <fieldset class="clarify-panel" id="panel-project" hidden>
+    <legend>New project — more than one action</legend>
+    <label for="project_title">Project title <small>(what does done look like?)</small></label>
+    <input type="text" id="project_title" name="project_title" value="{{ item.title }}">
+    <label for="desired_outcome">Desired outcome <small>(optional)</small></label>
+    <textarea id="desired_outcome" name="desired_outcome" rows="2"></textarea>
+    <label for="first_action_title">First next action</label>
+    <input type="text" id="first_action_title" name="first_action_title" placeholder="What is the very next physical action?">
+    <div class="form-actions">
+      <button type="submit" name="disposition" value="project" class="btn-primary">Create project</button>
+    </div>
+  </fieldset>
+
+  <fieldset class="clarify-panel" id="panel-delegate" {% if not open_delegate %}hidden{% endif %}>
     <legend>Delegate it</legend>
-    {% if open_delegate and error %}<p><mark>{{ error }}</mark></p>{% endif %}
+    {% if open_delegate and error %}<p class="msg msg-error">{{ error }}</p>{% endif %}
     <label for="person_name">Who are you waiting on? <small>(required)</small></label>
     <input type="text" id="person_name" name="person_name" placeholder="Person's name" autocomplete="off">
     {% if active_projects %}
@@ -40,50 +91,28 @@
       {% endfor %}
     </select>
     {% endif %}
-    <button type="submit" name="disposition" value="delegate">Create Waiting-For</button>
-  </fieldset>
-
-  <fieldset>
-    <legend>Single next action</legend>
-    <div role="group">
-      <input type="text" id="action_title" name="action_title" value="{{ item.title }}">
-      <button type="submit" name="disposition" value="action">Create Action</button>
+    <div class="form-actions">
+      <button type="submit" name="disposition" value="delegate" class="btn-primary">Create waiting-for</button>
     </div>
   </fieldset>
-
-  <fieldset>
-    <legend>Add action to an existing project</legend>
-    {% if open_add_to_project and error %}<p><mark>{{ error }}</mark></p>{% endif %}
-    {% if active_projects %}
-    <label for="add_project_id">Project</label>
-    <select id="add_project_id" name="add_project_id">
-      <option value="">— select a project —</option>
-      {% for p in active_projects %}
-      <option value="{{ p.pk }}">{{ p.title }}</option>
-      {% endfor %}
-    </select>
-    <label for="add_project_action_title">Action title</label>
-    <div role="group">
-      <input type="text" id="add_project_action_title" name="add_project_action_title" value="{{ item.title }}">
-      <button type="submit" name="disposition" value="add_to_project">Add to Project</button>
-    </div>
-    {% else %}
-    <p><small>No active projects yet.</small></p>
-    {% endif %}
-  </fieldset>
-
-  <fieldset>
-    <legend>Project — more than one action</legend>
-    <label for="project_title">Project title <small>(what does done look like?)</small></label>
-    <input type="text" id="project_title" name="project_title" value="{{ item.title }}">
-    <label for="desired_outcome">Desired outcome <small>(optional)</small></label>
-    <textarea id="desired_outcome" name="desired_outcome" rows="2"></textarea>
-    <label for="first_action_title">First next action</label>
-    <input type="text" id="first_action_title" name="first_action_title" placeholder="What is the very next physical action?">
-    <button type="submit" name="disposition" value="project">Create Project</button>
-  </fieldset>
-
 </form>
 
-<p><a href="{% url 'capture:inbox' %}" class="secondary">← Back to inbox</a></p>
+<p class="backlink"><a href="{% url 'capture:inbox' %}">← Back to inbox</a></p>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.querySelectorAll('.clarify-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.clarify-tab').forEach(function (t) {
+        t.setAttribute('aria-expanded', t === tab ? 'true' : 'false');
+      });
+      document.querySelectorAll('.clarify-panel').forEach(function (p) {
+        p.hidden = p.id !== tab.dataset.panel;
+      });
+      var first = document.getElementById(tab.dataset.panel).querySelector('input, select, textarea');
+      if (first) first.focus();
+    });
+  });
+</script>
 {% endblock %}

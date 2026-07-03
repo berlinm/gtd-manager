@@ -5,9 +5,9 @@
 {% block content %}
 <h1>Settings</h1>
 
-<section>
-  <h2>Backup</h2>
-  <p>
+<section class="card">
+  <h2 class="mt-0">Backup</h2>
+  <p class="small">
     {% if last_backup %}
       Last backup: <strong>{{ last_backup.name }}</strong>
       ({{ backup_count }} backup{{ backup_count|pluralize }} in <code>{{ backup_dir }}</code>)
@@ -18,23 +18,19 @@
   <form method="post">
     {% csrf_token %}
     <input type="hidden" name="action" value="backup">
-    <button type="submit">Backup now</button>
+    <button type="submit" class="btn-primary">Back up now</button>
   </form>
 </section>
 
-<hr>
-
-<section>
-  <h2>Areas of Responsibility</h2>
-  <p>Manage the areas that group your projects and reference material.</p>
-  <a href="{% url 'core:area_list' %}" role="button" class="outline">Manage areas</a>
+<section class="card">
+  <h2 class="mt-0">Areas of Responsibility</h2>
+  <p class="small">Manage the areas that group your projects and reference material.</p>
+  <a href="{% url 'core:area_list' %}" class="btn">Manage areas</a>
 </section>
 
-<hr>
-
-<section>
-  <h2>System</h2>
-  <table>
+<section class="card">
+  <h2 class="mt-0">System</h2>
+  <table class="mb-0">
     <tbody>
       <tr><th>Database</th><td><code>{{ db_path }}</code></td></tr>
       <tr><th>Backup directory</th><td><code>{{ backup_dir }}</code></td></tr>

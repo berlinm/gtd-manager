@@ -228,6 +228,20 @@ must be consistent across all entities (Project, NextAction, WaitingFor).
 
 ---
 
+### Sidebar navigation icons
+
+**Question:** Should the left sidebar nav items carry icons alongside their text labels?
+
+- **Option A: No icons** — text-only, cleanest, no symbol set to choose or vendor
+- **Option B: Unicode symbols** — zero dependencies; works inline; limited expressiveness
+- **Option C: Vendored SVG sprite** — full control; requires choosing and committing an icon set; slight maintenance overhead
+
+If icons are added, they must appear with visible labels (never icon-only), per `docs/UI_REFACTOR_PRINCIPLES.md` §3. Items with unambiguous icons: Inbox, Projects, Waiting For, Today, Reviews. Items harder to icon clearly: Someday/Maybe, Reference, Agendas.
+
+**Status:** Deferred — hold until layout and capture placement are stable
+
+---
+
 ## Decision log
 
 | Decision | Resolved | Value | Notes |
@@ -245,3 +259,4 @@ must be consistent across all entities (Project, NextAction, WaitingFor).
 | HTTPS vs plain HTTP | 2026-06-27 | Plain HTTP on 127.0.0.1 | Single-machine only; SESSION_COOKIE_SECURE = False |
 | Session store backend | 2026-06-27 | Database-backed (default) | Appropriate for single-user; no topology reason to change |
 | CSP treatment | 2026-06-27 | No CSP header | Inline scripts/styles retained; strict CSP disproportionate for single-user localhost app |
+| CSS approach (revised) | 2026-07-03 | Bespoke design system | Pico CSS removed; single hand-written `static/css/app.css` with design tokens, light/dark themes, component classes; governed by `docs/UI_REFACTOR_PRINCIPLES.md` |

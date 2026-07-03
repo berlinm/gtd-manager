@@ -5,13 +5,13 @@
 {% block content %}
 <div class="page-header">
   <h1>Meetings</h1>
-  <a href="{% url 'meetings:meeting_create' %}" role="button" class="outline btn-sm">+ New meeting</a>
+  <span class="spacer"></span>
+  <a href="{% url 'meetings:meeting_create' %}" class="btn btn-sm btn-primary">+ New meeting</a>
 </div>
 
 {% if pending_count %}
-<p style="color:var(--pico-ins-color)">
-  <strong>{{ pending_count }} note{{ pending_count|pluralize }} pending processing</strong>
-  from closed sessions.
+<p class="msg">
+  <strong>{{ pending_count }} note{{ pending_count|pluralize }} pending processing</strong> from closed sessions.
 </p>
 {% endif %}
 
@@ -21,20 +21,20 @@
     <tr>
       <th>Meeting</th>
       <th>Status</th>
-      <th>Sessions</th>
+      <th class="num">Sessions</th>
     </tr>
   </thead>
   <tbody>
     {% for meeting in meetings %}
     <tr>
       <td><a href="{% url 'meetings:meeting_detail' meeting.pk %}">{{ meeting.title }}</a></td>
-      <td>{% if meeting.active %}Active{% else %}<span class="muted">Inactive</span>{% endif %}</td>
-      <td>{{ meeting.sessions.count }}</td>
+      <td>{% if meeting.active %}<span class="badge badge-ok">Active</span>{% else %}<span class="badge badge-muted">Inactive</span>{% endif %}</td>
+      <td class="muted num">{{ meeting.sessions.count }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-<p>No meetings yet. <a href="{% url 'meetings:meeting_create' %}">Add one</a>.</p>
+<p class="empty">No meetings yet. <a href="{% url 'meetings:meeting_create' %}">Add one</a> — a recurring meeting you capture notes in.</p>
 {% endif %}
 {% endblock %}

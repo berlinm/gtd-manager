@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}GTD Manager{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/pico.min.css' %}">
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <script>
     (function () {
@@ -17,159 +17,137 @@
 <body>
 
 {% with view=request.resolver_match %}
-<header class="container-fluid">
-  <nav>
+<aside id="sidebar">
+  <div id="sidebar-brand">
+    <a href="{% url 'dashboard' %}">
+      <svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="4" y="6" width="24" height="22" rx="5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M11 17.5l4 4 7-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      GTD Manager
+    </a>
+  </div>
+
+  <nav id="sidebar-nav">
     <ul>
-      <li><strong><a href="{% url 'dashboard' %}" class="secondary">GTD Manager</a></strong></li>
-    </ul>
-    <ul>
+      <li class="nav-group-label">Do</li>
       <li>
-        <a href="{% url 'dashboard' %}"
+        <a class="nav-item" href="{% url 'dashboard' %}"
            {% if view.url_name == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
       </li>
       <li>
-        <a href="{% url 'capture:inbox' %}"
-           {% if view.app_name == 'capture' %}aria-current="page"{% endif %}>
-          Inbox (<span id="nav-inbox-count">{{ inbox_count }}</span>)
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'gtd:next_actions' %}"
-           {% if view.app_name == 'gtd' and 'action' in view.url_name %}aria-current="page"{% endif %}>Actions</a>
-      </li>
-      <li>
-        <a href="{% url 'gtd:today' %}"
+        <a class="nav-item" href="{% url 'gtd:today' %}"
            {% if view.url_name == 'today' %}aria-current="page"{% endif %}>Today</a>
       </li>
       <li>
-        <a href="{% if focus_count %}{% url 'reviews:focus_list' %}{% else %}{% url 'reviews:daily_review' %}{% endif %}"
-           {% if view.app_name == 'reviews' %}aria-current="page"{% endif %}>
-          Review{% if focus_count %} ({{ focus_count }}){% endif %}
-        </a>
+        <a class="nav-item" href="{% url 'gtd:next_actions' %}"
+           {% if view.app_name == 'gtd' and 'action' in view.url_name %}aria-current="page"{% endif %}>Next Actions</a>
       </li>
-    </ul>
-    <ul>
-      <li>
-        <button id="drawer-toggle" class="outline secondary drawer-toggle-btn"
-                title="Menu" aria-label="Open menu" aria-expanded="false" aria-controls="side-drawer">
-          &#9776;
-        </button>
-      </li>
-    </ul>
-  </nav>
 
-  <div class="container-fluid" style="padding-bottom:0.5rem">
-    <form id="capture-form"
-          hx-post="{% url 'capture:quick_capture' %}"
-          hx-target="#capture-feedback"
-          hx-swap="innerHTML"
-          style="margin:0">
-      {% csrf_token %}
-      <div role="group">
-        <input type="text"
-               name="title"
-               placeholder="Capture a thought…"
-               autocomplete="off"
-               aria-label="Capture">
-        <button type="submit">Capture</button>
-      </div>
-    </form>
-    <div id="capture-feedback" aria-live="polite"></div>
-  </div>
-</header>
+      <li class="nav-group-label">Capture</li>
+      <li>
+        <a class="nav-item" href="{% url 'capture:inbox' %}"
+           {% if view.app_name == 'capture' %}aria-current="page"{% endif %}>
+          Inbox
+          <span class="nav-count nav-count-attn" id="nav-inbox-count">{% if inbox_count %}{{ inbox_count }}{% endif %}</span>
+        </a>
+      </li>
 
-{% endwith %}
-
-<main class="container">
-  {% if messages %}
-    {% for message in messages %}
-      <p class="msg {% if 'error' in message.tags or 'warning' in message.tags %}msg-error{% elif 'success' in message.tags %}msg-success{% endif %}">
-        {{ message }}
-      </p>
-    {% endfor %}
-  {% endif %}
-
-  {% block content %}{% endblock %}
-</main>
-
-{% with view=request.resolver_match %}
-<div id="drawer-overlay" aria-hidden="true"></div>
-<div id="side-drawer" role="complementary" aria-label="Secondary navigation">
-  <div class="drawer-header">
-    <span class="drawer-title">Menu</span>
-    <button id="drawer-close" class="outline secondary drawer-close-btn"
-            aria-label="Close menu">&#x2715;</button>
-  </div>
-  <nav class="drawer-nav">
-    <ul>
+      <li class="nav-group-label">Organize</li>
       <li>
-        <a href="{% url 'gtd:projects' %}"
-           {% if view.app_name == 'gtd' and 'project' in view.url_name %}aria-current="page"{% endif %}>
-          Projects
-        </a>
+        <a class="nav-item" href="{% url 'gtd:projects' %}"
+           {% if view.app_name == 'gtd' and 'project' in view.url_name %}aria-current="page"{% endif %}>Projects</a>
       </li>
       <li>
-        <a href="{% url 'gtd:waiting_for_list' %}"
-           {% if view.app_name == 'gtd' and 'waiting_for' in view.url_name %}aria-current="page"{% endif %}>
-          Waiting
-        </a>
+        <a class="nav-item" href="{% url 'gtd:waiting_for_list' %}"
+           {% if view.app_name == 'gtd' and 'waiting_for' in view.url_name %}aria-current="page"{% endif %}>Waiting For</a>
       </li>
       <li>
-        <a href="{% url 'gtd:agenda_list' %}"
-           {% if view.app_name == 'gtd' and 'agenda' in view.url_name %}aria-current="page"{% endif %}>
-          Agenda
-        </a>
+        <a class="nav-item" href="{% url 'gtd:agenda_list' %}"
+           {% if view.app_name == 'gtd' and 'agenda' in view.url_name %}aria-current="page"{% endif %}>Agendas</a>
       </li>
       <li>
-        <a href="{% url 'gtd:someday_list' %}"
-           {% if view.app_name == 'gtd' and 'someday' in view.url_name %}aria-current="page"{% endif %}>
-          Someday
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'gtd:reference_list' %}"
-           {% if view.app_name == 'gtd' and 'reference' in view.url_name %}aria-current="page"{% endif %}>
-          Reference
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'meetings:meeting_list' %}"
+        <a class="nav-item" href="{% url 'meetings:meeting_list' %}"
            {% if view.app_name == 'meetings' %}aria-current="page"{% endif %}>
-          Meetings{% if pending_notes_count %} (<span id="nav-notes-count">{{ pending_notes_count }}</span>){% endif %}
+          Meetings
+          {% if pending_notes_count %}<span class="nav-count" id="nav-notes-count">{{ pending_notes_count }}</span>{% endif %}
         </a>
       </li>
+
+      <li class="nav-group-label">Library</li>
       <li>
-        <a href="{% url 'reviews:review_history' %}"
-           {% if view.app_name == 'reviews' and view.url_name == 'review_history' %}aria-current="page"{% endif %}>
-          Review history
-        </a>
+        <a class="nav-item" href="{% url 'gtd:someday_list' %}"
+           {% if view.app_name == 'gtd' and 'someday' in view.url_name %}aria-current="page"{% endif %}>Someday / Maybe</a>
       </li>
       <li>
-        <a href="{% url 'core:settings' %}"
-           {% if view.url_name == 'settings' %}aria-current="page"{% endif %}>
-          Settings
+        <a class="nav-item" href="{% url 'gtd:reference_list' %}"
+           {% if view.app_name == 'gtd' and 'reference' in view.url_name %}aria-current="page"{% endif %}>Reference</a>
+      </li>
+
+      <li class="nav-group-label">Review</li>
+      <li>
+        <a class="nav-item"
+           href="{% if focus_count %}{% url 'reviews:focus_list' %}{% else %}{% url 'reviews:daily_review' %}{% endif %}"
+           {% if view.app_name == 'reviews' %}aria-current="page"{% endif %}>
+          Reviews
+          {% if focus_count %}<span class="nav-count">{{ focus_count }}</span>{% endif %}
         </a>
       </li>
     </ul>
-    <hr>
-    <ul>
+    <ul class="nav-bottom">
       <li>
-        <button id="theme-toggle" class="outline secondary"
-                style="width:100%;text-align:left"
-                title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
-          <span id="theme-icon">☀</span>
+        <a class="nav-item" href="{% url 'core:settings' %}"
+           {% if view.url_name == 'settings' or 'area' in view.url_name %}aria-current="page"{% endif %}>Settings</a>
+      </li>
+      <li>
+        <button type="button" id="theme-toggle">
+          <span id="theme-label">Dark mode</span>
         </button>
       </li>
       <li>
-        <form method="post" action="{% url 'logout' %}" style="margin:0">
+        <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
-          <button type="submit" class="outline secondary" style="width:100%;text-align:left">
-            Log out
-          </button>
+          <button type="submit">Log out</button>
         </form>
       </li>
     </ul>
   </nav>
+</aside>
+
+<div id="app-main">
+  <div id="capture-strip">
+    <button type="button" id="nav-toggle" class="btn btn-sm" aria-label="Toggle navigation">☰</button>
+    <div class="capture-wrap">
+      <form id="capture-form"
+            hx-post="{% url 'capture:quick_capture' %}"
+            hx-target="#capture-feedback"
+            hx-swap="innerHTML">
+        {% csrf_token %}
+        <div class="capture-bar">
+          <input type="text"
+                 name="title"
+                 placeholder="What's on your mind?"
+                 autocomplete="off"
+                 aria-label="Capture a thought">
+          <kbd>/</kbd>
+          <button type="submit" class="btn-primary btn-sm">Capture</button>
+        </div>
+      </form>
+      <div id="capture-feedback" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <main class="container">
+    {% if messages %}
+      {% for message in messages %}
+        <p class="msg {% if 'error' in message.tags or 'warning' in message.tags %}msg-error{% elif 'success' in message.tags %}msg-success{% endif %}">
+          {{ message }}
+        </p>
+      {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
 </div>
 {% endwith %}
 
@@ -184,40 +162,41 @@
   });
 
   (function () {
-    var drawer  = document.getElementById('side-drawer');
-    var overlay = document.getElementById('drawer-overlay');
-    var toggle  = document.getElementById('drawer-toggle');
-    var close   = document.getElementById('drawer-close');
-
-    function openDrawer() {
-      drawer.classList.add('open');
-      overlay.classList.add('open');
-      toggle.setAttribute('aria-expanded', 'true');
-      close.focus();
-    }
-    function closeDrawer() {
-      drawer.classList.remove('open');
-      overlay.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.focus();
-    }
-
-    toggle.addEventListener('click', openDrawer);
-    close.addEventListener('click', closeDrawer);
-    overlay.addEventListener('click', closeDrawer);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeDrawer();
-    });
-
+    var toggle = document.getElementById('theme-toggle');
+    var label = document.getElementById('theme-label');
     function applyTheme(t) {
       document.documentElement.setAttribute('data-theme', t);
-      document.getElementById('theme-icon').textContent = t === 'dark' ? '☽' : '☀';
+      label.textContent = t === 'dark' ? 'Light mode' : 'Dark mode';
     }
     applyTheme(localStorage.getItem('theme') || 'light');
-    document.getElementById('theme-toggle').addEventListener('click', function () {
+    toggle.addEventListener('click', function () {
       var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       localStorage.setItem('theme', next);
       applyTheme(next);
+    });
+  })();
+
+  (function () {
+    var captureInput = document.querySelector('#capture-form input[name=title]');
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+      var t = e.target;
+      if (t.matches('input, textarea, select, [contenteditable]')) return;
+      e.preventDefault();
+      captureInput.focus();
+    });
+    captureInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') captureInput.blur();
+    });
+  })();
+
+  (function () {
+    var toggle = document.getElementById('nav-toggle');
+    toggle.addEventListener('click', function () {
+      document.body.classList.toggle('nav-open');
+    });
+    document.getElementById('sidebar-nav').addEventListener('click', function (e) {
+      if (e.target.closest('a')) document.body.classList.remove('nav-open');
     });
   })();
 </script>

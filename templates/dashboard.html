@@ -3,39 +3,36 @@
 {% block title %}Dashboard — GTD Manager{% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <span class="spacer"></span>
+  <span class="page-meta">{% now "l, N j" %}</span>
+</div>
 
-<div class="grid">
-  <article>
-    <header><strong>Inbox</strong></header>
-    {% if inbox_count %}
-      <p><a href="{% url 'capture:inbox' %}">{{ inbox_count }} item{{ inbox_count|pluralize }} to process</a></p>
-    {% else %}
-      <p>Inbox is empty.</p>
-    {% endif %}
-  </article>
+<div class="stat-grid">
+  <a class="stat-card {% if inbox_count %}stat-attn{% endif %}" href="{% url 'capture:inbox' %}">
+    <span class="stat-label">Inbox</span>
+    <div class="stat-value">{{ inbox_count }}</div>
+    <div class="stat-note">{% if inbox_count %}item{{ inbox_count|pluralize }} to process{% else %}Empty — all clear{% endif %}</div>
+  </a>
 
-  <article>
-    <header><strong>Today</strong></header>
-    <p><a href="{% url 'gtd:today' %}">View scheduled and overdue actions</a></p>
-  </article>
+  <a class="stat-card" href="{% url 'gtd:today' %}">
+    <span class="stat-label">Today</span>
+    <div class="stat-value">{% now "N j" %}</div>
+    <div class="stat-note">Scheduled and overdue actions</div>
+  </a>
 
-  <article>
-    <header><strong>Waiting For</strong></header>
-    {% if followups_due %}
-      <p><a href="{% url 'gtd:today' %}">{{ followups_due }} follow-up{{ followups_due|pluralize }} due</a></p>
-    {% else %}
-      <p><a href="{% url 'gtd:waiting_for_list' %}">View waiting-for list</a></p>
-    {% endif %}
-  </article>
+  <a class="stat-card {% if followups_due %}stat-attn{% endif %}"
+     href="{% if followups_due %}{% url 'gtd:today' %}{% else %}{% url 'gtd:waiting_for_list' %}{% endif %}">
+    <span class="stat-label">Waiting For</span>
+    <div class="stat-value">{{ followups_due }}</div>
+    <div class="stat-note">follow-up{{ followups_due|pluralize }} due</div>
+  </a>
 
-  <article>
-    <header><strong>Projects</strong></header>
-    {% if stuck_count %}
-      <p><a href="{% url 'gtd:projects' %}">{{ stuck_count }} stuck project{{ stuck_count|pluralize }}</a></p>
-    {% else %}
-      <p><a href="{% url 'gtd:projects' %}">View projects</a></p>
-    {% endif %}
-  </article>
+  <a class="stat-card {% if stuck_count %}stat-attn{% endif %}" href="{% url 'gtd:projects' %}">
+    <span class="stat-label">Projects</span>
+    <div class="stat-value">{{ stuck_count }}</div>
+    <div class="stat-note">stuck project{{ stuck_count|pluralize }}</div>
+  </a>
 </div>
 {% endblock %}

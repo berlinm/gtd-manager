@@ -11,15 +11,36 @@ Each section lists numbered steps and the expected outcome in **bold**.
 
 ---
 
-## 1. Capture bar (every page)
+## 0. Application shell — sidebar layout
+
+1. Load any authenticated page.
+   **→ A fixed left sidebar (≈232 px wide) is visible. A sticky capture strip sits at the top of the content area. The main content fills the remainder.**
+2. Scroll a long page (e.g. Next Actions with many items).
+   **→ The sidebar stays fixed. The capture strip stays at the top. Only the main content scrolls.**
+3. Navigate to Dashboard, Inbox, Projects, Waiting For, Agendas, Meetings, Someday/Maybe, Reference, Reviews, Settings in turn.
+   **→ The active nav item is highlighted (accent color pill). No other item is highlighted.**
+4. Verify all primary nav links are present under their group labels — Do: Dashboard, Today, Next Actions; Capture: Inbox; Organize: Projects, Waiting For, Agendas, Meetings; Library: Someday / Maybe, Reference; Review: Reviews.
+   **→ All items are visible, vertical, and readable without horizontal scrolling.**
+5. Verify the bottom section (Settings, theme toggle, Log out) is anchored to the bottom of the sidebar.
+   **→ Bottom items do not float upward when the primary nav list is short.**
+6. Narrow the browser window below ~880 px.
+   **→ The sidebar slides off-canvas and a ☰ button appears in the capture strip. Clicking it toggles the sidebar as an overlay; choosing a nav item closes it.**
+
+---
+
+## 1. Capture bar (sticky top strip, every page)
 
 1. Type a thought into the capture bar at the top and press Enter.
-   **→ The input clears and "Captured." appears below it.**
-2. Click the blue Capture button (leave the input filled).
+   **→ The input clears, refocuses, and "✓ Captured" appears briefly below the bar, then fades.**
+2. Click the Capture button (leave the input filled).
    **→ Same result.**
-3. Check the Inbox count in the nav updates without a page reload.
-   **→ The number in `Inbox (N)` increases by one each time.**
-4. Capture an item, then navigate to **Inbox** via the nav link.
+3. With focus anywhere outside a form field, press `/`.
+   **→ Focus jumps to the capture input. Pressing Escape blurs it. Typing `/` inside another text field does NOT steal focus.**
+4. Scroll the page down on a long list. The capture bar should remain visible.
+   **→ The capture strip stays fixed at the top of the content area.**
+5. Check the Inbox count badge in the sidebar nav updates without a page reload.
+   **→ The pill beside "Inbox" increases by one each time.**
+6. Capture an item, then navigate to **Inbox** via the nav link.
    **→ The captured item appears in the inbox table.**
 
 ---
@@ -37,6 +58,13 @@ Each section lists numbered steps and the expected outcome in **bold**.
 ## 3. Clarification — all seven dispositions
 
 For each sub-test: capture a fresh item first, then click **Process**.
+
+The clarify page shows the four "Not actionable?" buttons directly. The four
+actionable dispositions are tabs under "Actionable — what is it?" — clicking a
+tab reveals only that panel and focuses its first field. Verify at the start:
+
+1. Load a clarify page.
+   **→ No actionable panel is visible until a tab is clicked. Clicking "New project" shows only the project panel; clicking "Delegate it" swaps to only the delegate panel.**
 
 ### 3a. Trash
 1. Click **Trash it**.
@@ -56,29 +84,29 @@ For each sub-test: capture a fresh item first, then click **Process**.
    **→ Redirected to the new reference detail page. Item removed from inbox.**
 
 ### 3e. Delegate (validation)
-1. Leave the name field empty in the Delegate fieldset. Click **Create Waiting-For**.
-   **→ Error message appears. Item is NOT processed.**
+1. Open the **Delegate it** tab. Leave the name field empty. Click **Create waiting-for**.
+   **→ Error message appears with the Delegate panel still open. Item is NOT processed.**
 
 ### 3f. Delegate (success)
-1. Type a name (e.g. "Alice") in the Delegate fieldset. Optionally select a project. Click **Create Waiting-For**.
+1. Open the **Delegate it** tab. Type a name (e.g. "Alice"). Optionally select a project. Click **Create waiting-for**.
    **→ Redirected to the Waiting For list. A new waiting-for item appears with title from the inbox item, person "Alice", and the chosen project (if any).**
 
 ### 3g. Action
-1. Edit the title in the "Single next action" fieldset if you like. Click **Create Action**.
+1. Open the **Single next action** tab. Edit the title if you like. Click **Create action**.
    **→ Redirected to the Actions list. The new action appears.**
 
 ### 3g2. Add action to existing project
 1. First ensure at least one active project exists (create one via **Projects → + Add project** if needed).
 2. Capture a fresh inbox item and click **Process**.
-3. In the "Add action to an existing project" fieldset, select the project from the dropdown. Edit the action title if needed. Click **Add to Project**.
+3. Open the **Action in a project** tab. Select the project from the dropdown. Edit the action title if needed. Click **Add to project**.
    **→ Redirected to that project's detail page. The new action appears under the project.**
-4. Process another inbox item. Leave the project dropdown on "— select a project —". Click **Add to Project**.
-   **→ Error message appears. Item is NOT processed.**
+4. Process another inbox item. Open the same tab, leave the dropdown on "— select a project —". Click **Add to project**.
+   **→ Error message appears with the panel still open. Item is NOT processed.**
 
 ### 3h. Project
-1. Fill in a project title and first action in the "Project" fieldset. Click **Create Project**.
+1. Open the **New project** tab. Fill in a project title and first action. Click **Create project**.
    **→ Redirected directly to the new project's detail page. The project title and first action are visible.**
-2. Leave the first action blank. Click **Create Project**.
+2. Leave the first action blank. Click **Create project**.
    **→ Same redirect. Project detail page shows "No actions yet."**
 
 ---
@@ -222,11 +250,11 @@ For each sub-test: capture a fresh item first, then click **Process**.
 
 ## 14. Dark / light mode
 
-1. Click the ☀ button in the nav.
-   **→ Page switches to dark mode. Icon changes to ☽.**
+1. Click the **Dark mode** button at the bottom of the left sidebar.
+   **→ Page switches to dark mode. The button label changes to "Light mode".**
 2. Reload the page.
-   **→ Dark mode is preserved (stored in localStorage).**
-3. Click ☽ again.
+   **→ Dark mode is preserved (stored in localStorage) with no flash of the light theme.**
+3. Click **Light mode**.
    **→ Back to light mode.**
 
 ---
@@ -242,7 +270,7 @@ For each sub-test: capture a fresh item first, then click **Process**.
    Click **Save**.
    **→ Redirected to the reference detail page. Body is rendered as HTML (heading + list visible).**
 
-2. Clarify an inbox item as "file as reference". Click **Save as Reference**.
+2. Clarify an inbox item as reference. Click **Save as reference**.
    **→ Redirected directly to the new reference detail page (not back to inbox).**
 
 3. Go to **Reference**. Type a word from the body in the search box. Click **Search**.

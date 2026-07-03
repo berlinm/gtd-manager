@@ -5,7 +5,8 @@
 {% block content %}
 <div class="page-header">
   <h1>Someday / Maybe</h1>
-  <a href="{% url 'gtd:someday_add' %}" role="button" class="outline btn-sm">+ Add</a>
+  <span class="spacer"></span>
+  <a href="{% url 'gtd:someday_add' %}" class="btn btn-sm btn-primary">+ Add</a>
 </div>
 
 {% if someday_items %}
@@ -23,18 +24,18 @@
     <tr>
       <td>
         <a href="{% url 'gtd:someday_edit' item.pk %}">{{ item.title }}</a>
-        {% if item.body %}<br><small class="muted">{{ item.body|truncatechars:70 }}</small>{% endif %}
+        {% if item.body %}<span class="cell-sub">{{ item.body|truncatechars:70 }}</span>{% endif %}
       </td>
-      <td><small class="muted">{{ item.area|default:"" }}</small></td>
-      <td><small class="muted">{{ item.created_at|date:"N j, Y" }}</small></td>
-      <td style="white-space:nowrap">
-        <a href="{% url 'gtd:someday_promote' item.pk %}" role="button" class="outline btn-xs">Activate</a>
+      <td class="muted">{{ item.area|default:"" }}</td>
+      <td class="muted nowrap">{{ item.created_at|date:"N j, Y" }}</td>
+      <td class="row-actions">
+        <a href="{% url 'gtd:someday_promote' item.pk %}" class="btn btn-xs">Activate</a>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-  <p>Nothing in someday / maybe.</p>
+  <p class="empty">Nothing in someday / maybe. Park ideas here without committing to them.</p>
 {% endif %}
 {% endblock %}

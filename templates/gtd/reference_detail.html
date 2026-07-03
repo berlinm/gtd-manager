@@ -6,18 +6,16 @@
 {% block content %}
 <div class="page-header">
   <h1>{{ object.title }}</h1>
-  <a href="{% url 'gtd:reference_edit' object.pk %}" class="outline secondary btn-sm" role="button">Edit</a>
+  <span class="spacer"></span>
+  <a href="{% url 'gtd:reference_edit' object.pk %}" class="btn btn-sm">Edit</a>
 </div>
 
-<p style="margin-bottom:1.5rem">
-  {% if object.area %}<small class="muted">{{ object.area }}</small>{% endif %}
-  {% if object.tags.all %}
-    &nbsp;·
-    {% for tag in object.tags.all %}
-      <mark style="font-size:0.8rem">{{ tag.label }}</mark>
-    {% endfor %}
-  {% endif %}
-  <small class="muted" style="margin-left:0.5rem">Updated {{ object.updated_at|date:"N j, Y" }}</small>
+<p class="flex" style="margin-bottom:1.3rem">
+  {% if object.area %}<span class="muted small">{{ object.area }}</span>{% endif %}
+  {% for tag in object.tags.all %}
+    <span class="badge badge-muted">{{ tag.label }}</span>
+  {% endfor %}
+  <span class="muted small">Updated {{ object.updated_at|date:"N j, Y" }}</span>
 </p>
 
 {% if object.body %}
@@ -25,8 +23,8 @@
   {{ object.body|markdown }}
 </div>
 {% else %}
-  <p><em>No content yet. <a href="{% url 'gtd:reference_edit' object.pk %}">Add some.</a></em></p>
+  <p class="empty">No content yet. <a href="{% url 'gtd:reference_edit' object.pk %}">Add some.</a></p>
 {% endif %}
 
-<p style="margin-top:2rem"><a href="{% url 'gtd:reference_list' %}" class="secondary">← Reference</a></p>
+<p class="backlink"><a href="{% url 'gtd:reference_list' %}">← Reference</a></p>
 {% endblock %}
