@@ -241,10 +241,11 @@ tab reveals only that panel and focuses its first field. Verify at the start:
 
 ## 13. Dashboard
 
-1. Navigate to **Dashboard**.
-   **→ Inbox count, Waiting For follow-ups due, and stuck project count are shown.**
-2. Process all inbox items → Inbox shows "Inbox is empty."
-3. Create a stuck project → Projects card shows stuck count.
+1. Navigate to **Dashboard** with at least one inbox item, one follow-up due, or one stuck project.
+   **→ Under the date, a headline sentence lists only the non-zero counts (e.g. "1 item to process · 1 stuck project."). Each fragment links to its page (Inbox / Today / Projects).**
+2. Verify the three status cards below (Inbox, Waiting For, Projects) show their counts, including zeros.
+3. Process all inbox items, resolve all follow-ups, and unstick all projects. Reload the dashboard.
+   **→ The headline reads "All clear. Nothing needs your attention." and all cards show 0.**
 
 ---
 

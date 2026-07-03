@@ -3,23 +3,20 @@
 {% block title %}Dashboard — GTD Manager{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>Dashboard</h1>
-  <span class="spacer"></span>
-  <span class="page-meta">{% now "l, N j" %}</span>
-</div>
+<p class="day-eyebrow mb-0">{% now "l, N j" %}</p>
+<h1 class="attn-line">
+  {% if inbox_count or followups_due or stuck_count %}
+    {% if inbox_count %}<a href="{% url 'capture:inbox' %}">{{ inbox_count }} item{{ inbox_count|pluralize }} to process</a>{% endif %}{% if followups_due %}{% if inbox_count %} · {% endif %}<a href="{% url 'gtd:today' %}">{{ followups_due }} follow-up{{ followups_due|pluralize }} due</a>{% endif %}{% if stuck_count %}{% if inbox_count or followups_due %} · {% endif %}<a href="{% url 'gtd:projects' %}">{{ stuck_count }} stuck project{{ stuck_count|pluralize }}</a>{% endif %}.
+  {% else %}
+    <span class="all-clear">All clear.</span> Nothing needs your attention.
+  {% endif %}
+</h1>
 
 <div class="stat-grid">
   <a class="stat-card {% if inbox_count %}stat-attn{% endif %}" href="{% url 'capture:inbox' %}">
     <span class="stat-label">Inbox</span>
     <div class="stat-value">{{ inbox_count }}</div>
     <div class="stat-note">{% if inbox_count %}item{{ inbox_count|pluralize }} to process{% else %}Empty — all clear{% endif %}</div>
-  </a>
-
-  <a class="stat-card" href="{% url 'gtd:today' %}">
-    <span class="stat-label">Today</span>
-    <div class="stat-value">{% now "N j" %}</div>
-    <div class="stat-note">Scheduled and overdue actions</div>
   </a>
 
   <a class="stat-card {% if followups_due %}stat-attn{% endif %}"
