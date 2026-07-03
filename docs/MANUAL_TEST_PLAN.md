@@ -496,3 +496,34 @@ tab reveals only that panel and focuses its first field. Verify at the start:
    **→ Page shows two columns: Daily Reviews and Weekly Reviews.**
 2. Confirm completed reviews appear in each column with their timestamps and truncated notes.
    **→ Each completed review shows date and notes preview.**
+
+---
+
+## 23. Date fields on clarify — single next action
+
+1. Capture a new inbox item and open it for clarification.
+2. Click the **Single next action** tab to open that panel.
+3. Edit the action title if desired. Fill in only the **Deadline** field with a date two weeks from now. Leave the other two date fields empty.
+4. Click **Create action**.
+   **→ Redirected to the Next Actions list. The new action is present.**
+5. Open the action's edit page.
+   **→ The Deadline field contains the date you entered. Available from and Scheduled for are empty.**
+
+6. Return to the inbox, capture another item, open it for clarification.
+7. Fill in all three date fields: Available from = today, Scheduled for = today at a specific time, Deadline = one week from now.
+8. Click **Create action**.
+   **→ Action created successfully. Edit page confirms all three dates are saved.**
+
+9. Capture another item. On the clarify page, click **Action in a project** (with at least one active project available). Select a project, fill in the action title, set a Deadline date, and click **Add to project**.
+   **→ Redirected to the project detail page. The new action appears there. Its edit page shows the Deadline.**
+
+---
+
+## 24. Help page (`/help/`)
+
+1. Click **Help** in the bottom of the sidebar.
+   **→ Help page loads. The "Help" nav item is highlighted as active. The "Settings" item is not highlighted.**
+2. Confirm the following sections are present: "The four steps", "Inbox dispositions", "Item types", "Date fields on Next Actions", "Reviews", "Keyboard shortcut".
+   **→ All sections render correctly. Table of dispositions is readable.**
+3. Navigate away to Dashboard, then click **Help** again.
+   **→ Page loads correctly. Active state on the Help link is restored.**

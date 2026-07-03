@@ -21,6 +21,8 @@
 - Inbox list with process/clarify workflow
 - All seven dispositions: trash, done immediately, someday/maybe, reference,
   delegate, single next action, new project, add action to existing project
+- Date fields (available from, scheduled for, deadline) available at clarify time
+  for single next action and add-to-project paths
 - Inbox history (processed items with dispositions and links to created objects)
 
 **Next Actions**
@@ -90,8 +92,9 @@
 - Responsive below ~880 px (off-canvas sidebar with hamburger toggle); `prefers-reduced-motion` respected
 - Dark / light mode (localStorage)
 - Login / logout; all views require authentication
+- Help page (`/help/`) with GTD workflow reference, item type descriptions, date field semantics, and keyboard shortcuts
 - 162 automated tests (model validation + view/workflow integration)
-- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (22 sections)
+- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (24 sections)
 
 ## Next intended work
 
@@ -125,3 +128,4 @@ See `docs/DECISIONS_NEEDED.md`. No decisions have been silently resolved.
 | Phase 5 | 2026-06-26 | Meeting capture, session notes, note clarify, pending badge |
 | Phase 6 | 2026-06-27 | Daily review, weekly review, focus list (session), review history |
 | UI redesign | 2026-07-03 | Pico CSS replaced with bespoke design system; sidebar shell, capture bar signature element, clarify progressive disclosure, light/dark themes |
+| Clarify dates + Help page | 2026-07-03 | Date fields (available from, scheduled for, deadline) added to clarify workflow; Help page with GTD reference added |

@@ -37,8 +37,22 @@
   <fieldset class="clarify-panel" id="panel-action" hidden>
     <legend>Single next action</legend>
     <label for="action_title">Action <small>(what is the next physical step?)</small></label>
-    <div class="input-group">
-      <input type="text" id="action_title" name="action_title" value="{{ item.title }}">
+    <input type="text" id="action_title" name="action_title" value="{{ item.title }}">
+    <div class="grid" style="margin-top:0.5rem">
+      <div>
+        <label for="action_defer_until">Available from <small>(optional)</small></label>
+        <input type="date" id="action_defer_until" name="action_defer_until">
+      </div>
+      <div>
+        <label for="action_scheduled_for">Scheduled for <small>(optional)</small></label>
+        <input type="datetime-local" id="action_scheduled_for" name="action_scheduled_for">
+      </div>
+      <div>
+        <label for="action_deadline">Deadline <small>(optional)</small></label>
+        <input type="date" id="action_deadline" name="action_deadline">
+      </div>
+    </div>
+    <div class="form-actions">
       <button type="submit" name="disposition" value="action" class="btn-primary">Create action</button>
     </div>
   </fieldset>
@@ -55,8 +69,22 @@
       {% endfor %}
     </select>
     <label for="add_project_action_title">Action title</label>
-    <div class="input-group">
-      <input type="text" id="add_project_action_title" name="add_project_action_title" value="{{ item.title }}">
+    <input type="text" id="add_project_action_title" name="add_project_action_title" value="{{ item.title }}">
+    <div class="grid" style="margin-top:0.5rem">
+      <div>
+        <label for="add_defer_until">Available from <small>(optional)</small></label>
+        <input type="date" id="add_defer_until" name="add_defer_until">
+      </div>
+      <div>
+        <label for="add_scheduled_for">Scheduled for <small>(optional)</small></label>
+        <input type="datetime-local" id="add_scheduled_for" name="add_scheduled_for">
+      </div>
+      <div>
+        <label for="add_deadline">Deadline <small>(optional)</small></label>
+        <input type="date" id="add_deadline" name="add_deadline">
+      </div>
+    </div>
+    <div class="form-actions">
       <button type="submit" name="disposition" value="add_to_project" class="btn-primary">Add to project</button>
     </div>
     {% else %}

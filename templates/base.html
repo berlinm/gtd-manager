@@ -96,6 +96,10 @@
     </ul>
     <ul class="nav-bottom">
       <li>
+        <a class="nav-item" href="{% url 'core:instructions' %}"
+           {% if view.url_name == 'instructions' %}aria-current="page"{% endif %}>Help</a>
+      </li>
+      <li>
         <a class="nav-item" href="{% url 'core:settings' %}"
            {% if view.url_name == 'settings' or 'area' in view.url_name %}aria-current="page"{% endif %}>Settings</a>
       </li>

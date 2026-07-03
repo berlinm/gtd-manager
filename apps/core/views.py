@@ -60,6 +60,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return ctx
 
 
+class InstructionsView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/instructions.html'
+
+
 class AreaListView(LoginRequiredMixin, ListView):
     model = AreaOfResponsibility
     template_name = 'core/area_list.html'
