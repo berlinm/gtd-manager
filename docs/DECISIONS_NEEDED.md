@@ -260,3 +260,5 @@ If icons are added, they must appear with visible labels (never icon-only), per 
 | Session store backend | 2026-06-27 | Database-backed (default) | Appropriate for single-user; no topology reason to change |
 | CSP treatment | 2026-06-27 | No CSP header | Inline scripts/styles retained; strict CSP disproportionate for single-user localhost app |
 | CSS approach (revised) | 2026-07-03 | Bespoke design system | Pico CSS removed; single hand-written `static/css/app.css` with design tokens, light/dark themes, component classes; governed by `docs/UI_REFACTOR_PRINCIPLES.md` |
+| Reference file attachments | 2026-07-04 | Child model + protected view | `ReferenceAttachment` (FK to Reference); files under `MEDIA_ROOT`; served by a `LoginRequiredMixin` view by PK (works under waitress); not covered by `backupdb` |
+| Preferences storage | 2026-07-04 | Singleton model (pk=1) | `apps.core.Preferences`, one row via `load()`; no owner FK; date/time display driven by format-string properties exposed through a `preferences` context processor |

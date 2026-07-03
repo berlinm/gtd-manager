@@ -28,7 +28,7 @@
         {% if project.is_stuck %}<span class="badge badge-danger">stuck</span>{% endif %}
       </td>
       <td class="muted">{{ project.area|default:"" }}</td>
-      <td class="muted nowrap">{% if project.deadline %}{{ project.deadline|date:"N j, Y" }}{% endif %}</td>
+      <td class="muted nowrap">{% if project.deadline %}{{ project.deadline|date:prefs.f_date }}{% endif %}</td>
       <td class="muted num">{{ project.active_actions|length }}</td>
     </tr>
     {% endfor %}
@@ -53,7 +53,7 @@
     <tr>
       <td><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></td>
       <td class="muted">{{ project.on_hold_reason|truncatechars:60 }}</td>
-      <td class="muted nowrap">{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% endif %}</td>
+      <td class="muted nowrap">{% if project.next_review_on %}{{ project.next_review_on|date:prefs.f_date }}{% endif %}</td>
     </tr>
     {% endfor %}
   </tbody>

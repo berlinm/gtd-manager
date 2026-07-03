@@ -29,7 +29,7 @@
   <tbody>
     {% for session in sessions %}
     <tr>
-      <td><a href="{% url 'meetings:session_detail' session.pk %}">{{ session.occurred_on|date:"N j, Y" }}</a></td>
+      <td><a href="{% url 'meetings:session_detail' session.pk %}">{{ session.occurred_on|date:prefs.f_date }}</a></td>
       <td>{% if session.is_open %}<span class="badge badge-ok">Open</span>{% else %}<span class="badge badge-muted">Closed</span>{% endif %}</td>
       <td class="muted num">{{ session.note_count }}</td>
       <td class="num">

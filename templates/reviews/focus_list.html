@@ -19,7 +19,7 @@
           <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:35 }}</a>
         {% endif %}
       </td>
-      <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:"N j, Y" }}{% endif %}</td>
+      <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:prefs.f_date }}{% endif %}</td>
       <td class="row-actions">
         <form method="post" action="{% url 'gtd:action_done' action.pk %}">
           {% csrf_token %}

@@ -12,7 +12,7 @@
 <p class="flex">
   <span class="badge badge-accent">{{ object.get_status_display }}</span>
   {% if object.is_stuck %}<span class="badge badge-danger">stuck</span>{% endif %}
-  {% if object.deadline %}<span class="muted small">Deadline <strong>{{ object.deadline|date:"N j, Y" }}</strong></span>{% endif %}
+  {% if object.deadline %}<span class="muted small">Deadline <strong>{{ object.deadline|date:prefs.f_date }}</strong></span>{% endif %}
   {% if object.area %}<span class="muted small">{{ object.area }}</span>{% endif %}
 </p>
 
@@ -41,7 +41,7 @@
   <li>
     <span class="item-main">
       <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-      {% if action.deadline %}<small class="muted"> · deadline {{ action.deadline|date:"N j" }}</small>{% endif %}
+      {% if action.deadline %}<small class="muted"> · deadline {{ action.deadline|date:prefs.f_date_short }}</small>{% endif %}
       {% for c in action.contexts.all %}<small class="muted"> {{ c.label }}</small>{% endfor %}
     </span>
     <form method="post" action="{% url 'gtd:action_done' action.pk %}">
@@ -61,7 +61,7 @@
   <li>
     <span class="item-main">
       <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-      <small class="muted"> · available {{ action.defer_until|date:"N j" }}</small>
+      <small class="muted"> · available {{ action.defer_until|date:prefs.f_date_short }}</small>
     </span>
   </li>
   {% endfor %}
@@ -75,7 +75,7 @@
   <li>
     <span class="item-main">
       <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-      <small class="muted"> · {{ action.scheduled_for|date:"N j, g:i a" }}</small>
+      <small class="muted"> · {{ action.scheduled_for|date:prefs.f_datetime_short }}</small>
     </span>
   </li>
   {% endfor %}
@@ -94,7 +94,7 @@
     <span class="item-main">
       <a href="{% url 'gtd:waiting_for_edit' wf.pk %}">{{ wf.title }}</a>
       <small class="muted"> · {{ wf.person }}</small>
-      {% if wf.expected_by %}<small class="muted"> · expected {{ wf.expected_by|date:"N j" }}</small>{% endif %}
+      {% if wf.expected_by %}<small class="muted"> · expected {{ wf.expected_by|date:prefs.f_date_short }}</small>{% endif %}
     </span>
   </li>
   {% endfor %}
@@ -109,7 +109,7 @@
     <span class="item-main">
       {{ wf.title }}
       <small class="muted"> · {{ wf.person }}</small>
-      {% if wf.completed_at %}<small class="muted"> · {{ wf.completed_at|date:"N j, Y" }}</small>{% endif %}
+      {% if wf.completed_at %}<small class="muted"> · {{ wf.completed_at|date:prefs.f_date }}</small>{% endif %}
       {% if wf.result_notes %}<span class="cell-sub">{{ wf.result_notes }}</span>{% endif %}
     </span>
   </li>

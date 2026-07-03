@@ -27,7 +27,7 @@
         {% if item.body %}<span class="cell-sub">{{ item.body|truncatechars:70 }}</span>{% endif %}
       </td>
       <td class="muted">{{ item.area|default:"" }}</td>
-      <td class="muted nowrap">{{ item.created_at|date:"N j, Y" }}</td>
+      <td class="muted nowrap">{{ item.created_at|date:prefs.f_date }}</td>
       <td class="row-actions">
         <a href="{% url 'gtd:someday_promote' item.pk %}" class="btn btn-xs">Activate</a>
       </td>

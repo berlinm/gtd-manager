@@ -939,6 +939,11 @@ details[open] summary { margin-bottom: 0.5rem; }
 }
 .attachment-icon { color: var(--accent); font-size: 1.1rem; line-height: 1; }
 
+/* === 17d. Preferences form ============================================ */
+
+.pref-form small.muted { display: block; margin-top: 0.25rem; font-size: var(--text-xs); }
+.pref-form .form-actions { margin-top: 1rem; }
+
 /* === 17c. Help page ==================================================== */
 
 .help-intro { color: var(--muted); max-width: 44rem; margin-bottom: 1.6rem; }

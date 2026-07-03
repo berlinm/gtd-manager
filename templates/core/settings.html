@@ -23,6 +23,33 @@
 </section>
 
 <section class="card">
+  <h2 class="mt-0">Date &amp; time</h2>
+  <p class="small">Controls how dates and times are shown, and the interval used by time pickers.</p>
+  <form method="post" class="pref-form">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="preferences">
+    <div class="grid">
+      <div>
+        <label for="{{ prefs_form.time_step_minutes.id_for_label }}">Time picker interval</label>
+        {{ prefs_form.time_step_minutes }}
+        <small class="muted">Minutes snap to this step when picking a time.</small>
+      </div>
+      <div>
+        <label for="{{ prefs_form.time_format.id_for_label }}">Time format</label>
+        {{ prefs_form.time_format }}
+      </div>
+      <div>
+        <label for="{{ prefs_form.date_style.id_for_label }}">Date format</label>
+        {{ prefs_form.date_style }}
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Save preferences</button>
+    </div>
+  </form>
+</section>
+
+<section class="card">
   <h2 class="mt-0">Areas of Responsibility</h2>
   <p class="small">Manage the areas that group your projects and reference material.</p>
   <a href="{% url 'core:area_list' %}" class="btn">Manage areas</a>

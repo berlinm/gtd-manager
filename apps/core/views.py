@@ -8,6 +8,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 
 from apps.gtd.models import AreaOfResponsibility
+from apps.core.forms import PreferencesForm
+from apps.core.models import Preferences
 from apps.core.management.commands.backupdb import run_backup
 
 
@@ -27,15 +29,25 @@ class AdminSettingsView(LoginRequiredMixin, TemplateView):
         ctx['python_version'] = sys.version.split()[0]
         ctx['django_version'] = django.get_version()
         ctx['base_dir'] = settings.BASE_DIR
+        ctx.setdefault('prefs_form', PreferencesForm(instance=Preferences.load()))
         return ctx
 
     def post(self, request, *args, **kwargs):
-        if request.POST.get('action') == 'backup':
+        action = request.POST.get('action')
+        if action == 'backup':
             try:
                 dest = run_backup()
                 messages.success(request, f'Backup saved: {dest.name}')
             except Exception as e:
                 messages.error(request, f'Backup failed: {e}')
+        elif action == 'preferences':
+            form = PreferencesForm(request.POST, instance=Preferences.load())
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Preferences saved.')
+            else:
+                context = self.get_context_data(prefs_form=form, **kwargs)
+                return self.render_to_response(context)
         return self.get(request, *args, **kwargs)
 
 

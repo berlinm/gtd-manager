@@ -1,6 +1,15 @@
 from django.db import OperationalError, ProgrammingError
 
 
+def preferences(request):
+    from apps.core.models import Preferences
+    try:
+        prefs = Preferences.load()
+    except (OperationalError, ProgrammingError):
+        prefs = Preferences()  # unsaved defaults if the table is not migrated yet
+    return {'prefs': prefs}
+
+
 def inbox_count(request):
     if not request.user.is_authenticated:
         return {'inbox_count': 0, 'pending_notes_count': 0}

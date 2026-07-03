@@ -20,7 +20,7 @@
     <tr>
       <td>{{ item.title }}</td>
       <td class="muted">{{ item.get_disposition_display }}</td>
-      <td class="muted nowrap">{{ item.processed_at|date:"N j, Y g:i a" }}</td>
+      <td class="muted nowrap">{{ item.processed_at|date:prefs.f_datetime }}</td>
       <td>
         {% if item.content_type and item.object_id %}
           {% with ct=item.content_type.model %}

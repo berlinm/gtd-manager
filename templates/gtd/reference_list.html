@@ -29,7 +29,7 @@
       <td><a href="{% url 'gtd:reference_detail' ref.pk %}">{{ ref.title }}</a></td>
       <td class="muted">{{ ref.area|default:"" }}</td>
       <td class="muted">{% for tag in ref.tags.all %}{{ tag.label }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-      <td class="muted nowrap">{{ ref.updated_at|date:"N j, Y" }}</td>
+      <td class="muted nowrap">{{ ref.updated_at|date:prefs.f_date }}</td>
     </tr>
     {% endfor %}
   </tbody>

@@ -8,7 +8,7 @@
 <article>
   <header>{{ note.title }}</header>
   {% if note.body %}<p>{{ note.body }}</p>{% endif %}
-  <footer>{{ note.session.meeting.title }} · {{ note.session.occurred_on|date:"N j, Y" }} · Captured {{ note.captured_at|date:"g:i a" }}</footer>
+  <footer>{{ note.session.meeting.title }} · {{ note.session.occurred_on|date:prefs.f_date }} · Captured {{ note.captured_at|date:prefs.f_time }}</footer>
 </article>
 
 {% if error and not open_delegate and not open_add_to_project %}

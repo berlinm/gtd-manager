@@ -37,7 +37,7 @@
       <tr>
         <td>
           <a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a>
-          {% if action.scheduled_for %}<span class="cell-sub">Scheduled {{ action.scheduled_for|date:"N j, g:i a" }}</span>{% endif %}
+          {% if action.scheduled_for %}<span class="cell-sub">Scheduled {{ action.scheduled_for|date:prefs.f_datetime_short }}</span>{% endif %}
         </td>
         <td>
           {% if action.project %}
@@ -45,7 +45,7 @@
           {% endif %}
         </td>
         <td class="muted">{% for c in action.contexts.all %}{{ c.label }}{% if not forloop.last %} {% endif %}{% endfor %}</td>
-        <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</td>
+        <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:prefs.f_date_short }}{% endif %}</td>
         <td class="row-actions">
           <form method="post" action="{% url 'gtd:action_done' action.pk %}">
             {% csrf_token %}

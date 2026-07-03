@@ -8,7 +8,7 @@
 <article>
   <header>{{ item.title }}</header>
   <p class="mb-0">Waiting on: {{ item.person }}</p>
-  {% if item.expected_by %}<p class="mb-0 muted small">Expected by {{ item.expected_by|date:"N j, Y" }}</p>{% endif %}
+  {% if item.expected_by %}<p class="mb-0 muted small">Expected by {{ item.expected_by|date:prefs.f_date }}</p>{% endif %}
 </article>
 
 <form method="post" class="form-narrow">

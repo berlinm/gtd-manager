@@ -95,8 +95,11 @@
 - Dark / light mode (localStorage)
 - Login / logout; all views require authentication
 - Help page (`/help/`) with GTD workflow reference in collapsible sections, item type descriptions, date field semantics, and keyboard shortcuts
-- 167 automated tests (model validation + view/workflow integration)
-- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (25 sections)
+- Date & time preferences (Settings): configurable time-picker interval (5/10/15/30/60 min),
+  12h/24h time format, and date style (month-first / day-first / ISO); stored as a single-row
+  `Preferences` model and applied across all date/time displays and time inputs
+- 179 automated tests (model validation + view/workflow integration)
+- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (26 sections)
 
 ## Next intended work
 
@@ -132,3 +135,4 @@ See `docs/DECISIONS_NEEDED.md`. No decisions have been silently resolved.
 | UI redesign | 2026-07-03 | Pico CSS replaced with bespoke design system; sidebar shell, capture bar signature element, clarify progressive disclosure, light/dark themes |
 | Clarify dates + Help page | 2026-07-03 | Date fields (available from, scheduled for, deadline) added to clarify workflow; Help page with GTD reference added |
 | Reference attachments + Help redesign | 2026-07-04 | Drag-and-drop file attachments on References (protected download/delete); Help page reworked into collapsible sections |
+| Date & time preferences | 2026-07-04 | Configurable time-picker interval, 12h/24h time, and date style via a single-row `Preferences` model; applied across all displays and time inputs |

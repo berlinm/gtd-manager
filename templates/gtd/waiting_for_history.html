@@ -28,7 +28,7 @@
         {% endif %}
       </td>
       <td class="muted">{{ item.get_status_display }}</td>
-      <td class="muted nowrap">{% if item.completed_at %}{{ item.completed_at|date:"N j, Y" }}{% endif %}</td>
+      <td class="muted nowrap">{% if item.completed_at %}{{ item.completed_at|date:prefs.f_date }}{% endif %}</td>
       <td class="small">{% if item.result_notes %}{{ item.result_notes }}{% else %}<span class="muted">—</span>{% endif %}</td>
     </tr>
     {% endfor %}

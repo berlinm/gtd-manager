@@ -15,7 +15,7 @@
   {% for tag in object.tags.all %}
     <span class="badge badge-muted">{{ tag.label }}</span>
   {% endfor %}
-  <span class="muted small">Updated {{ object.updated_at|date:"N j, Y" }}</span>
+  <span class="muted small">Updated {{ object.updated_at|date:prefs.f_date }}</span>
 </p>
 
 {% if object.body %}

@@ -562,3 +562,39 @@ tab reveals only that panel and focuses its first field. Verify at the start:
 
 1. Create a reference with a title and a file but no body text.
    **→ Detail page shows the file list and does not show the "No content yet" placeholder.**
+
+---
+
+## 26. Date & time preferences
+
+### 26a. Change the time picker interval
+
+1. Go to **Settings**. Under **Date & time**, set **Time picker interval** to "30 minutes" and click **Save preferences**.
+   **→ "Preferences saved." message appears.**
+2. Go to **Next Actions → Add action** (or edit one). Open the **Scheduled for** picker.
+   **→ The minutes offered step in 30-minute increments (00, 30). With the default of 15, they step 00/15/30/45.**
+3. Repeat the check on a clarify page's **Scheduled for** field and a meeting session's **Start/End time** fields.
+   **→ All time pickers honor the configured interval.**
+
+### 26b. Change the time format
+
+1. In Settings, set **Time format** to "24-hour" and save.
+2. Visit **Today** (or any page showing an action time, e.g. a scheduled action).
+   **→ Times display as 24-hour (e.g. "17:30") instead of "5:30 p.m."**
+3. Switch back to "12-hour" and save.
+   **→ Times revert to "5:30 p.m." style.**
+
+### 26c. Change the date format
+
+1. In Settings, set **Date format** to "ISO (2026-07-04)" and save.
+2. Visit **Reference**, **Projects**, **Waiting For**, and **Review history**.
+   **→ Dates display in ISO form (2026-07-04) everywhere, including combined date-time displays.**
+3. Set it to "Day first (4 Jul 2026)" and save.
+   **→ Dates display day-first.**
+4. Return to "Month first" and save.
+   **→ Dates revert to the original "Jul 4, 2026" style.**
+
+### 26d. Preference persists
+
+1. Set any non-default preference and save. Reload the settings page.
+   **→ The selected values are still shown (persisted to the database, single row).**

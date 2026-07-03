@@ -18,7 +18,7 @@
     <tbody>
       {% for review in daily_reviews %}
       <tr>
-        <td class="nowrap small">{{ review.completed_at|date:"N j, Y g:i a" }}</td>
+        <td class="nowrap small">{{ review.completed_at|date:prefs.f_datetime }}</td>
         <td class="muted small">{{ review.notes|truncatechars:60 }}</td>
       </tr>
       {% endfor %}
@@ -40,7 +40,7 @@
     <tbody>
       {% for review in weekly_reviews %}
       <tr>
-        <td class="nowrap small">{{ review.completed_at|date:"N j, Y g:i a" }}</td>
+        <td class="nowrap small">{{ review.completed_at|date:prefs.f_datetime }}</td>
         <td class="muted small">{{ review.notes|truncatechars:60 }}</td>
       </tr>
       {% endfor %}

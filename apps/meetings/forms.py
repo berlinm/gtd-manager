@@ -30,3 +30,7 @@ class MeetingSessionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in ['start_time', 'end_time', 'notes']:
             self.fields[field].required = False
+        from apps.core.models import Preferences
+        step = Preferences.load().step_seconds
+        self.fields['start_time'].widget.attrs['step'] = step
+        self.fields['end_time'].widget.attrs['step'] = step

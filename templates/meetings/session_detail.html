@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}{{ session.meeting.title }} — {{ session.occurred_on|date:"N j, Y" }} — GTD Manager{% endblock %}
+{% block title %}{{ session.meeting.title }} — {{ session.occurred_on|date:prefs.f_date }} — GTD Manager{% endblock %}
 
 {% block content %}
 <div class="page-header">
   <h1>{{ session.meeting.title }}</h1>
-  <span class="page-meta">{{ session.occurred_on|date:"N j, Y" }}</span>
+  <span class="page-meta">{{ session.occurred_on|date:prefs.f_date }}</span>
   {% if session.is_open %}
   <span class="badge badge-ok">Open</span>
   {% else %}
-  <span class="badge badge-muted">Closed {{ session.closed_at|date:"N j, Y" }}</span>
+  <span class="badge badge-muted">Closed {{ session.closed_at|date:prefs.f_date }}</span>
   {% endif %}
 </div>
 

@@ -38,13 +38,13 @@
       <td class="nowrap">
         {% if item.follow_up_on %}
           {% if item.follow_up_on <= today %}
-            <span class="badge badge-danger">{{ item.follow_up_on|date:"N j" }}</span>
+            <span class="badge badge-danger">{{ item.follow_up_on|date:prefs.f_date_short }}</span>
           {% else %}
-            <span class="muted small">{{ item.follow_up_on|date:"N j" }}</span>
+            <span class="muted small">{{ item.follow_up_on|date:prefs.f_date_short }}</span>
           {% endif %}
         {% endif %}
       </td>
-      <td class="muted nowrap">{% if item.expected_by %}{{ item.expected_by|date:"N j" }}{% endif %}</td>
+      <td class="muted nowrap">{% if item.expected_by %}{{ item.expected_by|date:prefs.f_date_short }}{% endif %}</td>
       <td class="row-actions">
         <a href="{% url 'gtd:waiting_for_receive' item.pk %}" class="btn btn-xs">Received</a>
       </td>

@@ -6,7 +6,7 @@
 <div class="page-header">
   <h1>Weekly Review</h1>
   <span class="spacer"></span>
-  <span class="page-meta">{{ today|date:"l, N j, Y" }}</span>
+  <span class="page-meta">{{ today|date:prefs.f_weekday }}</span>
 </div>
 
 <p class="page-intro">Work through each section top to bottom, then mark the review complete at the bottom.</p>
@@ -40,7 +40,7 @@
     <li>
       <span class="item-main">
         <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-        {% if project.deadline %}<small class="muted"> — due {{ project.deadline|date:"N j, Y" }}</small>{% endif %}
+        {% if project.deadline %}<small class="muted"> — due {{ project.deadline|date:prefs.f_date }}</small>{% endif %}
       </span>
     </li>
     {% endfor %}
@@ -72,7 +72,7 @@
       {% for project in on_hold_projects %}
       <tr>
         <td><a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a></td>
-        <td class="muted nowrap">{% if project.next_review_on %}{{ project.next_review_on|date:"N j, Y" }}{% else %}—{% endif %}</td>
+        <td class="muted nowrap">{% if project.next_review_on %}{{ project.next_review_on|date:prefs.f_date }}{% else %}—{% endif %}</td>
         <td class="muted">{{ project.on_hold_reason|truncatechars:60 }}</td>
       </tr>
       {% endfor %}
@@ -91,7 +91,7 @@
     <li>
       <span class="item-main">
         <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-        <small class="muted"> · deadline {{ project.deadline|date:"N j, Y" }}</small>
+        <small class="muted"> · deadline {{ project.deadline|date:prefs.f_date }}</small>
       </span>
     </li>
     {% endfor %}
@@ -115,7 +115,7 @@
         <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
         <td class="muted">{{ item.person }}</td>
         <td class="muted nowrap">
-          {% if item.follow_up_on %}{{ item.follow_up_on|date:"N j" }}{% else %}not set{% endif %}
+          {% if item.follow_up_on %}{{ item.follow_up_on|date:prefs.f_date_short }}{% else %}not set{% endif %}
         </td>
         <td class="row-actions">
           <a href="{% url 'gtd:waiting_for_followup' item.pk %}" class="btn btn-xs">Update</a>
@@ -161,8 +161,8 @@
             <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:30 }}</a>
           {% endif %}
         </td>
-        <td class="muted nowrap">{% if action.scheduled_for %}{{ action.scheduled_for|date:"N j, g:i a" }}{% endif %}</td>
-        <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:"N j" }}{% endif %}</td>
+        <td class="muted nowrap">{% if action.scheduled_for %}{{ action.scheduled_for|date:prefs.f_datetime_short }}{% endif %}</td>
+        <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:prefs.f_date_short }}{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>

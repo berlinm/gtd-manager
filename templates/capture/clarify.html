@@ -8,7 +8,7 @@
 <article>
   <header>{{ item.title }}</header>
   {% if item.body %}<p>{{ item.body }}</p>{% endif %}
-  <footer>Captured {{ item.captured_at|date:"N j, Y g:i a" }}</footer>
+  <footer>Captured {{ item.captured_at|date:prefs.f_datetime }}</footer>
 </article>
 
 {% if error and not open_delegate and not open_add_to_project %}
@@ -45,7 +45,7 @@
       </div>
       <div>
         <label for="action_scheduled_for">Scheduled for <small>(optional)</small></label>
-        <input type="datetime-local" id="action_scheduled_for" name="action_scheduled_for">
+        <input type="datetime-local" id="action_scheduled_for" name="action_scheduled_for" step="{{ prefs.step_seconds }}">
       </div>
       <div>
         <label for="action_deadline">Deadline <small>(optional)</small></label>
@@ -77,7 +77,7 @@
       </div>
       <div>
         <label for="add_scheduled_for">Scheduled for <small>(optional)</small></label>
-        <input type="datetime-local" id="add_scheduled_for" name="add_scheduled_for">
+        <input type="datetime-local" id="add_scheduled_for" name="add_scheduled_for" step="{{ prefs.step_seconds }}">
       </div>
       <div>
         <label for="add_deadline">Deadline <small>(optional)</small></label>

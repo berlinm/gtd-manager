@@ -6,7 +6,7 @@
 <div class="page-header">
   <h1>Daily Review</h1>
   <span class="spacer"></span>
-  <span class="page-meta">{{ today|date:"l, N j, Y" }}</span>
+  <span class="page-meta">{{ today|date:prefs.f_weekday }}</span>
 </div>
 
 {% if focus_pks %}
@@ -41,7 +41,7 @@
             <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:30 }}</a>
           {% endif %}
         </td>
-        <td class="muted nowrap">{{ action.scheduled_for|date:"g:i a" }}</td>
+        <td class="muted nowrap">{{ action.scheduled_for|date:prefs.f_time }}</td>
         <td class="row-actions">
           <form method="post" action="{% url 'gtd:action_done' action.pk %}">
             {% csrf_token %}
@@ -67,7 +67,7 @@
     <li>
       <span class="item-main">
         <a href="{% url 'gtd:project_detail' project.pk %}">{{ project.title }}</a>
-        <small class="muted"> · deadline {{ project.deadline|date:"N j, Y" }}</small>
+        <small class="muted"> · deadline {{ project.deadline|date:prefs.f_date }}</small>
       </span>
     </li>
     {% endfor %}
@@ -88,7 +88,7 @@
             <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:30 }}</a>
           {% endif %}
         </td>
-        <td class="muted nowrap">{{ action.deadline|date:"N j, Y" }}</td>
+        <td class="muted nowrap">{{ action.deadline|date:prefs.f_date }}</td>
         <td class="row-actions">
           <form method="post" action="{% url 'gtd:action_done' action.pk %}">
             {% csrf_token %}
@@ -118,7 +118,7 @@
       <tr>
         <td><a href="{% url 'gtd:waiting_for_edit' item.pk %}">{{ item.title }}</a></td>
         <td class="muted">{{ item.person }}</td>
-        <td class="muted nowrap">{{ item.follow_up_on|date:"N j" }}</td>
+        <td class="muted nowrap">{{ item.follow_up_on|date:prefs.f_date_short }}</td>
         <td class="row-actions">
           <a href="{% url 'gtd:waiting_for_followup' item.pk %}" class="btn btn-xs">Update</a>
         </td>
@@ -160,7 +160,7 @@
       <label class="check focus-check">
         <input type="checkbox" name="focus_pks" value="{{ action.pk }}"
                {% if action.pk in focus_pks %}checked{% endif %}>
-        <span>{{ action.title }}{% if action.project %} <small class="muted">— {{ action.project.title|truncatechars:40 }}</small>{% endif %}{% if action.deadline %} <small class="muted">(due {{ action.deadline|date:"N j" }})</small>{% endif %}</span>
+        <span>{{ action.title }}{% if action.project %} <small class="muted">— {{ action.project.title|truncatechars:40 }}</small>{% endif %}{% if action.deadline %} <small class="muted">(due {{ action.deadline|date:prefs.f_date_short }})</small>{% endif %}</span>
       </label>
       {% endfor %}
     </div>

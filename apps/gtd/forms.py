@@ -36,6 +36,8 @@ class NextActionForm(forms.ModelForm):
         self.fields['area'].queryset = AreaOfResponsibility.objects.filter(active=True)
         for field in ['project', 'area', 'defer_until', 'scheduled_for', 'deadline']:
             self.fields[field].required = False
+        from apps.core.models import Preferences
+        self.fields['scheduled_for'].widget.attrs['step'] = Preferences.load().step_seconds
 
 
 class ProjectForm(forms.ModelForm):
