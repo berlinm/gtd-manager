@@ -59,6 +59,8 @@
 - Full-text search (title + body)
 - Markdown body rendered as HTML
 - Tags and area assignment
+- File attachments: drag-and-drop upload (multiple), login-protected download,
+  remove from edit form; served through Django (works under waitress)
 
 **Areas of Responsibility**
 - Area list and edit
@@ -92,9 +94,9 @@
 - Responsive below ~880 px (off-canvas sidebar with hamburger toggle); `prefers-reduced-motion` respected
 - Dark / light mode (localStorage)
 - Login / logout; all views require authentication
-- Help page (`/help/`) with GTD workflow reference, item type descriptions, date field semantics, and keyboard shortcuts
-- 162 automated tests (model validation + view/workflow integration)
-- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (24 sections)
+- Help page (`/help/`) with GTD workflow reference in collapsible sections, item type descriptions, date field semantics, and keyboard shortcuts
+- 167 automated tests (model validation + view/workflow integration)
+- Manual test plan in `docs/MANUAL_TEST_PLAN.md` (25 sections)
 
 ## Next intended work
 
@@ -129,3 +131,4 @@ See `docs/DECISIONS_NEEDED.md`. No decisions have been silently resolved.
 | Phase 6 | 2026-06-27 | Daily review, weekly review, focus list (session), review history |
 | UI redesign | 2026-07-03 | Pico CSS replaced with bespoke design system; sidebar shell, capture bar signature element, clarify progressive disclosure, light/dark themes |
 | Clarify dates + Help page | 2026-07-03 | Date fields (available from, scheduled for, deadline) added to clarify workflow; Help page with GTD reference added |
+| Reference attachments + Help redesign | 2026-07-04 | Drag-and-drop file attachments on References (protected download/delete); Help page reworked into collapsible sections |

@@ -269,3 +269,22 @@ class Reference(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ReferenceAttachment(models.Model):
+    reference = models.ForeignKey(
+        Reference, related_name='attachments', on_delete=models.CASCADE
+    )
+    file = models.FileField(upload_to='reference/')
+    original_name = models.CharField(max_length=500, blank=True)
+    uploaded_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['uploaded_at']
+
+    def __str__(self):
+        return self.filename
+
+    @property
+    def filename(self):
+        return self.original_name or self.file.name.rsplit('/', 1)[-1]

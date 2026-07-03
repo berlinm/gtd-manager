@@ -36,6 +36,8 @@ urlpatterns = [
     path('reference/add/', views.ReferenceCreateView.as_view(), name='reference_add'),
     path('reference/<int:pk>/', views.ReferenceDetailView.as_view(), name='reference_detail'),
     path('reference/<int:pk>/edit/', views.ReferenceUpdateView.as_view(), name='reference_edit'),
+    path('reference/attachment/<int:pk>/download/', views.ReferenceAttachmentDownloadView.as_view(), name='reference_attachment_download'),
+    path('reference/attachment/<int:pk>/delete/', views.ReferenceAttachmentDeleteView.as_view(), name='reference_attachment_delete'),
     # Areas
     path('areas/<int:pk>/', views.AreaDetailView.as_view(), name='area_detail'),
     # Agenda

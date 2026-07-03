@@ -143,6 +143,14 @@ repeatable.
 A validated restore procedure — not just a backup command — is required before
 the system is considered production-ready. This is a Phase 7 deliverable.
 
+### Known limitation: uploaded files are not covered by `backupdb`
+
+Reference file attachments are stored on disk under `MEDIA_ROOT` (`media/`),
+outside both the SQLite database and version control. `manage.py backupdb`
+copies only the database file, so a database backup does **not** include the
+attached files. A complete backup must also copy the `media/` directory. This
+is a known gap to resolve when the full backup/restore procedure is finalized.
+
 ---
 
 ## 7. Security Patches and Upgrades

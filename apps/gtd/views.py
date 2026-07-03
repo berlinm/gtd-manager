@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max, Prefetch, Q
 from django.db.models.functions import Greatest
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView, View
@@ -11,7 +12,7 @@ from .forms import (
 )
 from .models import (
     AgendaItem, AreaOfResponsibility, Context, Meeting, NextAction,
-    Person, Project, Reference, SomedayMaybe, WaitingFor,
+    Person, Project, Reference, ReferenceAttachment, SomedayMaybe, WaitingFor,
 )
 
 
@@ -465,7 +466,19 @@ class ReferenceDetailView(LoginRequiredMixin, DetailView):
     template_name = 'gtd/reference_detail.html'
 
 
-class ReferenceCreateView(LoginRequiredMixin, CreateView):
+class _ReferenceAttachmentMixin:
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        for uploaded in self.request.FILES.getlist('attachments'):
+            ReferenceAttachment.objects.create(
+                reference=self.object,
+                file=uploaded,
+                original_name=uploaded.name,
+            )
+        return response
+
+
+class ReferenceCreateView(_ReferenceAttachmentMixin, LoginRequiredMixin, CreateView):
     model = Reference
     form_class = ReferenceForm
     template_name = 'gtd/reference_form.html'
@@ -474,13 +487,32 @@ class ReferenceCreateView(LoginRequiredMixin, CreateView):
         return f'/reference/{self.object.pk}/'
 
 
-class ReferenceUpdateView(LoginRequiredMixin, UpdateView):
+class ReferenceUpdateView(_ReferenceAttachmentMixin, LoginRequiredMixin, UpdateView):
     model = Reference
     form_class = ReferenceForm
     template_name = 'gtd/reference_form.html'
 
     def get_success_url(self):
         return f'/reference/{self.object.pk}/'
+
+
+class ReferenceAttachmentDownloadView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        attachment = get_object_or_404(ReferenceAttachment, pk=pk)
+        return FileResponse(
+            attachment.file.open('rb'),
+            as_attachment=True,
+            filename=attachment.filename,
+        )
+
+
+class ReferenceAttachmentDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        attachment = get_object_or_404(ReferenceAttachment, pk=pk)
+        reference_pk = attachment.reference_id
+        attachment.file.delete(save=False)
+        attachment.delete()
+        return redirect('gtd:reference_edit', pk=reference_pk)
 
 
 # ---------------------------------------------------------------------------

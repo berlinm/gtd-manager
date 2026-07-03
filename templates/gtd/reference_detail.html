@@ -22,8 +22,19 @@
 <div class="reference-body">
   {{ object.body|markdown }}
 </div>
-{% else %}
+{% elif not object.attachments.all %}
   <p class="empty">No content yet. <a href="{% url 'gtd:reference_edit' object.pk %}">Add some.</a></p>
+{% endif %}
+
+{% if object.attachments.all %}
+<ul class="attachment-list">
+  {% for a in object.attachments.all %}
+  <li>
+    <span class="attachment-icon" aria-hidden="true">⭳</span>
+    <a href="{% url 'gtd:reference_attachment_download' a.pk %}">{{ a.filename }}</a>
+  </li>
+  {% endfor %}
+</ul>
 {% endif %}
 
 <p class="backlink"><a href="{% url 'gtd:reference_list' %}">← Reference</a></p>

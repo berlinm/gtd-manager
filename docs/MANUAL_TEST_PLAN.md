@@ -523,7 +523,42 @@ tab reveals only that panel and focuses its first field. Verify at the start:
 
 1. Click **Help** in the bottom of the sidebar.
    **→ Help page loads. The "Help" nav item is highlighted as active. The "Settings" item is not highlighted.**
-2. Confirm the following sections are present: "The four steps", "Inbox dispositions", "Item types", "Date fields on Next Actions", "Reviews", "Keyboard shortcut".
-   **→ All sections render correctly. Table of dispositions is readable.**
-3. Navigate away to Dashboard, then click **Help** again.
+2. Confirm the four-step cards (Capture, Clarify, Organize, Review) render at the top, followed by collapsible sections: "Inbox dispositions", "Item types", "Date fields on Next Actions", "Reviews", "Keyboard shortcut".
+   **→ "Inbox dispositions" is expanded by default; the others are collapsed.**
+3. Click a collapsed section header (e.g. "Item types").
+   **→ The section expands, revealing its content. The ‹ chevron rotates to point down.**
+4. Navigate away to Dashboard, then click **Help** again.
    **→ Page loads correctly. Active state on the Help link is restored.**
+
+---
+
+## 25. Reference file attachments
+
+### 25a. Attach a file on create
+
+1. Go to **Reference → Add reference**. Enter a title.
+2. Drag a file (e.g. a PDF or image) onto the "Drop files here" zone — or click it and pick a file.
+   **→ The dropzone highlights while dragging; the chosen file name appears listed inside the zone.**
+3. Click **Save**.
+   **→ Redirected to the reference detail page. The attached file is listed with a download icon.**
+4. Click the file name.
+   **→ The file downloads (or opens) with its original filename.**
+
+### 25b. Attach multiple files at once
+
+1. Edit a reference. Drop two or more files onto the zone.
+   **→ All selected file names are listed in the zone.**
+2. Save.
+   **→ Detail page lists all attached files.**
+
+### 25c. Remove an attachment
+
+1. Edit a reference that has an attachment.
+   **→ Under "Attached files", each file shows a **Remove** button.**
+2. Click **Remove** on one file.
+   **→ Returns to the edit page; that file is gone from the list. The file is deleted from disk.**
+
+### 25d. Empty reference with only an attachment
+
+1. Create a reference with a title and a file but no body text.
+   **→ Detail page shows the file list and does not show the "No content yet" placeholder.**

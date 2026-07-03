@@ -4,160 +4,107 @@
 
 {% block content %}
 <h1>How to use this system</h1>
+<p class="help-intro">Capture everything, clarify it into the right list, and review regularly. Expand a section below for detail.</p>
 
-<p class="muted">A quick reference for the GTD workflow as implemented here.</p>
-
-<h2>The four steps</h2>
-
-<div class="grid">
-  <div>
-    <strong>1. Capture</strong>
-    <p>Use the bar at the top of every page to dump anything on your mind into the Inbox. No deciding, just capturing. Speed matters here.</p>
+<div class="help-steps">
+  <div class="help-step">
+    <span class="help-step-num">1</span>
+    <h3>Capture</h3>
+    <p>Dump anything on your mind into the Inbox using the bar at the top. Don't decide yet — just capture.</p>
   </div>
-  <div>
-    <strong>2. Clarify</strong>
-    <p>Process each inbox item one at a time: decide what it is and what to do with it. Pick one of the dispositions below. Never leave items half-processed.</p>
+  <div class="help-step">
+    <span class="help-step-num">2</span>
+    <h3>Clarify</h3>
+    <p>Process each inbox item one at a time. Decide what it is and pick a disposition.</p>
   </div>
-  <div>
-    <strong>3. Organize</strong>
-    <p>Clarified items land in the right list automatically. Use the sidebar to navigate: Next Actions, Projects, Waiting For, Agendas, Someday/Maybe, Reference.</p>
+  <div class="help-step">
+    <span class="help-step-num">3</span>
+    <h3>Organize</h3>
+    <p>Clarified items land in the right list automatically. Navigate them from the sidebar.</p>
   </div>
-  <div>
-    <strong>4. Review</strong>
-    <p>Do a short Daily Review each morning to orient yourself. Do a full Weekly Review once a week to keep the whole system current.</p>
+  <div class="help-step">
+    <span class="help-step-num">4</span>
+    <h3>Review</h3>
+    <p>A short Daily Review to orient; a full Weekly Review to keep the system current.</p>
   </div>
 </div>
 
-<hr>
+<details class="help-section" open>
+  <summary>Inbox dispositions</summary>
+  <div class="help-body">
+    <table>
+      <thead>
+        <tr><th>Disposition</th><th>When</th><th>Goes to</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Trash it</td><td>Never needed</td><td>Archived</td></tr>
+        <tr><td>Done immediately</td><td>Under two minutes</td><td>Archived</td></tr>
+        <tr><td>Someday / maybe</td><td>Not a current commitment</td><td>Someday/Maybe</td></tr>
+        <tr><td>Save as reference</td><td>Info, no action</td><td>Reference</td></tr>
+        <tr><td>Single next action</td><td>One concrete step</td><td>Next Actions</td></tr>
+        <tr><td>Action in a project</td><td>Step of an existing project</td><td>That project</td></tr>
+        <tr><td>New project</td><td>Needs more than one action</td><td>Projects</td></tr>
+        <tr><td>Delegate it</td><td>Waiting on someone else</td><td>Waiting For</td></tr>
+      </tbody>
+    </table>
+  </div>
+</details>
 
-<h2>Inbox dispositions</h2>
+<details class="help-section">
+  <summary>Item types</summary>
+  <div class="help-body">
+    <dl>
+      <dt>Next Action</dt>
+      <dd>A single, concrete physical step you can start without more planning — "Email Sarah about the report", not "Work on project".</dd>
+      <dt>Project</dt>
+      <dd>Any outcome needing more than one action. A project with no next action is flagged as stuck. Name it as an outcome: "Website launched".</dd>
+      <dt>Waiting For</dt>
+      <dd>Something you're tracking that depends on someone else. Set a follow-up date so you remember to check in.</dd>
+      <dt>Agenda Item</dt>
+      <dd>Something to raise with a specific person or meeting. Not an action — no dates. Mark it raised once discussed.</dd>
+      <dt>Someday / Maybe</dt>
+      <dd>Ideas to keep visible without committing. Reviewed weekly; promote to a project when ready.</dd>
+      <dt>Reference</dt>
+      <dd>Information for later — no action attached. Supports Markdown and file attachments. Searchable.</dd>
+      <dt>Meeting &amp; Meeting Note</dt>
+      <dd>A meeting is a recurring target; start a session each time it happens to capture notes. Process notes after the meeting like inbox items.</dd>
+    </dl>
+  </div>
+</details>
 
-<p>When you clarify an inbox item, pick the destination that fits:</p>
+<details class="help-section">
+  <summary>Date fields on Next Actions</summary>
+  <div class="help-body">
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Means</th><th>Use for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Available from</strong></td><td>Unavailable before this date</td><td>Can't start until a future date</td></tr>
+        <tr><td><strong>Scheduled for</strong></td><td>Must occur on this date &amp; time</td><td>An appointment or timed call</td></tr>
+        <tr><td><strong>Deadline</strong></td><td>Complete no later than this date</td><td>A real external commitment — not a self-imposed target</td></tr>
+      </tbody>
+    </table>
+    <p class="muted small" style="margin-top:0.6rem">Ordering: Available from ≤ Scheduled for ≤ Deadline. Invalid combinations are rejected when editing.</p>
+  </div>
+</details>
 
-<table>
-  <thead>
-    <tr><th>Disposition</th><th>When to use it</th><th>Where it goes</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Trash it</td>
-      <td>Not needed and never will be</td>
-      <td>Archived; no active record created</td>
-    </tr>
-    <tr>
-      <td>Done immediately</td>
-      <td>Takes under two minutes to do right now</td>
-      <td>Archived; no active record created</td>
-    </tr>
-    <tr>
-      <td>Someday / maybe</td>
-      <td>Worth revisiting but not a current commitment</td>
-      <td>Someday/Maybe list</td>
-    </tr>
-    <tr>
-      <td>Save as reference</td>
-      <td>Useful information, no action required</td>
-      <td>Reference library</td>
-    </tr>
-    <tr>
-      <td>Single next action</td>
-      <td>One concrete physical step; no multi-step project</td>
-      <td>Next Actions list</td>
-    </tr>
-    <tr>
-      <td>Action in a project</td>
-      <td>A step belonging to an existing project</td>
-      <td>Added to the chosen project</td>
-    </tr>
-    <tr>
-      <td>New project</td>
-      <td>Outcome requiring more than one action</td>
-      <td>Projects list; first action created</td>
-    </tr>
-    <tr>
-      <td>Delegate it</td>
-      <td>Waiting on someone else to deliver something</td>
-      <td>Waiting For list</td>
-    </tr>
-  </tbody>
-</table>
+<details class="help-section">
+  <summary>Reviews</summary>
+  <div class="help-body">
+    <dl>
+      <dt>Daily Review</dt>
+      <dd>Quick morning orientation: what's scheduled today, what's due, follow-ups to nudge, stuck projects. End by picking a short focus list — it clears on the next daily review.</dd>
+      <dt>Weekly Review</dt>
+      <dd>A thorough audit in nine steps — clear the inbox, review stuck and on-hold projects, check deadlines and waiting-fors, scan someday/maybe and agenda. Do it weekly on a fixed day.</dd>
+    </dl>
+  </div>
+</details>
 
-<hr>
-
-<h2>Item types</h2>
-
-<dl>
-  <dt>Next Action</dt>
-  <dd>A single, concrete physical step. Should be specific enough that you can start without further planning. Examples: "Email Sarah about the report", "Call dentist to reschedule". Not a vague task like "Work on project".</dd>
-
-  <dt>Project</dt>
-  <dd>Any outcome that requires more than one action to complete. A project without a next action is stuck — the system will flag it. Keep projects named as outcomes: "Website launched", not "Website".</dd>
-
-  <dt>Waiting For</dt>
-  <dd>A commitment you are tracking that depends on someone else. Set a follow-up date so you remember to check in. Use the <em>expected by</em> date for when you expect delivery, and <em>follow-up on</em> for when you plan to nudge.</dd>
-
-  <dt>Agenda Item</dt>
-  <dd>Something to raise with a specific person or in a specific meeting. Not a next action — no date fields. Mark it raised once you have discussed it.</dd>
-
-  <dt>Someday / Maybe</dt>
-  <dd>Ideas and possibilities you want to keep visible without committing to them. Reviewed during the Weekly Review. Promote to a project when the time is right.</dd>
-
-  <dt>Reference</dt>
-  <dd>Information you may need later. No action associated with it. Supports Markdown formatting. Searchable by title and body.</dd>
-
-  <dt>Meeting</dt>
-  <dd>A recurring meeting (the entity, not a single occurrence). Start a session each time it happens to capture notes and see agenda items for that meeting.</dd>
-
-  <dt>Meeting Note</dt>
-  <dd>Captured during a session — works like an inbox item. Process it after the meeting closes using the same dispositions as the regular inbox.</dd>
-</dl>
-
-<hr>
-
-<h2>Date fields on Next Actions</h2>
-
-<p>Three separate date fields serve distinct purposes. They are never interchangeable:</p>
-
-<table>
-  <thead>
-    <tr><th>Field</th><th>Meaning</th><th>Use when</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Available from</strong><br><small>(defer_until)</small></td>
-      <td>Action is unavailable before this date</td>
-      <td>You can not start it until a future date — waiting for something to happen first</td>
-    </tr>
-    <tr>
-      <td><strong>Scheduled for</strong></td>
-      <td>Action must occur on this specific date and time</td>
-      <td>An appointment, a call at a specific time, something with a hard start</td>
-    </tr>
-    <tr>
-      <td><strong>Deadline</strong></td>
-      <td>Must be completed no later than this date</td>
-      <td>A real external commitment with a hard consequence for missing it — not a self-imposed target</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><strong>Ordering rule:</strong> Available from ≤ Scheduled for ≤ Deadline. The system will reject invalid combinations when editing.</p>
-
-<hr>
-
-<h2>Reviews</h2>
-
-<dl>
-  <dt>Daily Review</dt>
-  <dd>A quick morning orientation. Check what's scheduled today, what's due, whether any follow-ups need a nudge, and whether any projects are stuck. End by selecting a short focus list for the day. The focus list is temporary — it clears when you start the next daily review or manually clear it.</dd>
-
-  <dt>Weekly Review</dt>
-  <dd>A thorough audit of the whole system. Nine steps: clear inbox, review stuck and on-hold projects, review active next actions, check deadlines, update waiting-for follow-ups, review someday/maybe list, check agenda items, scan upcoming deadlines. Aim to do this once a week on a fixed day.</dd>
-</dl>
-
-<hr>
-
-<h2>Keyboard shortcut</h2>
-
-<p>Press <kbd>/</kbd> anywhere to jump to the capture bar. Press <kbd>Escape</kbd> to leave it.</p>
+<details class="help-section">
+  <summary>Keyboard shortcut</summary>
+  <div class="help-body">
+    <p class="help-tip"><kbd>/</kbd> jumps to the capture bar anywhere. <kbd>Esc</kbd> leaves it.</p>
+  </div>
+</details>
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 <h1>{% if form.instance.pk %}Edit reference{% else %}Add reference{% endif %}</h1>
 
-<form method="post" class="form-wide">
+<form method="post" enctype="multipart/form-data" class="form-wide">
   {% csrf_token %}
 
   <label for="{{ form.title.id_for_label }}">Title</label>
@@ -27,6 +27,29 @@
     {% endif %}
   </div>
 
+  <label>Files <small>(optional)</small></label>
+  <label class="dropzone" id="dropzone" for="attachments">
+    <input type="file" id="attachments" name="attachments" multiple hidden>
+    <span class="dropzone-icon" aria-hidden="true">⭳</span>
+    <span class="dropzone-text">Drop files here, or <span class="dropzone-link">browse</span></span>
+    <ul class="dropzone-list" id="dropzone-list" hidden></ul>
+  </label>
+
+  {% if form.instance.pk and form.instance.attachments.all %}
+  <div class="attachment-existing">
+    <p class="muted small mb-0">Attached files</p>
+    <ul class="attachment-manage">
+      {% for a in form.instance.attachments.all %}
+      <li>
+        <a href="{% url 'gtd:reference_attachment_download' a.pk %}">{{ a.filename }}</a>
+        <button type="submit" class="btn btn-quiet btn-sm attachment-remove"
+                formaction="{% url 'gtd:reference_attachment_delete' a.pk %}" formnovalidate>Remove</button>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
   <div class="form-actions">
     <button type="submit" class="btn-primary">Save</button>
     {% if form.instance.pk %}
@@ -36,4 +59,47 @@
     {% endif %}
   </div>
 </form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    var zone = document.getElementById('dropzone');
+    var input = document.getElementById('attachments');
+    var list = document.getElementById('dropzone-list');
+    if (!zone || !input) return;
+
+    function render() {
+      list.innerHTML = '';
+      if (!input.files.length) { list.hidden = true; return; }
+      list.hidden = false;
+      Array.prototype.forEach.call(input.files, function (f) {
+        var li = document.createElement('li');
+        li.textContent = f.name;
+        list.appendChild(li);
+      });
+    }
+
+    input.addEventListener('change', render);
+
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) {
+        e.preventDefault();
+        zone.classList.add('dropzone-active');
+      });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) {
+        e.preventDefault();
+        zone.classList.remove('dropzone-active');
+      });
+    });
+    zone.addEventListener('drop', function (e) {
+      if (e.dataTransfer && e.dataTransfer.files.length) {
+        input.files = e.dataTransfer.files;
+        render();
+      }
+    });
+  })();
+</script>
 {% endblock %}
