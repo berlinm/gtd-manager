@@ -19,16 +19,24 @@ class NextActionWorkflowTests(TestCase):
         response = self.client.get(reverse('gtd:next_actions'))
         self.assertEqual(response.status_code, 302)  # redirect to login
 
-    def test_list_hides_deferred_actions(self):
+    def test_deferred_actions_separated_from_available(self):
         from datetime import timedelta
         NextAction.objects.create(title='Available now')
         NextAction.objects.create(
-            title='Deferred',
+            title='Locked till later',
             defer_until=date.today() + timedelta(days=3),
         )
         response = self.client.get(reverse('gtd:next_actions'))
-        self.assertContains(response, 'Available now')
-        self.assertNotContains(response, 'Deferred')
+        available = [a.title for a in response.context['actions']]
+        deferred = [a.title for a in response.context['deferred_actions']]
+        # available action is in the main list, not the deferred section
+        self.assertIn('Available now', available)
+        self.assertNotIn('Available now', deferred)
+        # deferred action is NOT in the main available list, but IS surfaced
+        # in its own section (never silently invisible)
+        self.assertNotIn('Locked till later', available)
+        self.assertIn('Locked till later', deferred)
+        self.assertContains(response, 'Locked till later')
 
     def test_done_marks_action_complete(self):
         action = NextAction.objects.create(title='Do something')

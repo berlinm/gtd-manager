@@ -61,4 +61,34 @@
   <p class="empty">No available actions{% if active_context %} for {{ active_context }}{% endif %}.
     <a href="{% url 'gtd:action_add' %}">Add one</a>{% if active_context %} or <a href="{% url 'gtd:next_actions' %}">clear the filter</a>{% endif %}.</p>
 {% endif %}
+
+{% if deferred_actions %}
+<section class="deferred-section">
+  <h2>Deferred <small class="muted">— available later</small></h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Project</th>
+        <th>Available from</th>
+        <th>Deadline</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for action in deferred_actions %}
+      <tr>
+        <td><a href="{% url 'gtd:action_edit' action.pk %}">{{ action.title }}</a></td>
+        <td>
+          {% if action.project %}
+            <a href="{% url 'gtd:project_detail' action.project.pk %}" class="muted">{{ action.project.title|truncatechars:40 }}</a>
+          {% endif %}
+        </td>
+        <td class="muted nowrap">{{ action.defer_until|date:prefs.f_date_short }}</td>
+        <td class="muted nowrap">{% if action.deadline %}{{ action.deadline|date:prefs.f_date_short }}{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
 {% endblock %}

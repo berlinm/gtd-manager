@@ -88,3 +88,10 @@ class PreferencesViewTests(TestCase):
         Preferences.objects.create(time_step_minutes=30)
         response = self.client.get(reverse('gtd:action_add'))
         self.assertContains(response, 'step="1800"')
+
+    def test_snap_script_shipped_on_authenticated_pages(self):
+        # base.html carries the client-side interval-snap enhancement that
+        # enforces the picker interval (native `step` alone lets users type
+        # off-step minutes). Confirm it is delivered.
+        response = self.client.get(reverse('gtd:action_add'))
+        self.assertContains(response, 'input[type="datetime-local"][step]')

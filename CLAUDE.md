@@ -111,6 +111,33 @@ Keep these files current as implementation progresses. Update them in the **same
 - `docs/adr/*.md` — ADRs are immutable once written; write a new ADR rather than amending an existing one.
 - `docs/ROADMAP.md` — the phased plan; do not mark phases complete here; use `docs/PROJECT_STATUS.md` for current state.
 
+## Verification discipline
+
+Before reporting a change done, verify the **user-observable outcome in the medium
+the user actually uses** — not an intermediate proxy. Two shipped bugs came from
+verifying the wrong thing:
+
+- A clarify-with-date action was created successfully (`302`, row in DB) but did not
+  appear in the Next Actions list the user looks at. "Object created" was mistaken
+  for "feature works." The list filters out future-deferred actions, and there was
+  no deferred section — so the action was invisible.
+- A time-picker interval preference rendered the correct `step="900"` attribute, but
+  the browser still let the user type an off-step minute. "Attribute present in HTML"
+  was mistaken for "picker enforces the interval."
+
+Rules:
+- Name the outcome a user would check ("the action shows on the Next Actions page";
+  "the picker only accepts 15-minute times") and verify *that*, not the code path.
+- For UI/workflow behavior, load the running app and observe it. Django's test client
+  renders real templates and is good for "does this appear on the page"; browser
+  behavior (native pickers, JS, layout, light/dark) must be checked in a browser.
+- A passing unit test that asserts an intermediate signal (`count == 1`,
+  attribute rendered) is not verification of the user outcome. Assert what the user
+  sees; when a bug is fixed, adapt the test that encoded the old (buggy) behavior.
+- The `verify` skill (`.claude/skills/verify/SKILL.md`) documents the browser-based
+  check for this app — use it when confirming a UI or workflow fix before reporting
+  it done. It is available, not mandatory; judgment applies to trivial changes.
+
 ## Code conventions
 
 - No comments unless the WHY is non-obvious.

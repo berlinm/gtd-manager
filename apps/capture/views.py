@@ -95,7 +95,6 @@ class ClarifyView(LoginRequiredMixin, View):
             created_object = NextAction.objects.create(
                 title=request.POST.get('action_title', item.title).strip() or item.title,
                 body=item.body,
-                defer_until=request.POST.get('action_defer_until', '').strip() or None,
                 scheduled_for=request.POST.get('action_scheduled_for', '').strip() or None,
                 deadline=request.POST.get('action_deadline', '').strip() or None,
             )
@@ -116,7 +115,6 @@ class ClarifyView(LoginRequiredMixin, View):
                 title=action_title,
                 body=item.body,
                 project=project,
-                defer_until=request.POST.get('add_defer_until', '').strip() or None,
                 scheduled_for=request.POST.get('add_scheduled_for', '').strip() or None,
                 deadline=request.POST.get('add_deadline', '').strip() or None,
             )

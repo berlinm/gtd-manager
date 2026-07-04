@@ -41,6 +41,14 @@ class NextActionListView(LoginRequiredMixin, ListView):
         ctx = super().get_context_data(**kwargs)
         ctx['contexts'] = Context.objects.filter(active=True)
         ctx['active_context'] = self.request.GET.get('context', '')
+        today = timezone.now().date()
+        deferred = NextAction.objects.filter(
+            status=NextAction.Status.ACTIVE, defer_until__gt=today
+        ).select_related('project', 'area').order_by('defer_until')
+        context_label = self.request.GET.get('context')
+        if context_label:
+            deferred = deferred.filter(contexts__label=context_label)
+        ctx['deferred_actions'] = deferred
         return ctx
 
 

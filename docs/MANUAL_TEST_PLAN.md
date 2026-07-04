@@ -501,21 +501,24 @@ tab reveals only that panel and focuses its first field. Verify at the start:
 
 ## 23. Date fields on clarify — single next action
 
+The clarify quick-form offers **Scheduled for** and **Deadline** only. `Available from`
+(defer_until) is intentionally NOT offered here — a future defer date would hide the
+action from the Next Actions list, which at capture time reads as "my action vanished."
+Defer is set later in the full action edit form if needed (see §27 for its visibility).
+
 1. Capture a new inbox item and open it for clarification.
 2. Click the **Single next action** tab to open that panel.
-3. Edit the action title if desired. Fill in only the **Deadline** field with a date two weeks from now. Leave the other two date fields empty.
-4. Click **Create action**.
-   **→ Redirected to the Next Actions list. The new action is present.**
-5. Open the action's edit page.
-   **→ The Deadline field contains the date you entered. Available from and Scheduled for are empty.**
+   **→ Only two date fields are shown: Scheduled for and Deadline. There is no "Available from" field.**
+3. Fill in the **Deadline** field with a date two weeks from now. Click **Create action**.
+   **→ Redirected to the Next Actions list. The new action IS present in the list (not hidden).**
+4. Open the action's edit page.
+   **→ The Deadline field contains the date you entered.**
 
-6. Return to the inbox, capture another item, open it for clarification.
-7. Fill in all three date fields: Available from = today, Scheduled for = today at a specific time, Deadline = one week from now.
-8. Click **Create action**.
-   **→ Action created successfully. Edit page confirms all three dates are saved.**
+5. Capture another item. Set **Scheduled for** to a date/time a few days out. Click **Create action**.
+   **→ Redirected to Next Actions. The action appears in the list with its "Scheduled …" sub-label.**
 
-9. Capture another item. On the clarify page, click **Action in a project** (with at least one active project available). Select a project, fill in the action title, set a Deadline date, and click **Add to project**.
-   **→ Redirected to the project detail page. The new action appears there. Its edit page shows the Deadline.**
+6. Capture another item. Click **Action in a project**, select a project, set a Deadline, click **Add to project**.
+   **→ Redirected to the project detail page. The new action appears there with its Deadline.**
 
 ---
 
@@ -571,10 +574,12 @@ tab reveals only that panel and focuses its first field. Verify at the start:
 
 1. Go to **Settings**. Under **Date & time**, set **Time picker interval** to "30 minutes" and click **Save preferences**.
    **→ "Preferences saved." message appears.**
-2. Go to **Next Actions → Add action** (or edit one). Open the **Scheduled for** picker.
-   **→ The minutes offered step in 30-minute increments (00, 30). With the default of 15, they step 00/15/30/45.**
-3. Repeat the check on a clarify page's **Scheduled for** field and a meeting session's **Start/End time** fields.
-   **→ All time pickers honor the configured interval.**
+2. Go to **Next Actions → Add action** (or edit one). Open the **Scheduled for** picker and step the minute field with the up/down arrows.
+   **→ The minute spinner steps in 30-minute increments (00, 30). With the default of 15, it steps 00/15/30/45.**
+3. In the same field, **type** an off-interval minute (e.g. `:07`) and click/tab away from the field.
+   **→ The value snaps to the nearest valid interval (e.g. `:00` or `:15`). Off-interval times cannot be kept. (`step` alone doesn't stop typing; a small client-side snap enforces it — see `docs/CLAUDE.md` verification note.)**
+4. Repeat the check on a clarify page's **Scheduled for** field and a meeting session's **Start/End time** fields.
+   **→ All time pickers honor the configured interval and snap typed values.**
 
 ### 26b. Change the time format
 
@@ -598,3 +603,19 @@ tab reveals only that panel and focuses its first field. Verify at the start:
 
 1. Set any non-default preference and save. Reload the settings page.
    **→ The selected values are still shown (persisted to the database, single row).**
+
+---
+
+## 27. Deferred actions are visible (never lost)
+
+Regression guard: a next action with a future **Available from** (defer_until) date is
+correctly excluded from the main available list, but must still be visible so it is
+never silently lost.
+
+1. Create or edit a next action and set **Available from** to a date a week from now. Save.
+2. Go to **Next Actions**.
+   **→ The action does NOT appear in the main table (it isn't available yet).**
+3. Scroll below the main table.
+   **→ A **Deferred — available later** section lists the action with its "Available from" date.**
+4. Wait until (or set) the Available-from date to today or earlier.
+   **→ The action moves into the main available list and leaves the Deferred section.**
