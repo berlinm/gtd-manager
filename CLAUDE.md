@@ -138,6 +138,26 @@ Rules:
   check for this app — use it when confirming a UI or workflow fix before reporting
   it done. It is available, not mandatory; judgment applies to trivial changes.
 
+## Session logging
+
+Keep a running context log for every substantive working session, so the work can
+be resumed or handed off without re-deriving it from the diff.
+
+- **Start:** create `docs/sessions/<YYYY-MM-DD>-<slug>.md` (slug = short topic, e.g.
+  `clarify-dates-and-attachments`). Append to today's file if one already fits.
+- **During the session, not just at the end:** append context as you go — the task
+  and its scope, decisions and *why*, root causes found, commands/tests/verification
+  run, data you discovered, and anything surprising. Write enough that a future
+  session could pick up from the file alone.
+- **End:** run the `end-session` skill (`.claude/skills/end-session/SKILL.md`). It
+  reorganizes the running log into a structured summary and verifies it captures
+  what was done, what was learned, and what remains — cross-checked against the
+  session's actual commits, not memory.
+
+Session logs are a working record, not living documentation: they are append-only
+history and are never retro-edited except by `end-session` at the end of their own
+session. They do not replace the living-documentation updates above.
+
 ## Code conventions
 
 - No comments unless the WHY is non-obvious.
