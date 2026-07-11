@@ -105,3 +105,26 @@ the conversation cross-checked against git.
   `media/`. Not yet solved.
 - **Phase 7 remaining** (unchanged): `audit` app, offline asset audit, production
   settings file, validated restore, wheelhouse + waitress docs, startup script.
+
+## Follow-up — 2026-07-11 — time picker re-fix
+
+- **Bug 2b returned:** user reported "i can still choose exact minutes, it only rounds
+  when i click on it." The client-side snap was **reactive** (fired on `change`), so
+  an off-interval minute could still be *chosen*; snapping after the fact isn't the
+  same as not offering it. This is a second miss on the same "verify the mechanism vs
+  verify the user can't do the wrong thing" lesson — CLAUDE.md example updated.
+- **Real fix:** replaced free time entry with a **`<select>` of interval options**
+  (a native dropdown can only submit one of its options, so off-interval minutes are
+  impossible by construction). `Preferences.time_options()` generates the options
+  (labels honour 12h/24h). Applied to: `NextActionForm.scheduled_for` (now a
+  `SplitDateTimeField` = date input + time select via `TimeChoiceSplitDateTimeWidget`),
+  the two clarify scheduled-for inputs (date input + `<select>`, combined server-side
+  via `_combine_datetime`), and `MeetingSessionForm` start/end. Removed the snap JS and
+  `step` attrs. Option values are `HH:MM:00` to match `str(time)` so edits stay selected.
+- **Verified:** 186 tests pass, incl. new assertions that the rendered markup is a
+  `<select>` with interval-only options and no `datetime-local`. Dumped the real widget
+  markup — confirmed `<select>`, no datetime-local. Browser screenshot not taken (the
+  Chrome extension was disconnected), but a `<select>` has no ambiguous browser
+  behavior to observe — the constraint is structural.
+- **Resolved from open items:** the interval enforcement is now correct (was
+  previously "fixed" by the inadequate snap).

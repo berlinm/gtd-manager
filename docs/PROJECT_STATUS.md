@@ -98,8 +98,9 @@
 - Help page (`/help/`) with GTD workflow reference in collapsible sections, item type descriptions, date field semantics, and keyboard shortcuts
 - Date & time preferences (Settings): configurable time-picker interval (5/10/15/30/60 min),
   12h/24h time format, and date style (month-first / day-first / ISO); stored as a single-row
-  `Preferences` model and applied across all date/time displays and time inputs. Interval is
-  enforced in the picker by a client-side snap (native `step` alone allows typed off-step values)
+  `Preferences` model and applied across all date/time displays and time inputs. Times are
+  chosen from a dropdown of interval options (a `<select>`, so off-interval minutes can't be
+  entered); datetime fields are a date input + time dropdown
 - 185 automated tests (model validation + view/workflow integration)
 - Manual test plan in `docs/MANUAL_TEST_PLAN.md` (27 sections)
 
@@ -138,4 +139,5 @@ See `docs/DECISIONS_NEEDED.md`. No decisions have been silently resolved.
 | Clarify dates + Help page | 2026-07-03 | Date fields (available from, scheduled for, deadline) added to clarify workflow; Help page with GTD reference added |
 | Reference attachments + Help redesign | 2026-07-04 | Drag-and-drop file attachments on References (protected download/delete); Help page reworked into collapsible sections |
 | Date & time preferences | 2026-07-04 | Configurable time-picker interval, 12h/24h time, and date style via a single-row `Preferences` model; applied across all displays and time inputs |
-| Bug fixes: clarify-date visibility + interval enforcement | 2026-07-04 | Removed defer_until from clarify (footgun that hid actions); added Deferred section so deferred actions stay visible; client-side snap enforces the time-picker interval; added verification-discipline guidance to CLAUDE.md and the `verify` skill |
+| Bug fixes: clarify-date visibility + interval enforcement | 2026-07-04 | Removed defer_until from clarify (footgun that hid actions); added Deferred section so deferred actions stay visible; added verification-discipline guidance to CLAUDE.md and the `verify` skill |
+| Time picker = interval dropdown | 2026-07-11 | Replaced free time/datetime-local inputs with a `<select>` of interval options (date input + time dropdown for datetimes) across the action form, clarify, and meeting sessions — off-interval minutes can no longer be entered; removed the earlier client-side snap |

@@ -44,7 +44,7 @@
       </div>
       <div>
         <label for="{{ form.scheduled_for.id_for_label }}">Scheduled for <small>(must happen at this time)</small></label>
-        {{ form.scheduled_for }}
+        <div class="split-datetime">{{ form.scheduled_for }}</div>
       </div>
       <div>
         <label for="{{ form.deadline.id_for_label }}">Deadline <small>(real external commitment only)</small></label>

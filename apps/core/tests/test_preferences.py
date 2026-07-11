@@ -84,14 +84,29 @@ class PreferencesViewTests(TestCase):
         self.assertIn('prefs', response.context)
         self.assertIsInstance(response.context['prefs'], Preferences)
 
-    def test_next_action_form_applies_step(self):
-        Preferences.objects.create(time_step_minutes=30)
-        response = self.client.get(reverse('gtd:action_add'))
-        self.assertContains(response, 'step="1800"')
+    def test_time_options_respect_interval(self):
+        p15 = Preferences(time_step_minutes=15)
+        vals15 = [v for v, _ in p15.time_options() if v]
+        self.assertEqual(len(vals15), 96)          # 24h / 15min
+        self.assertIn('09:15:00', vals15)
+        self.assertNotIn('09:07:00', vals15)       # off-interval never offered
+        p30 = Preferences(time_step_minutes=30)
+        vals30 = [v for v, _ in p30.time_options() if v]
+        self.assertEqual(len(vals30), 48)
+        self.assertNotIn('09:15:00', vals30)
 
-    def test_snap_script_shipped_on_authenticated_pages(self):
-        # base.html carries the client-side interval-snap enhancement that
-        # enforces the picker interval (native `step` alone lets users type
-        # off-step minutes). Confirm it is delivered.
-        response = self.client.get(reverse('gtd:action_add'))
-        self.assertContains(response, 'input[type="datetime-local"][step]')
+    def test_time_options_labels_follow_time_format(self):
+        labels12 = dict(Preferences(time_format='12').time_options())
+        self.assertEqual(labels12['13:30:00'], '1:30 p.m.')
+        labels24 = dict(Preferences(time_format='24').time_options())
+        self.assertEqual(labels24['13:30:00'], '13:30')
+
+    def test_action_form_renders_time_select_not_free_input(self):
+        # The picker must OFFER only interval options (a <select>), not a free
+        # datetime-local that lets a user type an off-interval minute.
+        Preferences.objects.create(time_step_minutes=30)
+        html = self.client.get(reverse('gtd:action_add')).content.decode()
+        self.assertNotIn('datetime-local', html)
+        self.assertIn('name="scheduled_for_1"', html)   # the time <select>
+        self.assertIn('<option value="09:30:00"', html)
+        self.assertNotIn('<option value="09:15:00"', html)  # off-interval absent

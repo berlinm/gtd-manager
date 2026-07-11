@@ -572,14 +572,18 @@ Defer is set later in the full action edit form if needed (see §27 for its visi
 
 ### 26a. Change the time picker interval
 
+Time is picked from a **dropdown of interval options** (a native `<select>`), not a
+free time field — so an off-interval minute cannot be entered at all. "Scheduled for"
+is a date input plus a time dropdown.
+
 1. Go to **Settings**. Under **Date & time**, set **Time picker interval** to "30 minutes" and click **Save preferences**.
    **→ "Preferences saved." message appears.**
-2. Go to **Next Actions → Add action** (or edit one). Open the **Scheduled for** picker and step the minute field with the up/down arrows.
-   **→ The minute spinner steps in 30-minute increments (00, 30). With the default of 15, it steps 00/15/30/45.**
-3. In the same field, **type** an off-interval minute (e.g. `:07`) and click/tab away from the field.
-   **→ The value snaps to the nearest valid interval (e.g. `:00` or `:15`). Off-interval times cannot be kept. (`step` alone doesn't stop typing; a small client-side snap enforces it — see `docs/CLAUDE.md` verification note.)**
-4. Repeat the check on a clarify page's **Scheduled for** field and a meeting session's **Start/End time** fields.
-   **→ All time pickers honor the configured interval and snap typed values.**
+2. Go to **Next Actions → Add action** (or edit one). Open the **Scheduled for** time dropdown.
+   **→ It lists times 30 minutes apart (…09:00, 09:30, 10:00…) and nothing in between. With the default of 15, it lists 00/15/30/45. There is no way to type or select an off-interval minute like :07.**
+3. Repeat the check on a clarify page's **Scheduled for** dropdown and a meeting session's **Start/End time** dropdowns.
+   **→ All are dropdowns limited to the configured interval.**
+4. Edit an action that already has a scheduled time, reopen the form.
+   **→ The saved time is pre-selected in the dropdown, and the date shows in the date input.**
 
 ### 26b. Change the time format
 

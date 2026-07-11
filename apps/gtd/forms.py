@@ -8,11 +8,28 @@ from .models import (
 )
 
 
+class TimeChoiceSplitDateTimeWidget(forms.SplitDateTimeWidget):
+    """Native date input + a time <select> restricted to interval options.
+
+    A single datetime-local's `step` cannot stop a user typing an off-interval
+    minute; a <select> can only offer valid times, so the interval is enforced.
+    """
+
+    def __init__(self, time_choices=(), attrs=None):
+        forms.MultiWidget.__init__(self, [
+            forms.DateInput(attrs={'type': 'date'}),
+            forms.Select(choices=time_choices),
+        ])
+
+
 class NextActionForm(forms.ModelForm):
     contexts = forms.ModelMultipleChoiceField(
         queryset=Context.objects.filter(active=True),
         widget=forms.CheckboxSelectMultiple,
         required=False,
+    )
+    scheduled_for = forms.SplitDateTimeField(
+        required=False, widget=TimeChoiceSplitDateTimeWidget()
     )
 
     class Meta:
@@ -23,7 +40,6 @@ class NextActionForm(forms.ModelForm):
         ]
         widgets = {
             'defer_until': forms.DateInput(attrs={'type': 'date'}),
-            'scheduled_for': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'deadline': forms.DateInput(attrs={'type': 'date'}),
             'body': forms.Textarea(attrs={'rows': 3}),
         }
@@ -37,7 +53,7 @@ class NextActionForm(forms.ModelForm):
         for field in ['project', 'area', 'defer_until', 'scheduled_for', 'deadline']:
             self.fields[field].required = False
         from apps.core.models import Preferences
-        self.fields['scheduled_for'].widget.attrs['step'] = Preferences.load().step_seconds
+        self.fields['scheduled_for'].widget.widgets[1].choices = Preferences.load().time_options()
 
 
 class ProjectForm(forms.ModelForm):

@@ -57,6 +57,28 @@ class Preferences(models.Model):
     def step_seconds(self):
         return self.time_step_minutes * 60
 
+    def time_options(self, blank_label='—'):
+        """Selectable time-of-day options at the configured interval.
+
+        Returns a list of (value, label) pairs. Value is ``HH:MM:00`` so it
+        matches ``str(datetime.time(...))`` — the string a TimeField renders —
+        keeping the current value selected on edit. Labels honour the 12h/24h
+        preference. A leading blank option is included for optional fields.
+        """
+        step = self.time_step_minutes or 15
+        opts = [('', blank_label)]
+        for m in range(0, 24 * 60, step):
+            h, mm = divmod(m, 60)
+            value = f'{h:02d}:{mm:02d}:00'
+            if self.time_format == self.TimeFormat.H24:
+                label = f'{h:02d}:{mm:02d}'
+            else:
+                suffix = 'a.m.' if h < 12 else 'p.m.'
+                h12 = h % 12 or 12
+                label = f'{h12}:{mm:02d} {suffix}'
+            opts.append((value, label))
+        return opts
+
     @property
     def _time_fmt(self):
         return 'g:i a' if self.time_format == self.TimeFormat.H12 else 'G:i'

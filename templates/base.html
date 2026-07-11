@@ -203,43 +203,6 @@
       if (e.target.closest('a')) document.body.classList.remove('nav-open');
     });
   })();
-
-  // Snap time / datetime-local inputs to their configured step interval.
-  // The native `step` attribute only steps the spinner and rejects off-step
-  // values at submit; it does not stop a user typing an arbitrary minute.
-  // This snaps a committed value to the nearest interval, visibly, so the
-  // preferred interval is actually enforced in the picker.
-  (function () {
-    function pad(n) { return (n < 10 ? '0' : '') + n; }
-    function snap(input) {
-      var step = parseInt(input.getAttribute('step'), 10);
-      if (!step || step % 60 !== 0 || !input.value) return;
-      var stepMin = step / 60;
-      var hasDate = input.type === 'datetime-local';
-      var datePart = '', timePart = input.value;
-      if (hasDate) {
-        var parts = input.value.split('T');
-        datePart = parts[0]; timePart = parts[1] || '';
-      }
-      var hm = timePart.split(':');
-      if (hm.length < 2) return;
-      var mins = parseInt(hm[0], 10) * 60 + parseInt(hm[1], 10);
-      if (isNaN(mins)) return;
-      var snapped = Math.round(mins / stepMin) * stepMin;
-      var maxInDay = 1439 - (1439 % stepMin);
-      if (snapped > maxInDay) snapped = maxInDay;
-      if (snapped < 0) snapped = 0;
-      var t = pad(Math.floor(snapped / 60)) + ':' + pad(snapped % 60);
-      var next = hasDate ? datePart + 'T' + t : t;
-      if (next !== input.value) input.value = next;
-    }
-    document.addEventListener('change', function (e) {
-      var el = e.target;
-      if (el.matches && el.matches('input[type="time"][step], input[type="datetime-local"][step]')) {
-        snap(el);
-      }
-    });
-  })();
 </script>
 </body>
 </html>

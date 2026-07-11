@@ -24,8 +24,14 @@ class DatedActionVisibilityTests(TestCase):
         return NextAction.objects.get(title=title)
 
     def test_clarify_with_scheduled_for_appears_in_list(self):
-        dt = f'{(date.today() + timedelta(days=3)).isoformat()}T14:30'
-        self._clarify_as_action('Scheduled task', action_scheduled_for=dt)
+        d = (date.today() + timedelta(days=3)).isoformat()
+        action = self._clarify_as_action(
+            'Scheduled task',
+            action_scheduled_date=d,
+            action_scheduled_time='14:30:00',
+        )
+        self.assertIsNotNone(action.scheduled_for)
+        self.assertEqual(action.scheduled_for.strftime('%H:%M'), '14:30')
         html = self.client.get(reverse('gtd:next_actions')).content.decode()
         self.assertIn('Scheduled task', html)
 

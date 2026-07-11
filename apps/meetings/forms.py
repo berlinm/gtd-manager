@@ -21,8 +21,6 @@ class MeetingSessionForm(forms.ModelForm):
         fields = ['occurred_on', 'start_time', 'end_time', 'notes']
         widgets = {
             'occurred_on': forms.DateInput(attrs={'type': 'date'}),
-            'start_time': forms.TimeInput(attrs={'type': 'time'}),
-            'end_time': forms.TimeInput(attrs={'type': 'time'}),
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
@@ -31,6 +29,6 @@ class MeetingSessionForm(forms.ModelForm):
         for field in ['start_time', 'end_time', 'notes']:
             self.fields[field].required = False
         from apps.core.models import Preferences
-        step = Preferences.load().step_seconds
-        self.fields['start_time'].widget.attrs['step'] = step
-        self.fields['end_time'].widget.attrs['step'] = step
+        time_choices = Preferences.load().time_options()
+        for field in ['start_time', 'end_time']:
+            self.fields[field].widget = forms.Select(choices=time_choices)

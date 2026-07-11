@@ -122,8 +122,12 @@ verifying the wrong thing:
   for "feature works." The list filters out future-deferred actions, and there was
   no deferred section — so the action was invisible.
 - A time-picker interval preference rendered the correct `step="900"` attribute, but
-  the browser still let the user type an off-step minute. "Attribute present in HTML"
-  was mistaken for "picker enforces the interval."
+  the browser still let the user type an off-step minute; a follow-up client-side
+  "snap" only corrected the value reactively, so the user could still *pick* an
+  off-interval time. Two fixes shipped before the real one (a `<select>` that only
+  offers interval options) because the test was "a mechanism is present," not "the
+  user cannot choose an off-interval minute." Verify the user can't do the wrong
+  thing, not that a guard exists.
 
 Rules:
 - Name the outcome a user would check ("the action shows on the Next Actions page";

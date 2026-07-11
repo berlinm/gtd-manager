@@ -25,13 +25,24 @@ class QuickCaptureView(LoginRequiredMixin, View):
         return render(request, 'capture/partials/captured.html', {'inbox_count': count})
 
 
+def _combine_datetime(date_str, time_str):
+    """Combine a date input and a time-select value into an ISO datetime, or None."""
+    date_str = (date_str or '').strip()
+    time_str = (time_str or '').strip()
+    if date_str and time_str:
+        return f'{date_str}T{time_str}'
+    return None
+
+
 class ClarifyView(LoginRequiredMixin, View):
     def _ctx(self, item, **extra):
+        from apps.core.models import Preferences
         return {
             'item': item,
             'active_projects': Project.objects.filter(
                 status=Project.Status.ACTIVE
             ).order_by('title'),
+            'time_options': Preferences.load().time_options(),
             **extra,
         }
 
@@ -95,7 +106,10 @@ class ClarifyView(LoginRequiredMixin, View):
             created_object = NextAction.objects.create(
                 title=request.POST.get('action_title', item.title).strip() or item.title,
                 body=item.body,
-                scheduled_for=request.POST.get('action_scheduled_for', '').strip() or None,
+                scheduled_for=_combine_datetime(
+                    request.POST.get('action_scheduled_date'),
+                    request.POST.get('action_scheduled_time'),
+                ),
                 deadline=request.POST.get('action_deadline', '').strip() or None,
             )
             item.disposition = InboxItem.Disposition.ACTION_CREATED
@@ -115,7 +129,10 @@ class ClarifyView(LoginRequiredMixin, View):
                 title=action_title,
                 body=item.body,
                 project=project,
-                scheduled_for=request.POST.get('add_scheduled_for', '').strip() or None,
+                scheduled_for=_combine_datetime(
+                    request.POST.get('add_scheduled_date'),
+                    request.POST.get('add_scheduled_time'),
+                ),
                 deadline=request.POST.get('add_deadline', '').strip() or None,
             )
             item.disposition = InboxItem.Disposition.ACTION_ADDED_TO_PROJECT

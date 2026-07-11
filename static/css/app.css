@@ -944,6 +944,16 @@ details[open] summary { margin-bottom: 0.5rem; }
 .deferred-section { margin-top: 2.2rem; }
 .deferred-section h2 { font-size: var(--text-lg); margin-bottom: 0.6rem; }
 
+/* === 17f. Date + time picker pair ===================================== */
+
+.datetime-pair { display: flex; gap: 0.4rem; }
+.datetime-pair input[type="date"] { flex: 1 1 55%; min-width: 0; }
+.datetime-pair select { flex: 1 1 45%; min-width: 0; }
+
+/* SplitDateTime widget on the action form renders two inputs in sequence */
+.split-datetime { display: flex; gap: 0.4rem; }
+.split-datetime input, .split-datetime select { min-width: 0; }
+
 /* === 17d. Preferences form ============================================ */
 
 .pref-form small.muted { display: block; margin-top: 0.25rem; font-size: var(--text-xs); }
