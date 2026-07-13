@@ -21,7 +21,12 @@ class AdminSettingsView(LoginRequiredMixin, TemplateView):
         backup_dir = getattr(settings, 'BACKUP_DIR', settings.BASE_DIR / 'backups')
         backups = []
         if backup_dir.exists():
-            backups = sorted(backup_dir.glob('gtd-*.db'), reverse=True)
+            # .zip = complete backup (db + media); .db = legacy database-only
+            backups = sorted(
+                list(backup_dir.glob('gtd-*.zip')) + list(backup_dir.glob('gtd-*.db')),
+                key=lambda p: p.name,
+                reverse=True,
+            )
         ctx['last_backup'] = backups[0] if backups else None
         ctx['backup_count'] = len(backups)
         ctx['backup_dir'] = backup_dir

@@ -128,3 +128,17 @@ the conversation cross-checked against git.
   behavior to observe — the constraint is structural.
 - **Resolved from open items:** the interval enforcement is now correct (was
   previously "fixed" by the inadequate snap).
+
+## Follow-up — 2026-07-11 — complete backups (db + media)
+
+- **Closed the backup data-loss gap:** `backupdb` / the Settings "Back up now" button
+  now writes a single `backups/gtd-<timestamp>.zip` containing a consistent DB snapshot
+  (`sqlite3.Connection.backup()` on the live Django connection — safe while running, and
+  what `docs/AIR_GAP_DEPLOYMENT.md` asked for) **plus** the whole `media/` tree, so
+  reference attachments are backed up. Previously only the `.db` was copied, silently
+  losing uploaded files on restore.
+- Backing up via `connections['default'].connection.backup(target)` (not
+  `sqlite3.connect(path)`) so it works for both a real file DB (prod) and the in-memory
+  test DB. Settings lists `gtd-*.zip` plus legacy `gtd-*.db`.
+- Docs: AIR_GAP_DEPLOYMENT §6 rewritten (implemented mechanism + a restore procedure);
+  the "known limitation" note removed. New `apps/core/tests/test_backup.py`.

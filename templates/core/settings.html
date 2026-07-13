@@ -15,6 +15,7 @@
       No backups yet. Backups are saved to <code>{{ backup_dir }}</code>.
     {% endif %}
   </p>
+  <p class="small muted">Each backup is a single <code>.zip</code> holding the database and all uploaded files (reference attachments). Restore by unzipping <code>db.sqlite3</code> and <code>media/</code> back into the project folder.</p>
   <form method="post">
     {% csrf_token %}
     <input type="hidden" name="action" value="backup">

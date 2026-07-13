@@ -119,37 +119,34 @@ No development middleware (`django-debug-toolbar`, etc.) in production settings.
 Copying a live SQLite file while the application is writing to it is unsafe
 and may produce a corrupt backup. The backup mechanism must use one of:
 
-### Option A — Management command using the SQLite Backup API
+### Implemented: `manage.py backupdb` (SQLite Backup API + media)
 
-A Django management command (`manage.py backupdb`) that invokes
-`sqlite3.Connection.backup()`. This is a safe online backup that works while
-the application is running.
+`manage.py backupdb` (also the Settings → **Back up now** button) writes a single
+timestamped archive `backups/gtd-<YYYY-MM-DD_HHMMSS>.zip` containing:
 
-### Option B — Controlled stop, copy, restart
+- `db.sqlite3` — a **consistent snapshot** taken with `sqlite3.Connection.backup()`
+  on the live connection (safe while the app is running; not an ad-hoc file copy).
+- `media/` — the entire media tree, i.e. all reference file attachments.
 
-Stop the application, copy the database file, restart the application.
-Acceptable if downtime is tolerable and the procedure is documented and
-repeatable.
+This means a single backup artifact captures the complete application state
+(database **and** uploaded files) and is trivially portable to another machine.
 
-**Ad-hoc file copy of a live database is not an acceptable backup method.**
+- **Destination:** `BACKUP_DIR` (`backups/`, gitignored).
+- **Invocation:** manual — `manage.py backupdb`, or the in-app Settings button.
+- **Retention:** none automated; prune old `.zip`s by hand if needed.
+- **Legacy:** older database-only `gtd-*.db` backups remain listed in Settings.
 
-### Backup procedure details (TBD)
+### Restore procedure
 
-- Backup destination path
-- Retention count (how many backups to keep)
-- Invocation method (manual, OS-level cron, in-application trigger)
-- Validated restore procedure
+1. Stop the application (waitress / the runserver process).
+2. Unzip the chosen `gtd-<timestamp>.zip`.
+3. Copy `db.sqlite3` to the project root (replacing the existing database).
+4. Copy the `media/` directory to the project root (replacing/merging `media/`).
+5. Restart the application and verify: log in, open a reference with an
+   attachment, confirm the file downloads.
 
-A validated restore procedure — not just a backup command — is required before
-the system is considered production-ready. This is a Phase 7 deliverable.
-
-### Known limitation: uploaded files are not covered by `backupdb`
-
-Reference file attachments are stored on disk under `MEDIA_ROOT` (`media/`),
-outside both the SQLite database and version control. `manage.py backupdb`
-copies only the database file, so a database backup does **not** include the
-attached files. A complete backup must also copy the `media/` directory. This
-is a known gap to resolve when the full backup/restore procedure is finalized.
+A rehearsed restore on the target machine is still recommended before relying on
+backups in production.
 
 ---
 
