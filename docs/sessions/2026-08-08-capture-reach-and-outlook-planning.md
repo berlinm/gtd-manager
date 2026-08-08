@@ -84,13 +84,12 @@ is local IPC, not a call to an external host, so the `docs/AIR_GAP_DEPLOYMENT.md
 constraint is not violated. This was the key feasibility question and the answer is
 favourable.
 
-### 4. Unverified risk — Hebrew / RTL
+### 4. CONFIRMED bug — Hebrew / RTL text is mis-rendered
 
-Every template is hardcoded `lang="en"`. Grep found **no `dir` attribute and no RTL CSS
-anywhere** in `templates/` or `static/css/app.css`. The user's only real captures are
-Hebrew. Mixed Hebrew/English rendering has not been confirmed in a browser — a launch
-attempt was interrupted. If capture mangles their text, that is an adoption blocker
-independent of everything above.
+**Verified in Chrome** on 2026-08-08 (see "RTL verification" below). This is no longer a
+hypothesis. Hebrew is not incidental to this user: the database holds **10 Hebrew inbox
+items, 6 Hebrew next actions, and 1 Hebrew waiting-for** — Hebrew is the primary
+capture language, not an edge case.
 
 ---
 
@@ -157,9 +156,51 @@ update in `docs/AIR_GAP_DEPLOYMENT.md`.
    determines if one pipeline can serve both needs.
 4. **Why is capture not happening at work** when the app is running and available? The
    switching-cost hypothesis is unconfirmed.
-5. **Does Hebrew text render correctly** in capture, the Next Actions list, and clarify?
 
-Checks 1–2 were written up and handed to the user to run at work.
+Checks 1–2 were written up and handed to the user to run at work. The former question 5
+(Hebrew rendering) is now **answered** — see below.
+
+---
+
+## RTL verification — 2026-08-08
+
+**Method.** Live `db.sqlite3` was copied to the job tmp dir; a throwaway password was set
+**on the copy only**; `runserver` was pointed at the copy via `DJANGO_DB_PATH` on port
+8765; the app was driven in Chrome as a logged-in user. Copy deleted afterwards, server
+stopped. The live database was never written to.
+
+**Measured** (`getComputedStyle` on a real inbox row containing Hebrew):
+
+```
+htmlLang: "en"     htmlDir: (none)     elements with a dir attribute: 0
+computedDirection: "ltr"    computedTextAlign: "start"    unicodeBidi: "isolate"
+```
+
+**Observed rendering**, current app vs the same strings under `dir="auto"`:
+
+| Case | Current (`dir=ltr`) | Correct (`dir=auto`) |
+|---|---|---|
+| Pure Hebrew, no digits/punctuation | readable, but flush **left** | flush right |
+| Hebrew + trailing `!` | `!` jumps to the **start** of the line | `!` stays at the end |
+| Hebrew + parentheses | parens land on the wrong sides | correct |
+| Hebrew + Latin (`דגsadjlkasd`) | segments render in **swapped order** | correct |
+| Hebrew + English word + digit | phrase order visually **scrambled** — "לפני 3 בחודש" appears before "לשלוח מייל ל-Dana" | reads correctly |
+
+**Severity.** Pure-Hebrew strings are merely mis-aligned (cosmetic). Anything mixing
+Hebrew with digits, Latin, or punctuation is **reordered on screen** — a correctness
+defect, not a styling nit. A GTD system whose captured text cannot be read back
+reliably cannot be trusted, and trust is the whole mechanism.
+
+**Recommended fix.** Add `dir="auto"` to elements that render *user content* (item
+titles, notes, textareas and text inputs). Do **not** flip the whole UI to RTL: the user
+writes both Hebrew and English, so per-field auto-detection is correct and whole-page
+`dir="rtl"` would break the English chrome. `text-align: start` is already in use, so it
+follows the resolved direction for free once `dir` is set. Small, surgical change.
+
+**Note on the live DB.** Its inbox count moved 36 → 37 during this session. The new row
+is `אחד אחד` (2026-08-08 20:52), captured by the **user**, not by this session — the test
+capture went to the disposable copy. Worth noting that the user was actively capturing
+in Hebrew while this planning ran.
 
 ---
 
@@ -169,7 +210,7 @@ Written with user-observable outcomes, per the verification discipline in `CLAUD
 
 | # | Task | Observable outcome | Gate |
 |---|---|---|---|
-| 1 | Verify Hebrew/RTL rendering | A Hebrew item reads correctly in the capture bar, Next Actions list, and clarify screen — in a browser, both themes | none |
+| 1 | **Fix Hebrew/RTL rendering** (confirmed bug) | A Hebrew item containing a digit, a Latin word, and trailing punctuation reads correctly — in the capture bar, Inbox, Next Actions, clarify, and project detail — in both themes | none |
 | 2 | Bulk paste capture | Pasting 8 lines into one box produces 8 separate inbox items | none |
 | 3 | Bucket-emptying review step | The daily review explicitly asks whether outside buckets are empty, and cannot be completed silently without it | none |
 | 4 | Scope amendment + ADR | `PRODUCT_REQUIREMENTS.md` reflects the new integration scope; an ADR records the decision and rejected alternatives | user decision |
@@ -177,8 +218,9 @@ Written with user-observable outcomes, per the verification discipline in `CLAUD
 | 6 | `scheduled_for` → calendar push | Setting a scheduled time on an action creates an Outlook appointment at that time; deadlines and defer dates create nothing | Q1, Q2 |
 | 7 | Wheelhouse update for `pywin32` | Air-gap deployment doc lists the new dependency and its transfer procedure | after 5 |
 
-Task 1 is first because it is cheap, unblocked, and could invalidate the assumption that
-the app is usable in the user's own language.
+Task 1 is first because it is a **confirmed correctness bug**, it is cheap and unblocked,
+and it undermines trust in every list the user reads. No amount of capture reach helps if
+captured text reads back scrambled.
 
 ---
 
